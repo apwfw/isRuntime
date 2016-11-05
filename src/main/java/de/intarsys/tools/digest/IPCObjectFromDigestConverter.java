@@ -29,36 +29,36 @@
  */
 package de.intarsys.tools.digest;
 
-import java.io.IOException;
-
 import de.intarsys.tools.converter.ConversionException;
 import de.intarsys.tools.converter.IConverter;
 import de.intarsys.tools.ipc.IPCObject;
+
+import java.io.IOException;
 
 /**
  * Convert an {@link IDigest} to an {@link IPCObject} format.
  */
 public class IPCObjectFromDigestConverter implements
-		IConverter<IDigest, Object> {
+    IConverter<IDigest, Object> {
 
-	public IPCObjectFromDigestConverter() {
-		super();
-	}
+  public IPCObjectFromDigestConverter() {
+    super();
+  }
 
-	public Object convert(IDigest source) throws ConversionException {
-		try {
-			return DigestEnvironment.get().encode(source);
-		} catch (IOException e) {
-			throw new ConversionException(e);
-		}
-	}
+  public Object convert(IDigest source) throws ConversionException {
+    try {
+      return DigestEnvironment.get().encode(source);
+    } catch (IOException e) {
+      throw new ConversionException(e);
+    }
+  }
 
-	public Class<?> getSourceType() {
-		return IDigest.class;
-	}
+  public Class<?> getSourceType() {
+    return IDigest.class;
+  }
 
-	public Class<?> getTargetType() {
-		return IPCObject.class;
-	}
+  public Class<?> getTargetType() {
+    return IPCObject.class;
+  }
 
 }

@@ -38,7 +38,7 @@ import java.io.Writer;
  * <p>
  * The writer is piped in the writing process, any characters written are copied
  * to an associated writer object.
- * 
+ * <p>
  * <pre>
  * Client -&gt; LogWriter -&gt; Writer -&gt; Destination
  *            |
@@ -47,87 +47,83 @@ import java.io.Writer;
  * </pre>
  */
 public class LogWriter extends FilterWriter {
-	/**
-	 * 
-	 */
-	private Writer log;
+  /**
+   *
+   */
+  private Writer log;
 
-	/**
-	 * EscapeWriter constructor comment.
-	 * 
-	 * @param o
-	 *            java.io.Writer
-	 * @param log
-	 * 
-	 */
-	public LogWriter(Writer o, Writer log) {
-		super(o);
-		setLog(log);
-	}
+  /**
+   * EscapeWriter constructor comment.
+   *
+   * @param o   java.io.Writer
+   * @param log
+   */
+  public LogWriter(Writer o, Writer log) {
+    super(o);
+    setLog(log);
+  }
 
-	/**
-	 * Close the stream, flushing it first. Once a stream has been closed,
-	 * further write() or flush() invocations will cause an IOException to be
-	 * thrown. Closing a previously-closed stream, however, has no effect.
-	 * 
-	 * @exception java.io.IOException
-	 *                If an I/O error occurs
-	 */
-	@Override
-	public void close() throws java.io.IOException {
-		super.close();
-		if (getLog() != null) {
-			getLog().close();
-		}
-	}
+  /**
+   * Close the stream, flushing it first. Once a stream has been closed,
+   * further write() or flush() invocations will cause an IOException to be
+   * thrown. Closing a previously-closed stream, however, has no effect.
+   *
+   * @throws java.io.IOException If an I/O error occurs
+   */
+  @Override
+  public void close() throws java.io.IOException {
+    super.close();
+    if (getLog() != null) {
+      getLog().close();
+    }
+  }
 
-	/**
-	 * Flush the stream. If the stream has saved any characters from the various
-	 * write() methods in a buffer, write them immediately to their intended
-	 * destination. Then, if that destination is another character or byte
-	 * stream, flush it. Thus one flush() invocation will flush all the buffers
-	 * in a chain of Writers and OutputStreams.
-	 * 
-	 * @exception java.io.IOException
-	 *                If an I/O error occurs
-	 */
-	@Override
-	public void flush() throws java.io.IOException {
-		super.flush();
-		if (getLog() != null) {
-			getLog().flush();
-		}
-	}
+  /**
+   * Flush the stream. If the stream has saved any characters from the various
+   * write() methods in a buffer, write them immediately to their intended
+   * destination. Then, if that destination is another character or byte
+   * stream, flush it. Thus one flush() invocation will flush all the buffers
+   * in a chain of Writers and OutputStreams.
+   *
+   * @throws java.io.IOException If an I/O error occurs
+   */
+  @Override
+  public void flush() throws java.io.IOException {
+    super.flush();
+    if (getLog() != null) {
+      getLog().flush();
+    }
+  }
 
-	public java.io.Writer getLog() {
-		return log;
-	}
+  public java.io.Writer getLog() {
+    return log;
+  }
 
-	private void setLog(java.io.Writer newLog) {
-		log = newLog;
-	}
+  private void setLog(java.io.Writer newLog) {
+    log = newLog;
+  }
 
-	@Override
-	public void write(char[] cbuf, int off, int len) throws IOException {
-		super.write(cbuf, off, len);
-		if (getLog() != null) {
-			getLog().write(cbuf, off, len);
-		}
-	}
+  @Override
+  public void write(char[] cbuf, int off, int len) throws IOException {
+    super.write(cbuf, off, len);
+    if (getLog() != null) {
+      getLog().write(cbuf, off, len);
+    }
+  }
 
-	@Override
-	public void write(int c) throws IOException {
-		super.write(c);
-		if (getLog() != null) {
-			getLog().write(c);
-		}
-	}
+  @Override
+  public void write(int c) throws IOException {
+    super.write(c);
+    if (getLog() != null) {
+      getLog().write(c);
+    }
+  }
 
-	@Override
-	public void write(String str, int off, int len) throws IOException {
-		super.write(str, off, len);
-		if (getLog() != null) {
-			getLog().write(str, off, len);
-		}
-	}
+  @Override
+  public void write(String str, int off, int len) throws IOException {
+    super.write(str, off, len);
+    if (getLog() != null) {
+      getLog().write(str, off, len);
+    }
+  }
 }

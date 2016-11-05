@@ -34,13 +34,13 @@ package de.intarsys.tools.expression;
  */
 public interface IStringEvaluatorSupport {
 
-	/**
-	 * An {@link IStringEvaluator} that allows to evaluate expressions on the
-	 * receiver.
-	 * 
-	 * @return An {@link IStringEvaluator} that allows to evaluate expressions
-	 *         on the receiver.
-	 */
-	public IStringEvaluator getStringEvaluator();
+  /**
+   * An {@link IStringEvaluator} that allows to evaluate expressions on the
+   * receiver.
+   *
+   * @return An {@link IStringEvaluator} that allows to evaluate expressions
+   * on the receiver.
+   */
+  public IStringEvaluator getStringEvaluator();
 
 }

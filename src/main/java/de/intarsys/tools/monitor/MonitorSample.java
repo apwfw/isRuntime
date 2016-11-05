@@ -36,30 +36,32 @@ package de.intarsys.tools.monitor;
  * here.
  */
 public class MonitorSample extends AbstractMonitorSample {
-	/** Sample value. The samples unit depends on the monitor context. */
-	private long value;
+  /**
+   * Sample value. The samples unit depends on the monitor context.
+   */
+  private long value;
 
-	public MonitorSample(AbstractMonitorTrace trace, String description,
-			long value) {
-		super(trace, description);
-		this.value = value;
-	}
+  public MonitorSample(AbstractMonitorTrace trace, String description,
+                       long value) {
+    super(trace, description);
+    this.value = value;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.monitor.IMonitorSample#getFormattedValue()
-	 */
-	public String getFormattedValue() {
-		return ((MonitorTrace) getTrace()).getFormat().format(new Long(value));
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.monitor.IMonitorSample#getFormattedValue()
+   */
+  public String getFormattedValue() {
+    return ((MonitorTrace) getTrace()).getFormat().format(new Long(value));
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.monitor.IMonitorSample#getValue()
-	 */
-	public long getValue() {
-		return value;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.monitor.IMonitorSample#getValue()
+   */
+  public long getValue() {
+    return value;
+  }
 }

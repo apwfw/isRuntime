@@ -31,13 +31,12 @@ package de.intarsys.tools.reader;
 
 /**
  * An interface for readers that can escape character sequences.
- * 
  */
 public interface IUnEscaper {
 
-	void addEscapedCharacter(char key, char value);
+  void addEscapedCharacter(char key, char value);
 
-	boolean isMapped();
+  boolean isMapped();
 
-	void setEscape(char escape);
+  void setEscape(char escape);
 }

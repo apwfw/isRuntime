@@ -35,58 +35,53 @@ import de.intarsys.tools.functor.IArgs;
 
 /**
  * An event indicating a successfully terminated invocation.
- * 
  */
 public class InvokeAccept extends Event {
-	public static final EventType ID = new EventType(
-			InvokeAccept.class.getName());
+  public static final EventType ID = new EventType(
+      InvokeAccept.class.getName());
+  final private IArgs args;
+  final private String name;
+  private Object result;
+  private Throwable throwable;
 
-	private Object result;
+  public InvokeAccept(Object receiver, String name, IArgs args,
+                      Object result, Throwable t) {
+    super(receiver);
+    this.name = name;
+    this.args = args;
+  }
 
-	final private IArgs args;
+  public IArgs getArgs() {
+    return args;
+  }
 
-	final private String name;
+  @Override
+  public EventType getEventType() {
+    return ID;
+  }
 
-	private Throwable throwable;
+  @Override
+  public String getName() {
+    return name;
+  }
 
-	public InvokeAccept(Object receiver, String name, IArgs args,
-			Object result, Throwable t) {
-		super(receiver);
-		this.name = name;
-		this.args = args;
-	}
+  public Object getReceiver() {
+    return getSource();
+  }
 
-	public IArgs getArgs() {
-		return args;
-	}
+  public Object getResult() {
+    return result;
+  }
 
-	@Override
-	public EventType getEventType() {
-		return ID;
-	}
+  public void setResult(Object result) {
+    this.result = result;
+  }
 
-	@Override
-	public String getName() {
-		return name;
-	}
+  public Throwable getThrowable() {
+    return throwable;
+  }
 
-	public Object getReceiver() {
-		return getSource();
-	}
-
-	public Object getResult() {
-		return result;
-	}
-
-	public Throwable getThrowable() {
-		return throwable;
-	}
-
-	public void setResult(Object result) {
-		this.result = result;
-	}
-
-	public void setThrowable(Throwable throwable) {
-		this.throwable = throwable;
-	}
+  public void setThrowable(Throwable throwable) {
+    this.throwable = throwable;
+  }
 }

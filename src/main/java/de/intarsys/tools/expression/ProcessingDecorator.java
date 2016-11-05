@@ -29,8 +29,6 @@
  */
 package de.intarsys.tools.expression;
 
-import java.io.IOException;
-
 import de.intarsys.tools.functor.ArgTools;
 import de.intarsys.tools.functor.Args;
 import de.intarsys.tools.functor.FunctorCall;
@@ -41,6 +39,8 @@ import de.intarsys.tools.functor.IFunctorCall;
 import de.intarsys.tools.functor.IFunctorRegistry;
 import de.intarsys.tools.string.StringTools;
 
+import java.io.IOException;
+
 /**
  * A decorating {@link IStringEvaluator} to add result processing support to an
  * other embedded {@link IStringEvaluator}. The command to be performed is
@@ -48,14 +48,14 @@ import de.intarsys.tools.string.StringTools;
  * <p>
  * You can suffix the original expression by as many commands as you like, for
  * example
- * 
+ * <p>
  * <pre>
  * my ${var:*:dts}
  * </pre>
- * 
+ * <p>
  * will recursivly expand "var" and apply a conversion to a short time format
  * afterwards.
- * 
+ * <p>
  * <p>
  * Currently we support processing the evaluated result with the following
  * command characters:
@@ -80,194 +80,188 @@ import de.intarsys.tools.string.StringTools;
  */
 public class ProcessingDecorator implements IStringEvaluator {
 
-	public static final char PROCESSING_SEPARATOR = ':';
+  public static final char PROCESSING_SEPARATOR = ':';
 
-	public static final String ARG_SEPARATOR = ","; //$NON-NLS-1$
+  public static final String ARG_SEPARATOR = ","; //$NON-NLS-1$
 
-	public static final char CLOSE_BRACE = ')';
+  public static final char CLOSE_BRACE = ')';
 
-	public static final char OPEN_BRACE = '(';
+  public static final char OPEN_BRACE = '(';
 
-	public static final char CODE_REFLECTION = '.';
+  public static final char CODE_REFLECTION = '.';
 
-	public static final char CODE_FUNCTOR = '#';
+  public static final char CODE_FUNCTOR = '#';
 
-	public static final char CODE_DEEPRECURSION = '*';
+  public static final char CODE_DEEPRECURSION = '*';
 
-	public static final char CODE_SHALLOWRECURSION = '+';
+  public static final char CODE_SHALLOWRECURSION = '+';
 
-	public static final char CODE_CONDITIONAL = '?';
+  public static final char CODE_CONDITIONAL = '?';
+  private static final String ARG_RECURSION = "de.intarsys.tools.expression.ProcessingDecorator.recursion";
+  private static IFunctorRegistry formattingFunctors;
+  private IStringEvaluator evaluator;
+  private char separator = PROCESSING_SEPARATOR;
+  private String separatorString = "" + separator; //$NON-NLS-1$
+  private IStringEvaluator recursionEvaluator;
 
-	private static IFunctorRegistry formattingFunctors;
+  /**
+   *
+   */
+  public ProcessingDecorator(IStringEvaluator evaluator) {
+    this.evaluator = evaluator;
+    this.recursionEvaluator = evaluator;
+  }
 
-	protected static Object formatFunctor(Object value, String format)
-			throws FunctorInvocationException {
-		IFunctorRegistry registry = getFormattingFunctors();
-		if (registry == null) {
-			return value;
-		}
-		int openBrace = format.indexOf(OPEN_BRACE);
-		if (openBrace == -1) {
-			openBrace = format.length();
-		}
-		int closeBrace = format.indexOf(CLOSE_BRACE);
-		String formatterId = format.substring(0, openBrace);
-		String[] argStrings;
-		if (openBrace < closeBrace) {
-			argStrings = format.substring(openBrace + 1, closeBrace).split(
-					ARG_SEPARATOR);
-		} else {
-			argStrings = new String[0];
-		}
-		IFunctor formatter = registry.lookupFunctor(formatterId);
-		if (formatter == null) {
-			throw new FunctorInvocationException("formatter '" + formatterId //$NON-NLS-1$
-					+ "' not found"); //$NON-NLS-1$
-		}
-		Args args = Args.createIndexed(value, argStrings);
-		IFunctorCall call = new FunctorCall(value, args);
-		return formatter.perform(call);
-	}
+  protected static Object formatFunctor(Object value, String format)
+      throws FunctorInvocationException {
+    IFunctorRegistry registry = getFormattingFunctors();
+    if (registry == null) {
+      return value;
+    }
+    int openBrace = format.indexOf(OPEN_BRACE);
+    if (openBrace == -1) {
+      openBrace = format.length();
+    }
+    int closeBrace = format.indexOf(CLOSE_BRACE);
+    String formatterId = format.substring(0, openBrace);
+    String[] argStrings;
+    if (openBrace < closeBrace) {
+      argStrings = format.substring(openBrace + 1, closeBrace).split(
+          ARG_SEPARATOR);
+    } else {
+      argStrings = new String[0];
+    }
+    IFunctor formatter = registry.lookupFunctor(formatterId);
+    if (formatter == null) {
+      throw new FunctorInvocationException("formatter '" + formatterId //$NON-NLS-1$
+          + "' not found"); //$NON-NLS-1$
+    }
+    Args args = Args.createIndexed(value, argStrings);
+    IFunctorCall call = new FunctorCall(value, args);
+    return formatter.perform(call);
+  }
 
-	public static IFunctorRegistry getFormattingFunctors() {
-		return formattingFunctors;
-	}
+  public static IFunctorRegistry getFormattingFunctors() {
+    return formattingFunctors;
+  }
 
-	public static void setFormattingFunctors(IFunctorRegistry formattingFunctors) {
-		ProcessingDecorator.formattingFunctors = formattingFunctors;
-	}
+  public static void setFormattingFunctors(IFunctorRegistry formattingFunctors) {
+    ProcessingDecorator.formattingFunctors = formattingFunctors;
+  }
 
-	private IStringEvaluator evaluator;
+  /*
+   * (non-Javadoc)
+   *
+   * @see
+   * de.intarsys.tools.expression.IStringEvaluator#evaluate(java.lang.String,
+   * de.intarsys.tools.functor.IArgs)
+   */
+  public Object evaluate(String expression, IArgs args)
+      throws EvaluationException {
+    String[] instructions = expression.split(getSeparatorString(), -1);
+    String valueExpression = instructions[0].trim();
+    Object value;
+    if (valueExpression.startsWith("\"")) { //$NON-NLS-1$
+      try {
+        value = StringTools.unquote(valueExpression);
+      } catch (IOException e) {
+        throw new EvaluationException(e);
+      }
+    } else {
+      value = evaluator.evaluate(valueExpression, args);
+    }
+    for (int i = 1; i < instructions.length; i++) {
+      value = evaluateInstruction(value, args, instructions[i]);
+    }
+    return value;
+  }
 
-	private char separator = PROCESSING_SEPARATOR;
+  protected Object evaluateConditional(Object value, IArgs args,
+                                       String instruction) throws EvaluationException {
+    String expression = instruction.trim().substring(1);
+    boolean ok = ArgTools.getBool(args, expression, false);
+    return ok ? value : null;
+  }
 
-	private String separatorString = "" + separator; //$NON-NLS-1$
+  protected Object evaluateDeepRecursion(Object value, IArgs args,
+                                         String instruction) throws EvaluationException {
+    int depth = (Integer) args.get(ARG_RECURSION, 10);
+    if (depth == -1) {
+      throw new EvaluationException("expression nested to deeply"); //$NON-NLS-1$
+    }
+    args.put(ARG_RECURSION, --depth);
+    return recursionEvaluator.evaluate(String.valueOf(value), args);
+  }
 
-	private IStringEvaluator recursionEvaluator;
+  protected Object evaluateFunctor(Object value, IArgs args,
+                                   String instruction) throws EvaluationException {
+    try {
+      return formatFunctor(value, instruction.substring(1));
+    } catch (FunctorInvocationException e) {
+      throw new EvaluationException(e.getCause() == null ? e
+          : e.getCause());
+    }
+  }
 
-	private static final String ARG_RECURSION = "de.intarsys.tools.expression.ProcessingDecorator.recursion";
+  protected Object evaluateInstruction(Object value, IArgs args,
+                                       String instruction) throws EvaluationException {
+    if (instruction.length() == 0) {
+      // apply default format for value
+      return StringTools.format(value, instruction);
+    }
+    if (instruction.charAt(0) == CODE_SHALLOWRECURSION) {
+      // this is legacy...
+      return evaluateDeepRecursion(value, args, instruction);
+    } else if (instruction.charAt(0) == CODE_DEEPRECURSION) {
+      return evaluateDeepRecursion(value, args, instruction);
+    } else if (instruction.charAt(0) == CODE_FUNCTOR) {
+      return evaluateFunctor(value, args, instruction);
+    } else if (instruction.charAt(0) == CODE_CONDITIONAL) {
+      return evaluateConditional(value, args, instruction);
+    } else if (instruction.charAt(0) == CODE_REFLECTION) {
+      return evaluateReflection(value, args, instruction);
+    } else {
+      return StringTools.format(value, instruction);
+    }
+  }
 
-	/**
-	 * 
-	 */
-	public ProcessingDecorator(IStringEvaluator evaluator) {
-		this.evaluator = evaluator;
-		this.recursionEvaluator = evaluator;
-	}
+  protected Object evaluateReflection(Object value, IArgs args,
+                                      String instruction) throws EvaluationException {
+    ReflectiveResolver reflector = new ReflectiveResolver(value);
+    return reflector.evaluate(instruction, args);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.intarsys.tools.expression.IStringEvaluator#evaluate(java.lang.String,
-	 * de.intarsys.tools.functor.IArgs)
-	 */
-	public Object evaluate(String expression, IArgs args)
-			throws EvaluationException {
-		String[] instructions = expression.split(getSeparatorString(), -1);
-		String valueExpression = instructions[0].trim();
-		Object value;
-		if (valueExpression.startsWith("\"")) { //$NON-NLS-1$
-			try {
-				value = StringTools.unquote(valueExpression);
-			} catch (IOException e) {
-				throw new EvaluationException(e);
-			}
-		} else {
-			value = evaluator.evaluate(valueExpression, args);
-		}
-		for (int i = 1; i < instructions.length; i++) {
-			value = evaluateInstruction(value, args, instructions[i]);
-		}
-		return value;
-	}
+  protected Object evaluateShallowRecursion(Object value, IArgs args,
+                                            String instruction) throws EvaluationException {
+    int depth = (Integer) args.get(ARG_RECURSION, 1);
+    if (depth == -1) {
+      throw new EvaluationException("expression nested to deeply"); //$NON-NLS-1$
+    }
+    args.put(ARG_RECURSION, depth--);
+    return recursionEvaluator.evaluate(String.valueOf(value), args);
+  }
 
-	protected Object evaluateConditional(Object value, IArgs args,
-			String instruction) throws EvaluationException {
-		String expression = instruction.trim().substring(1);
-		boolean ok = ArgTools.getBool(args, expression, false);
-		return ok ? value : null;
-	}
+  public IStringEvaluator getEvaluator() {
+    return evaluator;
+  }
 
-	protected Object evaluateDeepRecursion(Object value, IArgs args,
-			String instruction) throws EvaluationException {
-		int depth = (Integer) args.get(ARG_RECURSION, 10);
-		if (depth == -1) {
-			throw new EvaluationException("expression nested to deeply"); //$NON-NLS-1$
-		}
-		args.put(ARG_RECURSION, --depth);
-		return recursionEvaluator.evaluate(String.valueOf(value), args);
-	}
+  public IStringEvaluator getRecursionEvaluator() {
+    return recursionEvaluator;
+  }
 
-	protected Object evaluateFunctor(Object value, IArgs args,
-			String instruction) throws EvaluationException {
-		try {
-			return formatFunctor(value, instruction.substring(1));
-		} catch (FunctorInvocationException e) {
-			throw new EvaluationException(e.getCause() == null ? e
-					: e.getCause());
-		}
-	}
+  public void setRecursionEvaluator(IStringEvaluator recursionEvaluator) {
+    this.recursionEvaluator = recursionEvaluator;
+  }
 
-	protected Object evaluateInstruction(Object value, IArgs args,
-			String instruction) throws EvaluationException {
-		if (instruction.length() == 0) {
-			// apply default format for value
-			return StringTools.format(value, instruction);
-		}
-		if (instruction.charAt(0) == CODE_SHALLOWRECURSION) {
-			// this is legacy...
-			return evaluateDeepRecursion(value, args, instruction);
-		} else if (instruction.charAt(0) == CODE_DEEPRECURSION) {
-			return evaluateDeepRecursion(value, args, instruction);
-		} else if (instruction.charAt(0) == CODE_FUNCTOR) {
-			return evaluateFunctor(value, args, instruction);
-		} else if (instruction.charAt(0) == CODE_CONDITIONAL) {
-			return evaluateConditional(value, args, instruction);
-		} else if (instruction.charAt(0) == CODE_REFLECTION) {
-			return evaluateReflection(value, args, instruction);
-		} else {
-			return StringTools.format(value, instruction);
-		}
-	}
+  public char getSeparator() {
+    return separator;
+  }
 
-	protected Object evaluateReflection(Object value, IArgs args,
-			String instruction) throws EvaluationException {
-		ReflectiveResolver reflector = new ReflectiveResolver(value);
-		return reflector.evaluate(instruction, args);
-	}
+  public void setSeparator(char separator) {
+    this.separator = separator;
+  }
 
-	protected Object evaluateShallowRecursion(Object value, IArgs args,
-			String instruction) throws EvaluationException {
-		int depth = (Integer) args.get(ARG_RECURSION, 1);
-		if (depth == -1) {
-			throw new EvaluationException("expression nested to deeply"); //$NON-NLS-1$
-		}
-		args.put(ARG_RECURSION, depth--);
-		return recursionEvaluator.evaluate(String.valueOf(value), args);
-	}
-
-	public IStringEvaluator getEvaluator() {
-		return evaluator;
-	}
-
-	public IStringEvaluator getRecursionEvaluator() {
-		return recursionEvaluator;
-	}
-
-	public char getSeparator() {
-		return separator;
-	}
-
-	public String getSeparatorString() {
-		return separatorString;
-	}
-
-	public void setRecursionEvaluator(IStringEvaluator recursionEvaluator) {
-		this.recursionEvaluator = recursionEvaluator;
-	}
-
-	public void setSeparator(char separator) {
-		this.separator = separator;
-	}
+  public String getSeparatorString() {
+    return separatorString;
+  }
 }

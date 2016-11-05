@@ -35,78 +35,68 @@ import java.io.Writer;
 /**
  * The console writer wraps System.out in a writer that is never closed
  * accidently.
- * 
  */
 public class ConsoleWriter extends Writer {
-	/**
-	 * ConsoleWriter constructor comment.
-	 */
-	public ConsoleWriter() {
-		super();
-	}
+  /**
+   * ConsoleWriter constructor comment.
+   */
+  public ConsoleWriter() {
+    super();
+  }
 
-	/**
-	 * ConsoleWriter constructor comment.
-	 * 
-	 * @param lock
-	 *            java.lang.Object
-	 */
-	protected ConsoleWriter(Object lock) {
-		super(lock);
-	}
+  /**
+   * ConsoleWriter constructor comment.
+   *
+   * @param lock java.lang.Object
+   */
+  protected ConsoleWriter(Object lock) {
+    super(lock);
+  }
 
-	/**
-	 * Close the stream, flushing it first. Once a stream has been closed,
-	 * further write() or flush() invocations will cause an IOException to be
-	 * thrown. Closing a previously-closed stream, however, has no effect.
-	 * 
-	 * @exception IOException
-	 *                If an I/O error occurs
-	 */
-	public void basicClose() throws IOException {
-		System.out.close();
-	}
+  /**
+   * Close the stream, flushing it first. Once a stream has been closed,
+   * further write() or flush() invocations will cause an IOException to be
+   * thrown. Closing a previously-closed stream, however, has no effect.
+   *
+   * @throws IOException If an I/O error occurs
+   */
+  public void basicClose() throws IOException {
+    System.out.close();
+  }
 
-	/**
-	 * Close the stream, flushing it first. Once a stream has been closed,
-	 * further write() or flush() invocations will cause an IOException to be
-	 * thrown. Closing a previously-closed stream, however, has no effect.
-	 * 
-	 * @exception IOException
-	 *                If an I/O error occurs
-	 */
-	public void close() throws IOException {
-		// you don't want to close the console
-	}
+  /**
+   * Close the stream, flushing it first. Once a stream has been closed,
+   * further write() or flush() invocations will cause an IOException to be
+   * thrown. Closing a previously-closed stream, however, has no effect.
+   *
+   * @throws IOException If an I/O error occurs
+   */
+  public void close() throws IOException {
+    // you don't want to close the console
+  }
 
-	/**
-	 * Flush the stream. If the stream has saved any characters from the various
-	 * write() methods in a buffer, write them immediately to their intended
-	 * destination. Then, if that destination is another character or byte
-	 * stream, flush it. Thus one flush() invocation will flush all the buffers
-	 * in a chain of Writers and OutputStreams.
-	 * 
-	 * @exception IOException
-	 *                If an I/O error occurs
-	 */
-	public void flush() throws IOException {
-		System.out.flush();
-	}
+  /**
+   * Flush the stream. If the stream has saved any characters from the various
+   * write() methods in a buffer, write them immediately to their intended
+   * destination. Then, if that destination is another character or byte
+   * stream, flush it. Thus one flush() invocation will flush all the buffers
+   * in a chain of Writers and OutputStreams.
+   *
+   * @throws IOException If an I/O error occurs
+   */
+  public void flush() throws IOException {
+    System.out.flush();
+  }
 
-	/**
-	 * Write a portion of an array of characters.
-	 * 
-	 * @param cbuf
-	 *            Array of characters
-	 * @param off
-	 *            Offset from which to start writing characters
-	 * @param len
-	 *            Number of characters to write
-	 * 
-	 * @exception IOException
-	 *                If an I/O error occurs
-	 */
-	public void write(char[] cbuf, int off, int len) throws IOException {
-		System.out.print(String.copyValueOf(cbuf, off, len));
-	}
+  /**
+   * Write a portion of an array of characters.
+   *
+   * @param cbuf Array of characters
+   * @param off  Offset from which to start writing characters
+   * @param len  Number of characters to write
+   * @throws IOException If an I/O error occurs
+   */
+  public void write(char[] cbuf, int off, int len) throws IOException {
+    System.out.print(String.copyValueOf(cbuf, off, len));
+  }
 }

@@ -34,22 +34,22 @@ package de.intarsys.tools.reporter;
  */
 public class NullReporter implements IReporter {
 
-	public void reportActivityEnd() {
-	}
+  public void reportActivityEnd() {
+  }
 
-	public void reportActivityStart(String activity, int style) {
-	}
+  public void reportActivityStart(String activity, int style) {
+  }
 
-	public void reportError(String title, String message, Throwable t, int style) {
-	}
+  public void reportError(String title, String message, Throwable t, int style) {
+  }
 
-	public void reportMessage(String title, String message, int style) {
-	}
+  public void reportMessage(String title, String message, int style) {
+  }
 
-	public void reportProgress(String text, int percent, int style) {
-	}
+  public void reportProgress(String text, int percent, int style) {
+  }
 
-	public void reportStatus(String text, int style) {
-	}
+  public void reportStatus(String text, int style) {
+  }
 
 }

@@ -31,16 +31,16 @@ package de.intarsys.tools.valueholder;
 
 public class NullValueHolder implements IValueHolder {
 
-	public NullValueHolder() {
-		//
-	}
+  public NullValueHolder() {
+    //
+  }
 
-	public Object get() {
-		return null;
-	}
+  public Object get() {
+    return null;
+  }
 
-	public Object set(Object newValue) {
-		return null;
-	}
+  public Object set(Object newValue) {
+    return null;
+  }
 
 }

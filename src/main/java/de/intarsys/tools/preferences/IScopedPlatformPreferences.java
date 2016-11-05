@@ -34,10 +34,9 @@ import java.util.prefs.Preferences;
 /**
  * A interface that indicates the availability of "scoping" for a standard Java
  * {@link Preferences} implementation.
- * 
  */
 public interface IScopedPlatformPreferences {
 
-	Preferences restrict(String scopeName);
+  Preferences restrict(String scopeName);
 
 }

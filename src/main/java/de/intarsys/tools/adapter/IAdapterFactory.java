@@ -35,25 +35,25 @@ package de.intarsys.tools.adapter;
  */
 public interface IAdapterFactory<B> {
 
-	/**
-	 * Return an object of type <code>clazz</code> that represents
-	 * <code>object</code>.
-	 * <p>
-	 * This method should return <code>null</code> if adaption is not possible.
-	 * 
-	 * @param <T>
-	 * @param object
-	 * @param clazz
-	 * @return Return an object of type <code>clazz</code> that represents
-	 *         <code>object</code>.
-	 */
-	public <T> T getAdapter(B object, Class<T> clazz);
+  /**
+   * Return an object of type <code>clazz</code> that represents
+   * <code>object</code>.
+   * <p>
+   * This method should return <code>null</code> if adaption is not possible.
+   *
+   * @param <T>
+   * @param object
+   * @param clazz
+   * @return Return an object of type <code>clazz</code> that represents
+   * <code>object</code>.
+   */
+  public <T> T getAdapter(B object, Class<T> clazz);
 
-	/**
-	 * The type of objects that can be adapted by this factory.
-	 * 
-	 * @return The type of objects that can be adapted by this factory.
-	 */
-	public Class<B> getBaseType();
+  /**
+   * The type of objects that can be adapted by this factory.
+   *
+   * @return The type of objects that can be adapted by this factory.
+   */
+  public Class<B> getBaseType();
 
 }

@@ -31,14 +31,13 @@ package de.intarsys.tools.functor;
 
 /**
  * An object that may have declarations.
- * 
  */
 public interface IDeclarationSupport {
 
-	/**
-	 * The block of declarations available so far for this.
-	 * 
-	 * @return The block of declarations available so far for this.
-	 */
-	public IDeclarationBlock getDeclarationBlock();
+  /**
+   * The block of declarations available so far for this.
+   *
+   * @return The block of declarations available so far for this.
+   */
+  public IDeclarationBlock getDeclarationBlock();
 }

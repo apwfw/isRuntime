@@ -34,78 +34,75 @@ import java.util.Set;
 /**
  * A common implementation of <code>IStartStop</code>. This abstract class
  * ensures that start and stop procedures are executed only once.
- * 
  */
 public abstract class CommonStartStop implements IStartStop {
 
-	private boolean started = false;
+  private boolean started = false;
 
-	public CommonStartStop() {
-		super();
-	}
+  public CommonStartStop() {
+    super();
+  }
 
-	/**
-	 * Start the component lifecycle. This method is called once at most.
-	 * 
-	 */
-	protected void basicStart() {
-		// redefine
-	}
+  /**
+   * Start the component lifecycle. This method is called once at most.
+   */
+  protected void basicStart() {
+    // redefine
+  }
 
-	/**
-	 * Stop the component lifecycle. This method is called once at most.
-	 * 
-	 */
-	protected void basicStop() {
-		// redefine
-	}
+  /**
+   * Stop the component lifecycle. This method is called once at most.
+   */
+  protected void basicStop() {
+    // redefine
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.component.IStartStop#isStarted()
-	 */
-	synchronized public final boolean isStarted() {
-		return started;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.component.IStartStop#isStarted()
+   */
+  synchronized public final boolean isStarted() {
+    return started;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.component.IStartStop#start()
-	 */
-	public final void start() {
-		synchronized (this) {
-			if (started) {
-				return;
-			}
-			basicStart();
-			started = true;
-		}
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.component.IStartStop#start()
+   */
+  public final void start() {
+    synchronized (this) {
+      if (started) {
+        return;
+      }
+      basicStart();
+      started = true;
+    }
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.component.IStartStop#stop()
-	 */
-	public final void stop() {
-		synchronized (this) {
-			if (!started) {
-				return;
-			}
-			basicStop();
-			started = false;
-		}
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.component.IStartStop#stop()
+   */
+  public final void stop() {
+    synchronized (this) {
+      if (!started) {
+        return;
+      }
+      basicStop();
+      started = false;
+    }
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.component.IStartStop#stopRequested()
-	 */
-	public boolean stopRequested(Set visited) {
-		return true;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.component.IStartStop#stopRequested()
+   */
+  public boolean stopRequested(Set visited) {
+    return true;
+  }
 
 }

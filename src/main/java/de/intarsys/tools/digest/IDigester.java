@@ -31,22 +31,21 @@ package de.intarsys.tools.digest;
 
 /**
  * Computes an {@link IDigest} (hash value) for the provided data.
- * 
  */
 public interface IDigester {
 
-	public IDigest digest();
+  public IDigest digest();
 
-	public IDigest digest(byte[] bytes);
+  public IDigest digest(byte[] bytes);
 
-	public IDigest digest(byte[] bytes, int offset, int len);
+  public IDigest digest(byte[] bytes, int offset, int len);
 
-	public String getAlgorithmName();
+  public String getAlgorithmName();
 
-	public void reset();
+  public void reset();
 
-	public void update(byte[] bytes);
+  public void update(byte[] bytes);
 
-	public void update(byte[] bytes, int offset, int len);
+  public void update(byte[] bytes, int offset, int len);
 
 }

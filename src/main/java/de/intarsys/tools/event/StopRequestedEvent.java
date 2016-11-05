@@ -33,25 +33,24 @@ import java.util.Set;
 
 /**
  * An event indicating that the stop for an application component was requested.
- * 
  */
 public class StopRequestedEvent extends Event {
-	public static final EventType ID = new EventType(StopRequestedEvent.class
-			.getName());
+  public static final EventType ID = new EventType(StopRequestedEvent.class
+      .getName());
 
-	final private Set<Object> visited;
+  final private Set<Object> visited;
 
-	public StopRequestedEvent(Object source, Set visited) {
-		super(source);
-		this.visited = visited;
-	}
+  public StopRequestedEvent(Object source, Set visited) {
+    super(source);
+    this.visited = visited;
+  }
 
-	@Override
-	public EventType getEventType() {
-		return ID;
-	}
+  @Override
+  public EventType getEventType() {
+    return ID;
+  }
 
-	public Set<Object> getVisited() {
-		return visited;
-	}
+  public Set<Object> getVisited() {
+    return visited;
+  }
 }

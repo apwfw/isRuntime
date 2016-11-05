@@ -29,158 +29,157 @@
  */
 package de.intarsys.tools.cache;
 
+import de.intarsys.tools.component.ISynchronizable;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.intarsys.tools.component.ISynchronizable;
-
 /**
  * A very simple cache implementation. The cache supports "null" entries.
- * 
+ * <p>
  * <p>
  * The cache strategy depends on the samples taken in the CacheEntry.
  * </p>
  */
 public class Cache<T> implements ISynchronizable {
 
-	/** Map for associative access to elements */
-	private final Map<Object, CacheEntry<T>> map = new HashMap<Object, CacheEntry<T>>();
+  /**
+   * Map for associative access to elements
+   */
+  private final Map<Object, CacheEntry<T>> map = new HashMap<Object, CacheEntry<T>>();
 
-	/** Collection for sorted access according to cache strategy */
-	private final CacheEntry<T>[] elements;
+  /**
+   * Collection for sorted access according to cache strategy
+   */
+  private final CacheEntry<T>[] elements;
 
-	/** counter for currently available cache elements */
-	private int ptr = 0;
+  /**
+   * counter for currently available cache elements
+   */
+  private int ptr = 0;
 
-	/**
-	 * Create a cache with a maximum size of size elements.
-	 * 
-	 * @param size
-	 *            The maximum number of elements held in the cache.
-	 */
-	public Cache(int size) {
-		super();
-		elements = new CacheEntry[size];
-	}
+  /**
+   * Create a cache with a maximum size of size elements.
+   *
+   * @param size The maximum number of elements held in the cache.
+   */
+  public Cache(int size) {
+    super();
+    elements = new CacheEntry[size];
+  }
 
-	/**
-	 * Clear all entries in the cache.
-	 * 
-	 */
-	synchronized public void clear() {
-		map.clear();
-		for (int i = 0; i < ptr; i++) {
-			elements[i] = null;
-		}
-		ptr = 0;
-	}
+  /**
+   * Clear all entries in the cache.
+   */
+  synchronized public void clear() {
+    map.clear();
+    for (int i = 0; i < ptr; i++) {
+      elements[i] = null;
+    }
+    ptr = 0;
+  }
 
-	/**
-	 * The object with the key "key" or null.
-	 * 
-	 * @param key
-	 *            The key to be used for looking up the cache.
-	 * 
-	 * @return The object with the key "key" or null.
-	 */
-	synchronized public T get(Object key) {
-		CacheEntry<T> result = map.get(key);
-		if (result != null) {
-			if (result.getValue() instanceof ISynchronizable) {
-				ISynchronizable synch = (ISynchronizable) result.getValue();
-				if (synch.isOutOfSynch()) {
-					remove(key);
-					result = null;
-				}
-			}
-		}
-		if (result != null) {
-			result.touch();
-			return result.getValue();
-		} else {
-			return null;
-		}
-	}
+  /**
+   * The object with the key "key" or null.
+   *
+   * @param key The key to be used for looking up the cache.
+   * @return The object with the key "key" or null.
+   */
+  synchronized public T get(Object key) {
+    CacheEntry<T> result = map.get(key);
+    if (result != null) {
+      if (result.getValue() instanceof ISynchronizable) {
+        ISynchronizable synch = (ISynchronizable) result.getValue();
+        if (synch.isOutOfSynch()) {
+          remove(key);
+          result = null;
+        }
+      }
+    }
+    if (result != null) {
+      result.touch();
+      return result.getValue();
+    } else {
+      return null;
+    }
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.component.ISynchronizable#isOutOfSynch()
-	 */
-	public boolean isOutOfSynch() {
-		return false;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.component.ISynchronizable#isOutOfSynch()
+   */
+  public boolean isOutOfSynch() {
+    return false;
+  }
 
-	/**
-	 * Store the object "value" with the key "key" in the cache.
-	 * 
-	 * @param key
-	 *            The key to use for storing the object
-	 * @param value
-	 *            The value to put in the cache.
-	 */
-	synchronized public void put(Object key, T value) {
-		CacheEntry<T> entry = new CacheEntry<T>(key, value);
-		if (ptr >= elements.length) {
-			removeStrategy();
-		}
-		elements[ptr++] = entry;
-		map.put(key, entry);
-	}
+  /**
+   * Store the object "value" with the key "key" in the cache.
+   *
+   * @param key   The key to use for storing the object
+   * @param value The value to put in the cache.
+   */
+  synchronized public void put(Object key, T value) {
+    CacheEntry<T> entry = new CacheEntry<T>(key, value);
+    if (ptr >= elements.length) {
+      removeStrategy();
+    }
+    elements[ptr++] = entry;
+    map.put(key, entry);
+  }
 
-	/**
-	 * Remove an object from the cache.
-	 * 
-	 * @param key
-	 */
-	synchronized public void remove(Object key) {
-		CacheEntry<T> entry = map.remove(key);
-		for (int i = 0; i < ptr; i++) {
-			CacheEntry<T> current = elements[i];
-			if (current == entry) {
-				ptr--;
-				if (i < ptr) {
-					System.arraycopy(elements, i + 1, elements, i, ptr - i);
-				}
-				elements[ptr] = null;
-			}
-		}
-	}
+  /**
+   * Remove an object from the cache.
+   *
+   * @param key
+   */
+  synchronized public void remove(Object key) {
+    CacheEntry<T> entry = map.remove(key);
+    for (int i = 0; i < ptr; i++) {
+      CacheEntry<T> current = elements[i];
+      if (current == entry) {
+        ptr--;
+        if (i < ptr) {
+          System.arraycopy(elements, i + 1, elements, i, ptr - i);
+        }
+        elements[ptr] = null;
+      }
+    }
+  }
 
-	/**
-	 * Perform the "cleanup" of the cache. The "least valuable" cache entry is
-	 * removed.
-	 * 
-	 */
-	protected void removeStrategy() {
-		Arrays.sort(elements, 0, ptr);
-		--ptr;
-		CacheEntry<T> entry = elements[ptr];
-		map.remove(entry.getKey());
-		elements[ptr] = null;
-	}
+  /**
+   * Perform the "cleanup" of the cache. The "least valuable" cache entry is
+   * removed.
+   */
+  protected void removeStrategy() {
+    Arrays.sort(elements, 0, ptr);
+    --ptr;
+    CacheEntry<T> entry = elements[ptr];
+    map.remove(entry.getKey());
+    elements[ptr] = null;
+  }
 
-	/**
-	 * The actual size of the cache.
-	 * 
-	 * @return The actual size of the cache.
-	 */
-	synchronized public int size() {
-		return ptr;
-	}
+  /**
+   * The actual size of the cache.
+   *
+   * @return The actual size of the cache.
+   */
+  synchronized public int size() {
+    return ptr;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.component.ISynchronizable#synch()
-	 */
-	synchronized public void synch() {
-		for (int i = 0; i < ptr; i++) {
-			CacheEntry<T> element = elements[i];
-			if (element.getValue() instanceof ISynchronizable) {
-				((ISynchronizable) element.getValue()).synch();
-			}
-		}
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.component.ISynchronizable#synch()
+   */
+  synchronized public void synch() {
+    for (int i = 0; i < ptr; i++) {
+      CacheEntry<T> element = elements[i];
+      if (element.getValue() instanceof ISynchronizable) {
+        ((ISynchronizable) element.getValue()).synch();
+      }
+    }
+  }
 }

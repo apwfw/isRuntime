@@ -37,20 +37,20 @@ import de.intarsys.tools.converter.IConverter;
  */
 public class IPCObjectFromObjectConverter implements IConverter<Object, Object> {
 
-	public IPCObjectFromObjectConverter() {
-		super();
-	}
+  public IPCObjectFromObjectConverter() {
+    super();
+  }
 
-	public Object convert(Object source) throws ConversionException {
-		return source;
-	}
+  public Object convert(Object source) throws ConversionException {
+    return source;
+  }
 
-	public Class<?> getSourceType() {
-		return Object.class;
-	}
+  public Class<?> getSourceType() {
+    return Object.class;
+  }
 
-	public Class<?> getTargetType() {
-		return IPCObject.class;
-	}
+  public Class<?> getTargetType() {
+    return IPCObject.class;
+  }
 
 }

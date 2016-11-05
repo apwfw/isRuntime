@@ -33,15 +33,15 @@ package de.intarsys.tools.math;
  * Tool class for math related functions
  */
 public class MathTools {
-	public static boolean equalsNearly(double a, double b, double range) {
-		return Math.abs(a - b) <= range;
-	}
+  private MathTools() {
+    super();
+  }
 
-	public static boolean equalsNearly(float a, float b, float range) {
-		return Math.abs(a - b) <= range;
-	}
+  public static boolean equalsNearly(double a, double b, double range) {
+    return Math.abs(a - b) <= range;
+  }
 
-	private MathTools() {
-		super();
-	}
+  public static boolean equalsNearly(float a, float b, float range) {
+    return Math.abs(a - b) <= range;
+  }
 }

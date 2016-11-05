@@ -37,58 +37,58 @@ import java.util.List;
  */
 public class TaskSequence<R> extends AbstractFutureTask<R> {
 
-	private List<Runnable> tasks = new ArrayList<Runnable>();
+  private List<Runnable> tasks = new ArrayList<Runnable>();
 
-	private String labelPrefix;
+  private String labelPrefix;
 
-	private Runnable currentTask = null;
+  private Runnable currentTask = null;
 
-	public TaskSequence(String labelPrefix) {
-		super();
-		// setWorkTotal(0);
-		this.labelPrefix = labelPrefix;
-	}
+  public TaskSequence(String labelPrefix) {
+    super();
+    // setWorkTotal(0);
+    this.labelPrefix = labelPrefix;
+  }
 
-	public void addTask(Runnable task, int percent) {
-		tasks.add(new TaskStep(this, task, percent));
-		// setWorkTotal(getWorkTotal() + percent);
-	}
+  public void addTask(Runnable task, int percent) {
+    tasks.add(new TaskStep(this, task, percent));
+    // setWorkTotal(getWorkTotal() + percent);
+  }
 
-	@Override
-	protected R compute() throws Exception {
-		try {
-			R result = null;
-			for (Runnable task : tasks) {
-				synchronized (this) {
-					currentTask = task;
-				}
-				task.run();
-				if (isCancelled()) {
-					return null;
-				}
-			}
-			return result;
-		} finally {
-			synchronized (this) {
-				currentTask = null;
-			}
-		}
-	}
+  @Override
+  protected R compute() throws Exception {
+    try {
+      R result = null;
+      for (Runnable task : tasks) {
+        synchronized (this) {
+          currentTask = task;
+        }
+        task.run();
+        if (isCancelled()) {
+          return null;
+        }
+      }
+      return result;
+    } finally {
+      synchronized (this) {
+        currentTask = null;
+      }
+    }
+  }
 
-	protected String getLabelPrefix() {
-		return labelPrefix;
-	}
+  protected String getLabelPrefix() {
+    return labelPrefix;
+  }
 
-	protected String getLabelSuffix() {
-		Runnable tempTask;
-		synchronized (this) {
-			tempTask = currentTask;
-		}
-		return "";
-	}
+  public void setLabelPrefix(String labelPrefix) {
+    this.labelPrefix = labelPrefix;
+  }
 
-	public void setLabelPrefix(String labelPrefix) {
-		this.labelPrefix = labelPrefix;
-	}
+  protected String getLabelSuffix() {
+    Runnable tempTask;
+    synchronized (this) {
+      tempTask = currentTask;
+    }
+    return "";
+  }
 
 }

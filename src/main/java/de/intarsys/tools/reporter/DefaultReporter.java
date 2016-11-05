@@ -29,60 +29,59 @@
  */
 package de.intarsys.tools.reporter;
 
+import de.intarsys.tools.logging.LogTools;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import de.intarsys.tools.logging.LogTools;
 
 /**
  * The default reporting implementation for the Stage kernel. This one is just
  * logging to java standard logging.
- * 
  */
 public class DefaultReporter implements IReporter {
 
-	final private Logger logger;
+  final private Logger logger;
 
-	public DefaultReporter() {
-		this(LogTools.getLogger(DefaultReporter.class));
-	}
+  public DefaultReporter() {
+    this(LogTools.getLogger(DefaultReporter.class));
+  }
 
-	public DefaultReporter(Logger logger) {
-		super();
-		this.logger = logger;
-	}
+  public DefaultReporter(Logger logger) {
+    super();
+    this.logger = logger;
+  }
 
-	protected Logger getLogger() {
-		return logger;
-	}
+  protected Logger getLogger() {
+    return logger;
+  }
 
-	public void reportActivityEnd() {
-		if (getLogger().isLoggable(Level.FINEST)) {
-			getLogger().log(Level.FINEST, "end activity "); //$NON-NLS-1$
-		}
-	}
+  public void reportActivityEnd() {
+    if (getLogger().isLoggable(Level.FINEST)) {
+      getLogger().log(Level.FINEST, "end activity "); //$NON-NLS-1$
+    }
+  }
 
-	public void reportActivityStart(String activity, int style) {
-		if (getLogger().isLoggable(Level.FINEST)) {
-			getLogger().log(Level.FINEST, "start activity " + activity); //$NON-NLS-1$
-		}
-	}
+  public void reportActivityStart(String activity, int style) {
+    if (getLogger().isLoggable(Level.FINEST)) {
+      getLogger().log(Level.FINEST, "start activity " + activity); //$NON-NLS-1$
+    }
+  }
 
-	public void reportError(String title, String message, Throwable t, int style) {
-		getLogger().log(Level.SEVERE, message, t);
-	}
+  public void reportError(String title, String message, Throwable t, int style) {
+    getLogger().log(Level.SEVERE, message, t);
+  }
 
-	public void reportMessage(String title, String message, int style) {
-		getLogger().log(Level.INFO, message);
-	}
+  public void reportMessage(String title, String message, int style) {
+    getLogger().log(Level.INFO, message);
+  }
 
-	public void reportProgress(String text, int percent, int style) {
-		if (getLogger().isLoggable(Level.FINEST)) {
-			getLogger().log(Level.FINEST, text + " [" + percent + "%]"); //$NON-NLS-1$ //$NON-NLS-2$
-		}
-	}
+  public void reportProgress(String text, int percent, int style) {
+    if (getLogger().isLoggable(Level.FINEST)) {
+      getLogger().log(Level.FINEST, text + " [" + percent + "%]"); //$NON-NLS-1$ //$NON-NLS-2$
+    }
+  }
 
-	public void reportStatus(String text, int style) {
-		getLogger().log(Level.INFO, text);
-	}
+  public void reportStatus(String text, int style) {
+    getLogger().log(Level.INFO, text);
+  }
 }

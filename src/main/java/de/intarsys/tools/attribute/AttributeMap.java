@@ -39,101 +39,101 @@ import java.util.Map;
  */
 final public class AttributeMap implements IAttributeSupport {
 
-	private Object[] keys;
-	private Object[] values;
-	private int length = 0;
+  private Object[] keys;
+  private Object[] values;
+  private int length = 0;
 
-	public AttributeMap() {
-		this(4);
-	}
+  public AttributeMap() {
+    this(4);
+  }
 
-	public AttributeMap(int initialCapacity) {
-		keys = new Object[initialCapacity];
-		values = new Object[initialCapacity];
-	}
+  public AttributeMap(int initialCapacity) {
+    keys = new Object[initialCapacity];
+    values = new Object[initialCapacity];
+  }
 
-	synchronized public void clear() {
-		for (int i = 0; i < length; i++) {
-			values[i] = null;
-			keys[i] = null;
-		}
-		length = 0;
-	}
+  synchronized public void clear() {
+    for (int i = 0; i < length; i++) {
+      values[i] = null;
+      keys[i] = null;
+    }
+    length = 0;
+  }
 
-	public Object get(Object key) {
-		return getAttribute(key);
-	}
+  public Object get(Object key) {
+    return getAttribute(key);
+  }
 
-	synchronized public Object getAttribute(Object key) {
-		for (int i = 0; i < length; i++) {
-			if (keys[i].equals(key)) {
-				return values[i];
-			}
-		}
-		return null;
-	}
+  synchronized public Object getAttribute(Object key) {
+    for (int i = 0; i < length; i++) {
+      if (keys[i].equals(key)) {
+        return values[i];
+      }
+    }
+    return null;
+  }
 
-	/**
-	 * The keys used in this attribute lookup map.
-	 * <p>
-	 * !! This is not intended to be published to client code, as this would
-	 * compromise {@link IAttributeSupport} security !!
-	 * 
-	 * @return The keys used in this attribute lookup map.
-	 */
-	public Object[] getKeys() {
-		Object[] tempKeys = new Object[length];
-		System.arraycopy(keys, 0, tempKeys, 0, length);
-		return tempKeys;
-	}
+  /**
+   * The keys used in this attribute lookup map.
+   * <p>
+   * !! This is not intended to be published to client code, as this would
+   * compromise {@link IAttributeSupport} security !!
+   *
+   * @return The keys used in this attribute lookup map.
+   */
+  public Object[] getKeys() {
+    Object[] tempKeys = new Object[length];
+    System.arraycopy(keys, 0, tempKeys, 0, length);
+    return tempKeys;
+  }
 
-	public Object put(Object key, Object o) {
-		return setAttribute(key, o);
-	}
+  public Object put(Object key, Object o) {
+    return setAttribute(key, o);
+  }
 
-	public Object remove(Object key) {
-		return removeAttribute(key);
-	}
+  public Object remove(Object key) {
+    return removeAttribute(key);
+  }
 
-	synchronized public Object removeAttribute(Object key) {
-		for (int i = 0; i < length; i++) {
-			if (keys[i].equals(key)) {
-				Object oldValue = values[i];
-				length--;
-				System.arraycopy(keys, i + 1, keys, i, length - i);
-				System.arraycopy(values, i + 1, values, i, length - i);
-				values[length] = null;
-				keys[length] = null;
-				return oldValue;
-			}
-		}
-		return null;
-	}
+  synchronized public Object removeAttribute(Object key) {
+    for (int i = 0; i < length; i++) {
+      if (keys[i].equals(key)) {
+        Object oldValue = values[i];
+        length--;
+        System.arraycopy(keys, i + 1, keys, i, length - i);
+        System.arraycopy(values, i + 1, values, i, length - i);
+        values[length] = null;
+        keys[length] = null;
+        return oldValue;
+      }
+    }
+    return null;
+  }
 
-	synchronized public Object setAttribute(Object key, Object value) {
-		int i = 0;
-		// replace existing
-		while (i < length) {
-			if (keys[i].equals(key)) {
-				Object oldValue = values[i];
-				values[i] = value;
-				return oldValue;
-			}
-			i++;
-		}
-		if (i >= values.length) {
-			// expand
-			Object[] newKeys = new Object[length + 4];
-			System.arraycopy(keys, 0, newKeys, 0, length);
-			keys = newKeys;
-			Object[] newValues = new Object[length + 4];
-			System.arraycopy(values, 0, newValues, 0, length);
-			values = newValues;
-		}
-		// add new
-		values[length] = value;
-		keys[length] = key;
-		length++;
-		return null;
-	}
+  synchronized public Object setAttribute(Object key, Object value) {
+    int i = 0;
+    // replace existing
+    while (i < length) {
+      if (keys[i].equals(key)) {
+        Object oldValue = values[i];
+        values[i] = value;
+        return oldValue;
+      }
+      i++;
+    }
+    if (i >= values.length) {
+      // expand
+      Object[] newKeys = new Object[length + 4];
+      System.arraycopy(keys, 0, newKeys, 0, length);
+      keys = newKeys;
+      Object[] newValues = new Object[length + 4];
+      System.arraycopy(values, 0, newValues, 0, length);
+      values = newValues;
+    }
+    // add new
+    values[length] = value;
+    keys[length] = key;
+    length++;
+    return null;
+  }
 }

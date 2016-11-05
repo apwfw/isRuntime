@@ -32,12 +32,11 @@ package de.intarsys.tools.component;
 /**
  * This interface declares that the object must be disposed at the end of its
  * lifecycle in order to get all resources released.
- * 
  */
 public interface IDisposable {
 
-	public void dispose();
+  public void dispose();
 
-	public boolean isDisposed();
+  public boolean isDisposed();
 
 }

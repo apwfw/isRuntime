@@ -35,47 +35,46 @@ import de.intarsys.tools.functor.IArgs;
 
 /**
  * An event indicating an upcoming invocation.
- * 
  */
 public class InvokeIntercept extends Event {
-	public static final EventType ID = new EventType(
-			InvokeIntercept.class.getName());
+  public static final EventType ID = new EventType(
+      InvokeIntercept.class.getName());
 
-	final private IArgs args;
+  final private IArgs args;
 
-	final private String name;
+  final private String name;
 
-	private Object result;
+  private Object result;
 
-	public InvokeIntercept(Object receiver, String name, IArgs args) {
-		super(receiver);
-		this.name = name;
-		this.args = args;
-	}
+  public InvokeIntercept(Object receiver, String name, IArgs args) {
+    super(receiver);
+    this.name = name;
+    this.args = args;
+  }
 
-	public IArgs getArgs() {
-		return args;
-	}
+  public IArgs getArgs() {
+    return args;
+  }
 
-	@Override
-	public EventType getEventType() {
-		return ID;
-	}
+  @Override
+  public EventType getEventType() {
+    return ID;
+  }
 
-	@Override
-	public String getName() {
-		return name;
-	}
+  @Override
+  public String getName() {
+    return name;
+  }
 
-	public Object getReceiver() {
-		return getSource();
-	}
+  public Object getReceiver() {
+    return getSource();
+  }
 
-	public Object getResult() {
-		return result;
-	}
+  public Object getResult() {
+    return result;
+  }
 
-	public void setResult(Object result) {
-		this.result = result;
-	}
+  public void setResult(Object result) {
+    this.result = result;
+  }
 }

@@ -35,62 +35,59 @@ import java.util.NoSuchElementException;
 
 /**
  * Wraps an enumeration into an Iterator API.
- * 
  */
 public class EnumerationIterator<T> implements Iterator<T> {
-	private Enumeration enumeration;
+  private Enumeration enumeration;
 
-	/**
-	 * Create an Iterator over an enumeration.
-	 * 
-	 * @param e
-	 *            The enumeration to be iterated.
-	 */
-	public EnumerationIterator(Enumeration e) {
-		super();
-		setEnumeration(e);
-	}
+  /**
+   * Create an Iterator over an enumeration.
+   *
+   * @param e The enumeration to be iterated.
+   */
+  public EnumerationIterator(Enumeration e) {
+    super();
+    setEnumeration(e);
+  }
 
-	protected java.util.Enumeration getEnumeration() {
-		return enumeration;
-	}
+  protected java.util.Enumeration getEnumeration() {
+    return enumeration;
+  }
 
-	/**
-	 * Return <code>true</code> if underlying enumeration still has elements.
-	 * 
-	 * @return <code>true</code> if underlying enumeration still has elements.
-	 */
-	public boolean hasNext() {
-		if (getEnumeration() == null) {
-			return false;
-		}
-		return getEnumeration().hasMoreElements();
-	}
+  private void setEnumeration(java.util.Enumeration newEnumeration) {
+    enumeration = newEnumeration;
+  }
 
-	/**
-	 * Return the next element from the underlying enumeration.
-	 * 
-	 * @return the next element from the underlying enumeration.
-	 * 
-	 * @throws NoSuchElementException
-	 */
-	public T next() {
-		if (getEnumeration() == null) {
-			throw new NoSuchElementException("enumeration not available");
-		}
-		return (T) getEnumeration().nextElement();
-	}
+  /**
+   * Return <code>true</code> if underlying enumeration still has elements.
+   *
+   * @return <code>true</code> if underlying enumeration still has elements.
+   */
+  public boolean hasNext() {
+    if (getEnumeration() == null) {
+      return false;
+    }
+    return getEnumeration().hasMoreElements();
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.Iterator#remove()
-	 */
-	public void remove() {
-		throw new UnsupportedOperationException();
-	}
+  /**
+   * Return the next element from the underlying enumeration.
+   *
+   * @return the next element from the underlying enumeration.
+   * @throws NoSuchElementException
+   */
+  public T next() {
+    if (getEnumeration() == null) {
+      throw new NoSuchElementException("enumeration not available");
+    }
+    return (T) getEnumeration().nextElement();
+  }
 
-	private void setEnumeration(java.util.Enumeration newEnumeration) {
-		enumeration = newEnumeration;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.util.Iterator#remove()
+   */
+  public void remove() {
+    throw new UnsupportedOperationException();
+  }
 }

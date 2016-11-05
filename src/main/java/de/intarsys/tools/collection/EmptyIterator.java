@@ -34,46 +34,43 @@ import java.util.NoSuchElementException;
 
 /**
  * An Iterator over an empty collection.
- * 
  */
 public class EmptyIterator implements Iterator {
-	// 
-	public static final Iterator UNIQUE = new EmptyIterator();
+  //
+  public static final Iterator UNIQUE = new EmptyIterator();
 
-	/**
-	 * Create an EmptyIterator.
-	 */
-	protected EmptyIterator() {
-		super();
-	}
+  /**
+   * Create an EmptyIterator.
+   */
+  protected EmptyIterator() {
+    super();
+  }
 
-	/**
-	 * Return always false as an emtpy iterator has no elements.
-	 * 
-	 * @return Return always false as an emtpy iterator has no elements.
-	 */
-	public boolean hasNext() {
-		return false;
-	}
+  /**
+   * Return always false as an emtpy iterator has no elements.
+   *
+   * @return Return always false as an emtpy iterator has no elements.
+   */
+  public boolean hasNext() {
+    return false;
+  }
 
-	/**
-	 * Throw always exception, as an empty enumeration has no elements.
-	 * 
-	 * @return never
-	 * 
-	 * @throws NoSuchElementException
-	 *             Is thrown always
-	 */
-	public java.lang.Object next() {
-		throw new NoSuchElementException("no element available");
-	}
+  /**
+   * Throw always exception, as an empty enumeration has no elements.
+   *
+   * @return never
+   * @throws NoSuchElementException Is thrown always
+   */
+  public java.lang.Object next() {
+    throw new NoSuchElementException("no element available");
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.Iterator#remove()
-	 */
-	public void remove() {
-		throw new UnsupportedOperationException();
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.util.Iterator#remove()
+   */
+  public void remove() {
+    throw new UnsupportedOperationException();
+  }
 }

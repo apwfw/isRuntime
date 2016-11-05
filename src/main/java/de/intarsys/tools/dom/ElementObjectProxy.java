@@ -5,11 +5,10 @@
  */
 package de.intarsys.tools.dom;
 
-import org.w3c.dom.Element;
-
 import de.intarsys.tools.exception.TunnelingException;
 import de.intarsys.tools.proxy.IProxy;
 import de.intarsys.tools.reflect.ObjectCreationException;
+import org.w3c.dom.Element;
 
 /**
  * A generic implementation to ease implementation of "deferred" objects
@@ -23,89 +22,84 @@ import de.intarsys.tools.reflect.ObjectCreationException;
  * {@link ElementObjectProxy} to inherit its lazyness with regard to hosting an
  * object to be realized. The concrete proxy class name may be declared in an
  * another element attribute than "class".
- * 
  */
 public class ElementObjectProxy implements IElementConfigurable, IProxy {
 
-	/**
-	 * The link to the definition element in the extension
-	 */
-	private Element element;
+  final private Class proxyClass;
+  final private String proxyClassAttribute;
+  final private ClassLoader classLoader;
+  /**
+   * The link to the definition element in the extension
+   */
+  private Element element;
+  private Object realized;
 
-	private Object realized;
+  public ElementObjectProxy() {
+    // reflective use
+    // extension and element are set via "configure"
+    proxyClass = Object.class;
+    proxyClassAttribute = "class";
+    classLoader = getClass().getClassLoader();
+  }
 
-	final private Class proxyClass;
+  /**
+   *
+   */
+  public ElementObjectProxy(Class pProxyClass, Element pElement,
+                            ClassLoader pClassLoader) {
+    element = pElement;
+    proxyClass = pProxyClass;
+    classLoader = pClassLoader;
+    proxyClassAttribute = "class";
+  }
 
-	final private String proxyClassAttribute;
+  public ElementObjectProxy(Class pProxyClass, Element pElement,
+                            String classAttribute, ClassLoader pClassLoader) {
+    element = pElement;
+    proxyClass = pProxyClass;
+    classLoader = pClassLoader;
+    proxyClassAttribute = classAttribute;
+  }
 
-	final private ClassLoader classLoader;
+  protected Object basicGetRealized() {
+    return realized;
+  }
 
-	public ElementObjectProxy() {
-		// reflective use
-		// extension and element are set via "configure"
-		proxyClass = Object.class;
-		proxyClassAttribute = "class";
-		classLoader = getClass().getClassLoader();
-	}
+  public void configure(Element pElement) {
+    this.element = pElement;
+  }
 
-	/**
-	 * 
-	 */
-	public ElementObjectProxy(Class pProxyClass, Element pElement,
-			ClassLoader pClassLoader) {
-		element = pElement;
-		proxyClass = pProxyClass;
-		classLoader = pClassLoader;
-		proxyClassAttribute = "class";
-	}
+  public ClassLoader getClassLoader() {
+    return classLoader;
+  }
 
-	public ElementObjectProxy(Class pProxyClass, Element pElement,
-			String classAttribute, ClassLoader pClassLoader) {
-		element = pElement;
-		proxyClass = pProxyClass;
-		classLoader = pClassLoader;
-		proxyClassAttribute = classAttribute;
-	}
+  public Element getElement() {
+    return element;
+  }
 
-	protected Object basicGetRealized() {
-		return realized;
-	}
+  public Class getProxyClass() {
+    return proxyClass;
+  }
 
-	public void configure(Element pElement) {
-		this.element = pElement;
-	}
+  public String getProxyClassAttribute() {
+    return proxyClassAttribute;
+  }
 
-	public ClassLoader getClassLoader() {
-		return classLoader;
-	}
+  synchronized public Object getRealized() {
+    if (realized == null) {
+      try {
+        realized = realize();
+      } catch (ObjectCreationException e) {
+        throw new TunnelingException(e);
+      }
+    }
+    return realized;
+  }
 
-	public Element getElement() {
-		return element;
-	}
-
-	public Class getProxyClass() {
-		return proxyClass;
-	}
-
-	public String getProxyClassAttribute() {
-		return proxyClassAttribute;
-	}
-
-	synchronized public Object getRealized() {
-		if (realized == null) {
-			try {
-				realized = realize();
-			} catch (ObjectCreationException e) {
-				throw new TunnelingException(e);
-			}
-		}
-		return realized;
-	}
-
-	protected Object realize() throws ObjectCreationException {
-		Object object = ElementTools.createObject(getElement(),
-				getProxyClassAttribute(), getProxyClass(), getClassLoader());
-		return object;
-	}
+  protected Object realize() throws ObjectCreationException {
+    Object object = ElementTools.createObject(getElement(),
+        getProxyClassAttribute(), getProxyClass(), getClassLoader());
+    return object;
+  }
 
 }

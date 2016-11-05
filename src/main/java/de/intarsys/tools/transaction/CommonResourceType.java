@@ -33,21 +33,21 @@ import java.io.Serializable;
 
 /**
  * A common implementation for the {@link IResourceType}.
- * 
+ *
  * @param <T>
  */
 abstract public class CommonResourceType<T extends IResource> implements
-		IResourceType<T>, Serializable {
+    IResourceType<T>, Serializable {
 
-	abstract public T createResource(T parent) throws ResourceException;
+  abstract public T createResource(T parent) throws ResourceException;
 
-	public T getResource() throws ResourceException {
-		// shortcut, should be forwarded someday to a resource lookup strategy
-		return getResource(false);
-	}
+  public T getResource() throws ResourceException {
+    // shortcut, should be forwarded someday to a resource lookup strategy
+    return getResource(false);
+  }
 
-	public T getResource(boolean create) throws ResourceException {
-		// shortcut, should be forwarded someday to a resource lookup strategy
-		return TransactionTools.getResource(this, create);
-	}
+  public T getResource(boolean create) throws ResourceException {
+    // shortcut, should be forwarded someday to a resource lookup strategy
+    return TransactionTools.getResource(this, create);
+  }
 }

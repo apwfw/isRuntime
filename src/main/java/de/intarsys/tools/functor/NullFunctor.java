@@ -34,12 +34,12 @@ package de.intarsys.tools.functor;
  * A common utility {@link IFunctor} doing just nothing.
  */
 public class NullFunctor extends CommonFunctor {
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.functor.IFunctor#perform(de.intarsys.tools.functor.IFunctorCall)
-	 */
-	public Object perform(IFunctorCall call) throws FunctorInvocationException {
-		return null;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.functor.IFunctor#perform(de.intarsys.tools.functor.IFunctorCall)
+   */
+  public Object perform(IFunctorCall call) throws FunctorInvocationException {
+    return null;
+  }
 }

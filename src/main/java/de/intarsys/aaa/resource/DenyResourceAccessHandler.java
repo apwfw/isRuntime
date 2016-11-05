@@ -33,13 +33,12 @@ import java.io.Serializable;
 
 /**
  * An {@link IResourceAccessHandler} that denies every access.
- * 
  */
 public class DenyResourceAccessHandler implements IResourceAccessHandler,
-		Serializable {
+    Serializable {
 
-	public boolean isAccessGranted(IResource resource) {
-		return false;
-	}
+  public boolean isAccessGranted(IResource resource) {
+    return false;
+  }
 
 }

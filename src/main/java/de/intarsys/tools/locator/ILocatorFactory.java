@@ -35,17 +35,15 @@ import java.io.IOException;
  * A factory for {@link de.intarsys.tools.locator.ILocator} objects.
  */
 public interface ILocatorFactory {
-	/**
-	 * Create a {@link de.intarsys.tools.locator.ILocator} object.
-	 * 
-	 * <p>
-	 * <code>path</code> may for example define a file in the file system.
-	 * </p>
-	 * 
-	 * @param location
-	 *            A location definition.
-	 * 
-	 * @return The ILocator object created from the <code>location</code>.
-	 */
-	public ILocator createLocator(String location) throws IOException;
+  /**
+   * Create a {@link de.intarsys.tools.locator.ILocator} object.
+   * <p>
+   * <p>
+   * <code>path</code> may for example define a file in the file system.
+   * </p>
+   *
+   * @param location A location definition.
+   * @return The ILocator object created from the <code>location</code>.
+   */
+  public ILocator createLocator(String location) throws IOException;
 }

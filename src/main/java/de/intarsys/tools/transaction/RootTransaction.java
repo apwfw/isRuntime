@@ -30,15 +30,15 @@
 package de.intarsys.tools.transaction;
 
 /**
- * 
+ *
  */
 public class RootTransaction extends Transaction {
 
-	public RootTransaction() {
-		super();
-	}
+  public RootTransaction() {
+    super();
+  }
 
-	public ITransaction getParent() {
-		return null;
-	}
+  public ITransaction getParent() {
+    return null;
+  }
 }

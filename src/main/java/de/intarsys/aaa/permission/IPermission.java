@@ -34,7 +34,6 @@ import de.intarsys.aaa.resource.IResourceAccessHandler;
 
 /**
  * An iconified permission to access an {@link IResource}.
- * 
  */
 public interface IPermission extends IResourceAccessHandler {
 }

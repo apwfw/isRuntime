@@ -29,117 +29,116 @@
  */
 package de.intarsys.tools.file;
 
+import de.intarsys.tools.string.StringTools;
+
 import java.io.File;
 import java.io.IOException;
 
-import de.intarsys.tools.string.StringTools;
-
 /**
  * A utility class to simplify the task of loading files and / or directories.
- * 
  */
 abstract public class Loader {
-	public static final String PATH_SEPARATOR = "/"; //$NON-NLS-1$
+  public static final String PATH_SEPARATOR = "/"; //$NON-NLS-1$
 
-	public static final String DEFAULT_LANGUAGE = "en"; //$NON-NLS-1$
+  public static final String DEFAULT_LANGUAGE = "en"; //$NON-NLS-1$
 
-	protected static final String PROP_USERLANGUAGE = "user.language"; //$NON-NLS-1$
+  protected static final String PROP_USERLANGUAGE = "user.language"; //$NON-NLS-1$
 
-	public Loader() {
-	}
+  public Loader() {
+  }
 
-	abstract protected boolean basicLoadFile(File file, boolean readOnly,
-			String path) throws IOException;
+  abstract protected boolean basicLoadFile(File file, boolean readOnly,
+                                           String path) throws IOException;
 
-	public boolean load(File file, boolean readOnly, boolean recursive)
-			throws IOException {
-		if (file == null || !file.exists()) {
-			return false;
-		}
-		return basicLoad(file, readOnly, recursive, StringTools.EMPTY);
-	}
+  public boolean load(File file, boolean readOnly, boolean recursive)
+      throws IOException {
+    if (file == null || !file.exists()) {
+      return false;
+    }
+    return basicLoad(file, readOnly, recursive, StringTools.EMPTY);
+  }
 
-	protected boolean basicLoad(File file, boolean readOnly, boolean recursive,
-			String path) throws IOException {
-		if (file.isDirectory()) {
-			return basicLoadDirectory(file, readOnly, recursive, path);
-		} else {
-			return basicLoadFile(file, readOnly, path);
-		}
-	}
+  protected boolean basicLoad(File file, boolean readOnly, boolean recursive,
+                              String path) throws IOException {
+    if (file.isDirectory()) {
+      return basicLoadDirectory(file, readOnly, recursive, path);
+    } else {
+      return basicLoadFile(file, readOnly, path);
+    }
+  }
 
-	protected boolean basicLoadDirectory(File file, boolean readOnly, boolean recursive, String path) throws IOException {
-		File[] files = file.listFiles();
-		for (int i = 0; i < files.length; i++) {
-			File childFile = files[i];
-			if (recursive) {
-				String newPath = path;
-				if (childFile.isDirectory()) {
-					newPath = path + childFile.getName() + PATH_SEPARATOR;
-				}
-				basicLoad(childFile, readOnly, recursive, newPath);
-			} else {
-				if (childFile.isFile()) {
-					basicLoadFile(childFile, readOnly, path);
-				}
-			}
-		}
-		return true;
-	}
+  protected boolean basicLoadDirectory(File file, boolean readOnly, boolean recursive, String path) throws IOException {
+    File[] files = file.listFiles();
+    for (int i = 0; i < files.length; i++) {
+      File childFile = files[i];
+      if (recursive) {
+        String newPath = path;
+        if (childFile.isDirectory()) {
+          newPath = path + childFile.getName() + PATH_SEPARATOR;
+        }
+        basicLoad(childFile, readOnly, recursive, newPath);
+      } else {
+        if (childFile.isFile()) {
+          basicLoadFile(childFile, readOnly, path);
+        }
+      }
+    }
+    return true;
+  }
 
-	public boolean load(File parent, String filename, boolean readOnly,
-			boolean recursive) throws IOException {
-		if (filename == null) {
-			return false;
-		}
-		File file = new File(filename);
-		if (!file.isAbsolute()) {
-			file = new File(parent, filename);
-		}
-		return load(file, readOnly, recursive);
-	}
+  public boolean load(File parent, String filename, boolean readOnly,
+                      boolean recursive) throws IOException {
+    if (filename == null) {
+      return false;
+    }
+    File file = new File(filename);
+    if (!file.isAbsolute()) {
+      file = new File(parent, filename);
+    }
+    return load(file, readOnly, recursive);
+  }
 
-	public boolean loadNLS(File file, boolean readOnly, boolean recursive)
-			throws IOException {
-		if (file == null || !file.exists()) {
-			return false;
-		}
-		if (file.isDirectory()) {
-			String language = System.getProperty(PROP_USERLANGUAGE);
-			File languageDir = new File(file, language);
-			if (load(languageDir, readOnly, recursive)) {
-				return true;
-			}
-			File defaultDir = new File(file, DEFAULT_LANGUAGE);
-			return load(defaultDir, readOnly, recursive);
-		} else {
-			File parent = file.getParentFile();
-			if (parent == null) {
-				return false;
-			}
-			String basename = FileTools.getBaseName(file);
-			String extension = FileTools.getExtension(file);
-			String language = System.getProperty(PROP_USERLANGUAGE);
-			File languageFile = new File(parent, basename + "_" + language //$NON-NLS-1$
-					+ "." + extension); //$NON-NLS-1$
-			if (file.exists()
-					&& basicLoadFile(languageFile, readOnly, StringTools.EMPTY)) {
-				return true;
-			}
-			return basicLoadFile(file, readOnly, StringTools.EMPTY);
-		}
-	}
+  public boolean loadNLS(File file, boolean readOnly, boolean recursive)
+      throws IOException {
+    if (file == null || !file.exists()) {
+      return false;
+    }
+    if (file.isDirectory()) {
+      String language = System.getProperty(PROP_USERLANGUAGE);
+      File languageDir = new File(file, language);
+      if (load(languageDir, readOnly, recursive)) {
+        return true;
+      }
+      File defaultDir = new File(file, DEFAULT_LANGUAGE);
+      return load(defaultDir, readOnly, recursive);
+    } else {
+      File parent = file.getParentFile();
+      if (parent == null) {
+        return false;
+      }
+      String basename = FileTools.getBaseName(file);
+      String extension = FileTools.getExtension(file);
+      String language = System.getProperty(PROP_USERLANGUAGE);
+      File languageFile = new File(parent, basename + "_" + language //$NON-NLS-1$
+          + "." + extension); //$NON-NLS-1$
+      if (file.exists()
+          && basicLoadFile(languageFile, readOnly, StringTools.EMPTY)) {
+        return true;
+      }
+      return basicLoadFile(file, readOnly, StringTools.EMPTY);
+    }
+  }
 
-	public boolean loadNLS(File parent, String filename, boolean readOnly,
-			boolean recursive) throws IOException {
-		if (filename == null) {
-			return false;
-		}
-		File file = new File(filename);
-		if (!file.isAbsolute()) {
-			file = new File(parent, filename);
-		}
-		return loadNLS(file, readOnly, recursive);
-	}
+  public boolean loadNLS(File parent, String filename, boolean readOnly,
+                         boolean recursive) throws IOException {
+    if (filename == null) {
+      return false;
+    }
+    File file = new File(filename);
+    if (!file.isAbsolute()) {
+      file = new File(parent, filename);
+    }
+    return loadNLS(file, readOnly, recursive);
+  }
 
 }

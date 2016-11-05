@@ -34,29 +34,29 @@ package de.intarsys.tools.objectmodel;
  */
 public interface IMember {
 
-	/**
-	 * The associated {@link IClass} of this member.
-	 * 
-	 * @return The associated {@link IClass} of this member.
-	 */
-	public IClass getDeclaringClass();
+  /**
+   * The associated {@link IClass} of this member.
+   *
+   * @return The associated {@link IClass} of this member.
+   */
+  public IClass getDeclaringClass();
 
-	/**
-	 * The name of the {@link IMember}.
-	 * 
-	 * @return The name of the {@link IMember}.
-	 */
-	public String getName();
+  /**
+   * The name of the {@link IMember}.
+   *
+   * @return The name of the {@link IMember}.
+   */
+  public String getName();
 
-	/**
-	 * <code>true</code> if the requested modifier tag is declared with the
-	 * member.
-	 * <p>
-	 * The semantics of modifiers is up to the implementor.
-	 * 
-	 * @param modifier
-	 * @return <code>true</code> if the requested modifier tag is declared
-	 *         with the member.
-	 */
-	public boolean hasModifier(String modifier);
+  /**
+   * <code>true</code> if the requested modifier tag is declared with the
+   * member.
+   * <p>
+   * The semantics of modifiers is up to the implementor.
+   *
+   * @param modifier
+   * @return <code>true</code> if the requested modifier tag is declared
+   * with the member.
+   */
+  public boolean hasModifier(String modifier);
 }

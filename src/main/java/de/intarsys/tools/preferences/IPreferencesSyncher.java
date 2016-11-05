@@ -31,17 +31,16 @@ package de.intarsys.tools.preferences;
 
 /**
  * An object that can be synched with its preferences.
- * 
  */
 public interface IPreferencesSyncher {
 
-	/**
-	 * Load the object state from the {@link IPreferences}.
-	 */
-	public void preferencesRestore();
+  /**
+   * Load the object state from the {@link IPreferences}.
+   */
+  public void preferencesRestore();
 
-	/**
-	 * Save the object state to the {@link IPreferences}.
-	 */
-	public void preferencesStore();
+  /**
+   * Save the object state to the {@link IPreferences}.
+   */
+  public void preferencesStore();
 }

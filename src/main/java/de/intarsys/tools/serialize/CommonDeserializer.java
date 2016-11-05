@@ -5,15 +5,15 @@ package de.intarsys.tools.serialize;
  */
 abstract public class CommonDeserializer implements IDeserializer {
 
-	final private SerializationContext context;
+  final private SerializationContext context;
 
-	public CommonDeserializer(SerializationContext context) {
-		super();
-		this.context = context;
-	}
+  public CommonDeserializer(SerializationContext context) {
+    super();
+    this.context = context;
+  }
 
-	public SerializationContext getContext() {
-		return context;
-	}
+  public SerializationContext getContext() {
+    return context;
+  }
 
 }

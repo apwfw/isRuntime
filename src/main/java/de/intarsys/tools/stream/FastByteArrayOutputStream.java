@@ -32,63 +32,67 @@ package de.intarsys.tools.stream;
 import java.io.OutputStream;
 
 /**
- * 
+ *
  */
 public class FastByteArrayOutputStream extends OutputStream {
-	/** The buffer where data is stored. */
-	protected byte[] buf;
+  /**
+   * The buffer where data is stored.
+   */
+  protected byte[] buf;
 
-	/** The number of valid bytes in the buffer. */
-	protected int count;
+  /**
+   * The number of valid bytes in the buffer.
+   */
+  protected int count;
 
-	/**
-	 * 
-	 */
-	public FastByteArrayOutputStream() {
-		this(32);
-	}
+  /**
+   *
+   */
+  public FastByteArrayOutputStream() {
+    this(32);
+  }
 
-	public FastByteArrayOutputStream(int size) {
-		buf = new byte[size];
-	}
+  public FastByteArrayOutputStream(int size) {
+    buf = new byte[size];
+  }
 
-	public byte[] getBytes() {
-		return buf;
-	}
+  public byte[] getBytes() {
+    return buf;
+  }
 
-	public void reset() {
-		count = 0;
-	}
+  public void reset() {
+    count = 0;
+  }
 
-	public int size() {
-		return count;
-	}
+  public int size() {
+    return count;
+  }
 
-	public byte[] toByteArray() {
-		byte[] result = new byte[count];
-		System.arraycopy(buf, 0, result, 0, count);
-		return result;
-	}
+  public byte[] toByteArray() {
+    byte[] result = new byte[count];
+    System.arraycopy(buf, 0, result, 0, count);
+    return result;
+  }
 
-	@Override
-	public void write(byte[] b, int off, int len) {
-		int newcount = count + len;
-		if (newcount > buf.length) {
-			byte[] newbuf = new byte[Math.max(buf.length << 1, newcount)];
-			System.arraycopy(buf, 0, newbuf, 0, buf.length);
-			buf = newbuf;
-		}
-		System.arraycopy(b, off, buf, count, len);
-		count = newcount;
-	}
+  @Override
+  public void write(byte[] b, int off, int len) {
+    int newcount = count + len;
+    if (newcount > buf.length) {
+      byte[] newbuf = new byte[Math.max(buf.length << 1, newcount)];
+      System.arraycopy(buf, 0, newbuf, 0, buf.length);
+      buf = newbuf;
+    }
+    System.arraycopy(b, off, buf, count, len);
+    count = newcount;
+  }
 
-	@Override
-	public void write(int b) {
-		if (count >= buf.length) {
-			byte[] newbuf = new byte[Math.max(buf.length << 1, 1)];
-			System.arraycopy(buf, 0, newbuf, 0, buf.length);
-			buf = newbuf;
-		}
-		buf[count++] = (byte) b;
-	}
+  @Override
+  public void write(int b) {
+    if (count >= buf.length) {
+      byte[] newbuf = new byte[Math.max(buf.length << 1, 1)];
+      System.arraycopy(buf, 0, newbuf, 0, buf.length);
+      buf = newbuf;
+    }
+    buf[count++] = (byte) b;
+  }
 }

@@ -33,66 +33,66 @@ import java.util.EventObject;
 
 /**
  * Abstract superclass for event implementations.
- * 
  */
 public class Event extends EventObject {
 
-	public static final Object ID_ALL = new Object();
+  public static final Object ID_ALL = new Object();
 
-	public static final EventType ID = new EventType("Event");
+  public static final EventType ID = new EventType("Event");
 
-	/** Flag if the event is already handled. */
-	protected boolean consumed = false;
+  /**
+   * Flag if the event is already handled.
+   */
+  protected boolean consumed = false;
 
-	/**
-	 * Flag if execution of the action that is announced by the event is
-	 * interrupted by one of the listeners.
-	 */
-	protected boolean veto = false;
+  /**
+   * Flag if execution of the action that is announced by the event is
+   * interrupted by one of the listeners.
+   */
+  protected boolean veto = false;
 
-	/**
-	 * Create a new event object.
-	 * 
-	 * @param source
-	 *            The object that created the event.
-	 */
-	public Event(Object source) {
-		super(source);
-	}
+  /**
+   * Create a new event object.
+   *
+   * @param source The object that created the event.
+   */
+  public Event(Object source) {
+    super(source);
+  }
 
-	public void consume() {
-		consumed = true;
-	}
+  public void consume() {
+    consumed = true;
+  }
 
-	public EventType getEventType() {
-		return ID;
-	}
+  public EventType getEventType() {
+    return ID;
+  }
 
-	public String getName() {
-		return getEventType().getName();
-	}
+  public String getName() {
+    return getEventType().getName();
+  }
 
-	public boolean getRc() {
-		return !isVetoed();
-	}
+  public boolean getRc() {
+    return !isVetoed();
+  }
 
-	public boolean isConsumed() {
-		return consumed;
-	}
+  public void setRc(boolean value) {
+    setVeto(!value);
+  }
 
-	public boolean isVetoed() {
-		return veto;
-	}
+  public boolean isConsumed() {
+    return consumed;
+  }
 
-	public void setRc(boolean value) {
-		setVeto(!value);
-	}
+  public boolean isVetoed() {
+    return veto;
+  }
 
-	public void setVeto(boolean value) {
-		veto = value;
-	}
+  public void setVeto(boolean value) {
+    veto = value;
+  }
 
-	public void veto() {
-		veto = true;
-	}
+  public void veto() {
+    veto = true;
+  }
 }

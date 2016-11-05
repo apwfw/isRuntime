@@ -36,12 +36,12 @@ import java.util.List;
  */
 public interface IBeanContainer {
 
-	public <T> T lookupBean(String id, Class<T> expectedClass);
+  public <T> T lookupBean(String id, Class<T> expectedClass);
 
-	public <T> List<T> lookupBeans(Class<T> expectedClass);
+  public <T> List<T> lookupBeans(Class<T> expectedClass);
 
-	public void registerBean(String id, Object object);
+  public void registerBean(String id, Object object);
 
-	public void unregisterBean(String id);
+  public void unregisterBean(String id);
 
 }

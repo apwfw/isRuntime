@@ -31,17 +31,16 @@ package de.intarsys.tools.digest;
 
 /**
  * A VM singleton for {@link IDigestEnvironment}.
- * 
  */
 public class DigestEnvironment {
 
-	private static IDigestEnvironment ACTIVE = new StandardDigestEnvironment();
+  private static IDigestEnvironment ACTIVE = new StandardDigestEnvironment();
 
-	public static IDigestEnvironment get() {
-		return ACTIVE;
-	}
+  public static IDigestEnvironment get() {
+    return ACTIVE;
+  }
 
-	public static void set(IDigestEnvironment active) {
-		ACTIVE = active;
-	}
+  public static void set(IDigestEnvironment active) {
+    ACTIVE = active;
+  }
 }

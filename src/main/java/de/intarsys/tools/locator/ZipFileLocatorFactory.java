@@ -5,7 +5,7 @@ import java.io.InputStream;
 
 /**
  * ! not yet functional !
- * 
+ * <p>
  * Locate resources contained within a zip file.
  * <p>
  * Full syntax <br>
@@ -17,19 +17,19 @@ import java.io.InputStream;
  */
 public class ZipFileLocatorFactory extends CommonLocatorFactory {
 
-	public ILocator createLocator(String location) throws IOException {
-		int pos = location.lastIndexOf('#');
-		String zipLocation;
-		String path;
-		if (pos >= 0) {
-			zipLocation = location.substring(0, pos);
-			path = location.substring(pos + 1);
-		} else {
-			zipLocation = location;
-			path = "";
-		}
-		ILocator zipLocator = LocatorFactory.get().createLocator(zipLocation);
-		return new ZipFileLocator(zipLocator, path);
-	}
+  public ILocator createLocator(String location) throws IOException {
+    int pos = location.lastIndexOf('#');
+    String zipLocation;
+    String path;
+    if (pos >= 0) {
+      zipLocation = location.substring(0, pos);
+      path = location.substring(pos + 1);
+    } else {
+      zipLocation = location;
+      path = "";
+    }
+    ILocator zipLocator = LocatorFactory.get().createLocator(zipLocation);
+    return new ZipFileLocator(zipLocator, path);
+  }
 
 }

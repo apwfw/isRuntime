@@ -39,86 +39,85 @@ import java.awt.geom.Rectangle2D;
  * A shape that can be transformed with lazy access to the transformed shape.
  * <p>
  * baseShape -> transform -> shape
- * 
  */
 abstract public class TransformedShape implements Shape, IShapeWrapper,
-		Cloneable {
+    Cloneable {
 
-	protected static final AffineTransform IDENTITY = new AffineTransform();
+  protected static final AffineTransform IDENTITY = new AffineTransform();
 
-	final private Shape baseShape;
+  final private Shape baseShape;
 
-	private Shape resultShape;
+  private Shape resultShape;
 
-	protected TransformedShape(Shape shape) {
-		this.baseShape = shape;
-		this.resultShape = null;
-	}
+  protected TransformedShape(Shape shape) {
+    this.baseShape = shape;
+    this.resultShape = null;
+  }
 
-	protected TransformedShape(TransformedShape shape) {
-		this.baseShape = shape.baseShape;
-		this.resultShape = shape.resultShape;
-	}
+  protected TransformedShape(TransformedShape shape) {
+    this.baseShape = shape.baseShape;
+    this.resultShape = shape.resultShape;
+  }
 
-	abstract protected Shape apply();
+  abstract protected Shape apply();
 
-	@Override
-	abstract public Object clone();
+  @Override
+  abstract public Object clone();
 
-	public boolean contains(double x, double y) {
-		return getShape().contains(x, y);
-	}
+  public boolean contains(double x, double y) {
+    return getShape().contains(x, y);
+  }
 
-	public boolean contains(double x, double y, double w, double h) {
-		return getShape().contains(x, y, w, h);
-	}
+  public boolean contains(double x, double y, double w, double h) {
+    return getShape().contains(x, y, w, h);
+  }
 
-	public boolean contains(Point2D p) {
-		return getShape().contains(p);
-	}
+  public boolean contains(Point2D p) {
+    return getShape().contains(p);
+  }
 
-	public boolean contains(Rectangle2D r) {
-		return getShape().contains(r);
-	}
+  public boolean contains(Rectangle2D r) {
+    return getShape().contains(r);
+  }
 
-	public Shape getBaseShape() {
-		return baseShape;
-	}
+  public Shape getBaseShape() {
+    return baseShape;
+  }
 
-	public java.awt.Rectangle getBounds() {
-		return getShape().getBounds();
-	}
+  public java.awt.Rectangle getBounds() {
+    return getShape().getBounds();
+  }
 
-	public Rectangle2D getBounds2D() {
-		return getShape().getBounds2D();
-	}
+  public Rectangle2D getBounds2D() {
+    return getShape().getBounds2D();
+  }
 
-	public PathIterator getPathIterator(AffineTransform at) {
-		return getShape().getPathIterator(at);
-	}
+  public PathIterator getPathIterator(AffineTransform at) {
+    return getShape().getPathIterator(at);
+  }
 
-	public PathIterator getPathIterator(AffineTransform at, double flatness) {
-		return getShape().getPathIterator(at, flatness);
-	}
+  public PathIterator getPathIterator(AffineTransform at, double flatness) {
+    return getShape().getPathIterator(at, flatness);
+  }
 
-	public Shape getShape() {
-		if (resultShape == null) {
-			resultShape = apply();
-		}
-		return resultShape;
-	}
+  public Shape getShape() {
+    if (resultShape == null) {
+      resultShape = apply();
+    }
+    return resultShape;
+  }
 
-	abstract public AffineTransform getTransform();
+  abstract public AffineTransform getTransform();
 
-	public boolean intersects(double x, double y, double w, double h) {
-		return getShape().intersects(x, y, w, h);
-	}
+  public boolean intersects(double x, double y, double w, double h) {
+    return getShape().intersects(x, y, w, h);
+  }
 
-	public boolean intersects(Rectangle2D r) {
-		return getShape().intersects(r);
-	}
+  public boolean intersects(Rectangle2D r) {
+    return getShape().intersects(r);
+  }
 
-	public void invalidate() {
-		resultShape = null;
-	}
+  public void invalidate() {
+    resultShape = null;
+  }
 }

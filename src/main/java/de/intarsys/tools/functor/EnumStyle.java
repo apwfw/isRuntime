@@ -41,35 +41,35 @@ import de.intarsys.tools.enumeration.EnumMeta;
  */
 public class EnumStyle extends EnumItem {
 
-	public static final String ARG_STYLE = "style";
+  public static final String ARG_STYLE = "style";
 
-	/**
-	 * The meta data for the enumeration.
-	 */
-	final public static EnumMeta META = getMeta(EnumStyle.class);
+  /**
+   * The meta data for the enumeration.
+   */
+  final public static EnumMeta META = getMeta(EnumStyle.class);
 
-	public static final EnumStyle LITERAL = new EnumStyle("literal");
+  public static final EnumStyle LITERAL = new EnumStyle("literal");
 
-	public static final EnumStyle REFERENCE = new EnumStyle("reference");
+  public static final EnumStyle REFERENCE = new EnumStyle("reference");
 
-	static {
-		LITERAL.setDefault();
-	}
+  static {
+    LITERAL.setDefault();
+  }
 
-	public static EnumStyle get(IArgs args) {
-		EnumStyle result = (EnumStyle) ArgTools.getEnumItem(args,
-				EnumStyle.META, ARG_STYLE);
-		if (result == null) {
-			result = (EnumStyle) EnumStyle.META.getDefault();
-		}
-		return result;
-	}
+  /**
+   *
+   */
+  public EnumStyle(String id) {
+    super(id);
+  }
 
-	/**
-	 * 
-	 */
-	public EnumStyle(String id) {
-		super(id);
-	}
+  public static EnumStyle get(IArgs args) {
+    EnumStyle result = (EnumStyle) ArgTools.getEnumItem(args,
+        EnumStyle.META, ARG_STYLE);
+    if (result == null) {
+      result = (EnumStyle) EnumStyle.META.getDefault();
+    }
+    return result;
+  }
 
 }

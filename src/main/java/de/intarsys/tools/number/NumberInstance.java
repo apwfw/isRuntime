@@ -29,136 +29,131 @@
  */
 package de.intarsys.tools.number;
 
+import de.intarsys.tools.collection.SingleObjectIterator;
+
 import java.util.Collection;
 import java.util.Iterator;
 
-import de.intarsys.tools.collection.SingleObjectIterator;
-
 /**
  * An implementation of NumberWrapper that represents a single number object.
- * 
  */
 public class NumberInstance extends NumberWrapper {
-	private Number n;
+  private Number n;
 
-	/**
-	 * NumberInstance constructor for double.
-	 * 
-	 * @param i
-	 *            A primitive double to be wrapped
-	 */
-	public NumberInstance(double i) {
-		super();
-		n = new Double(i);
-	}
+  /**
+   * NumberInstance constructor for double.
+   *
+   * @param i A primitive double to be wrapped
+   */
+  public NumberInstance(double i) {
+    super();
+    n = new Double(i);
+  }
 
-	/**
-	 * NumberInstance constructor for int.
-	 * 
-	 * @param i
-	 *            A primitive int tobe wrapped
-	 */
-	public NumberInstance(int i) {
-		super();
-		n = new Integer(i);
-	}
+  /**
+   * NumberInstance constructor for int.
+   *
+   * @param i A primitive int tobe wrapped
+   */
+  public NumberInstance(int i) {
+    super();
+    n = new Integer(i);
+  }
 
-	/**
-	 * NumberInstance constructor for {@link Number}.
-	 * 
-	 * @param number
-	 *            A {@link Number} instance to be wrapped
-	 */
-	public NumberInstance(Number number) {
-		super();
-		n = number;
-	}
+  /**
+   * NumberInstance constructor for {@link Number}.
+   *
+   * @param number A {@link Number} instance to be wrapped
+   */
+  public NumberInstance(Number number) {
+    super();
+    n = number;
+  }
 
-	/**
-	 * NumberInstance constructor for integer value formatted in a String.
-	 * 
-	 * @param numberValueInString
-	 *            The string containing the integer value.
-	 */
-	public NumberInstance(String numberValueInString) {
-		super();
-		int zahl = Integer.parseInt(numberValueInString);
-		n = new Integer(zahl);
-	}
+  /**
+   * NumberInstance constructor for integer value formatted in a String.
+   *
+   * @param numberValueInString The string containing the integer value.
+   */
+  public NumberInstance(String numberValueInString) {
+    super();
+    int zahl = Integer.parseInt(numberValueInString);
+    n = new Integer(zahl);
+  }
 
-	public boolean add(Object arg0) {
-		if (arg0 instanceof Number) {
-			n = (Number) arg0;
-			return true;
-		} else if (arg0 instanceof NumberWrapper
-				&& !((NumberWrapper) arg0).isEmpty()) {
-			n = ((NumberWrapper) arg0).getFirst();
-			return true;
-		}
-		throw new IllegalArgumentException(
-				"Only objects of type Number or NumberWrapper are supported.");
-	}
+  public boolean add(Object arg0) {
+    if (arg0 instanceof Number) {
+      n = (Number) arg0;
+      return true;
+    } else if (arg0 instanceof NumberWrapper
+        && !((NumberWrapper) arg0).isEmpty()) {
+      n = ((NumberWrapper) arg0).getFirst();
+      return true;
+    }
+    throw new IllegalArgumentException(
+        "Only objects of type Number or NumberWrapper are supported.");
+  }
 
-	public boolean addAll(Collection arg0) {
-		if (arg0.size() == 0) {
-			return false;
-		}
-		Object o = arg0.iterator().next();
-		if (o instanceof Number) {
-			n = (Number) arg0;
-			return true;
-		}
-		return false;
-	}
+  public boolean addAll(Collection arg0) {
+    if (arg0.size() == 0) {
+      return false;
+    }
+    Object o = arg0.iterator().next();
+    if (o instanceof Number) {
+      n = (Number) arg0;
+      return true;
+    }
+    return false;
+  }
 
-	public boolean contains(Object o) {
-		if (o instanceof Number) {
-			return ((Number) o).doubleValue() == n.doubleValue();
-		} else if (o instanceof NumberWrapper && !((NumberWrapper) o).isEmpty()) {
-			return ((NumberWrapper) o).getFirst().doubleValue() == n
-					.doubleValue();
-		}
-		return false;
-	}
+  public boolean contains(Object o) {
+    if (o instanceof Number) {
+      return ((Number) o).doubleValue() == n.doubleValue();
+    } else if (o instanceof NumberWrapper && !((NumberWrapper) o).isEmpty()) {
+      return ((NumberWrapper) o).getFirst().doubleValue() == n
+          .doubleValue();
+    }
+    return false;
+  }
 
-	@Override
-	protected double getMax() {
-		return n.doubleValue();
-	}
+  @Override
+  protected double getMax() {
+    return n.doubleValue();
+  }
 
-	@Override
-	protected double getMin() {
-		return n.doubleValue();
-	}
+  @Override
+  protected double getMin() {
+    return n.doubleValue();
+  }
 
-	public java.lang.Number getN() {
-		return n;
-	}
+  public java.lang.Number getN() {
+    return n;
+  }
 
-	@Override
-	public NumberWrapper increment(int i) {
-		n = new Integer(getN().intValue() + i);
-		return this;
-	}
+  @Override
+  public NumberWrapper increment(int i) {
+    n = new Integer(getN().intValue() + i);
+    return this;
+  }
 
-	public boolean isEmpty() {
-		return false;
-	}
+  public boolean isEmpty() {
+    return false;
+  }
 
-	public Iterator iterator() {
-		return new SingleObjectIterator(getN());
-	}
+  public Iterator iterator() {
+    return new SingleObjectIterator(getN());
+  }
 
-	public int size() {
-		return 1;
-	}
+  public int size() {
+    return 1;
+  }
 
-	public Object[] toArray() {
-		return new Number[] { n };
-	}
+  public Object[] toArray() {
+    return new Number[]{n};
+  }
 
-	@Override
-	public String toString() {
-		return java.text.NumberFormat.getInstance().format(getN());
-	}
+  @Override
+  public String toString() {
+    return java.text.NumberFormat.getInstance().format(getN());
+  }
 }

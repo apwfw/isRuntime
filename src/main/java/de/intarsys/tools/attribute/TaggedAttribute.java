@@ -32,32 +32,31 @@ package de.intarsys.tools.attribute;
 /**
  * A wrapper to an {@link Attribute} to create unique keys in shared
  * {@link AttributeMap} instances.
- * 
  */
 final public class TaggedAttribute {
 
-	final private Object tag;
+  final private Object tag;
 
-	final private Object attribute;
+  final private Object attribute;
 
-	public TaggedAttribute(Object attribute, Object tag) {
-		super();
-		this.tag = tag;
-		this.attribute = attribute;
-	}
+  public TaggedAttribute(Object attribute, Object tag) {
+    super();
+    this.tag = tag;
+    this.attribute = attribute;
+  }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof TaggedAttribute)) {
-			return false;
-		}
-		return tag.equals(((TaggedAttribute) obj).tag)
-				&& attribute.equals(((TaggedAttribute) obj).attribute);
-	}
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof TaggedAttribute)) {
+      return false;
+    }
+    return tag.equals(((TaggedAttribute) obj).tag)
+        && attribute.equals(((TaggedAttribute) obj).attribute);
+  }
 
-	@Override
-	public int hashCode() {
-		return tag.hashCode() + attribute.hashCode();
-	}
+  @Override
+  public int hashCode() {
+    return tag.hashCode() + attribute.hashCode();
+  }
 
 }

@@ -31,20 +31,20 @@ package de.intarsys.tools.dom;
 
 public class ElementConfigurationException extends Exception {
 
-	public ElementConfigurationException() {
-		super();
-	}
+  public ElementConfigurationException() {
+    super();
+  }
 
-	public ElementConfigurationException(String message, Throwable cause) {
-		super(message, cause);
-	}
+  public ElementConfigurationException(String message, Throwable cause) {
+    super(message, cause);
+  }
 
-	public ElementConfigurationException(String message) {
-		super(message);
-	}
+  public ElementConfigurationException(String message) {
+    super(message);
+  }
 
-	public ElementConfigurationException(Throwable cause) {
-		super(cause);
-	}
+  public ElementConfigurationException(Throwable cause) {
+    super(cause);
+  }
 
 }

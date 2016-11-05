@@ -31,39 +31,38 @@ package de.intarsys.tools.presentation;
 
 /**
  * An object to provide presentation information on behalf of another.
- * 
  */
 public interface IPresentationHandler {
 
-	/**
-	 * A long, descriptive string representation.
-	 * 
-	 * @return A long, descriptive string representation.
-	 */
-	public String getDescription(Object object);
+  /**
+   * A long, descriptive string representation.
+   *
+   * @return A long, descriptive string representation.
+   */
+  public String getDescription(Object object);
 
-	/**
-	 * A name for an icon.
-	 * 
-	 * @return A name for an icon.
-	 */
-	public String getIconName(Object object);
+  /**
+   * A name for an icon.
+   *
+   * @return A name for an icon.
+   */
+  public String getIconName(Object object);
 
-	/**
-	 * A short string representation (suitable for example for use with an icon
-	 * or menu item).
-	 * 
-	 * @return A short string representation (suitable for example for use with
-	 *         an icon or menu item).
-	 */
-	public String getLabel(Object object);
+  /**
+   * A short string representation (suitable for example for use with an icon
+   * or menu item).
+   *
+   * @return A short string representation (suitable for example for use with
+   * an icon or menu item).
+   */
+  public String getLabel(Object object);
 
-	/**
-	 * An "intermediate" length description (suitable for example with a
-	 * tooltip).
-	 * 
-	 * @return An "intermediate" length description (suitable for example with a
-	 *         tooltip).
-	 */
-	public String getTip(Object object);
+  /**
+   * An "intermediate" length description (suitable for example with a
+   * tooltip).
+   *
+   * @return An "intermediate" length description (suitable for example with a
+   * tooltip).
+   */
+  public String getTip(Object object);
 }

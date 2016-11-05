@@ -31,35 +31,34 @@ package de.intarsys.tools.functor;
 
 /**
  * An exception while performing an {@link IFunctor}.
- * 
  */
 public class FunctorInvocationException extends Exception {
-	/**
-	 * 
-	 */
-	public FunctorInvocationException() {
-		super();
-	}
+  /**
+   *
+   */
+  public FunctorInvocationException() {
+    super();
+  }
 
-	/**
-	 * @param message
-	 */
-	public FunctorInvocationException(String message) {
-		super(message);
-	}
+  /**
+   * @param message
+   */
+  public FunctorInvocationException(String message) {
+    super(message);
+  }
 
-	/**
-	 * @param message
-	 * @param cause
-	 */
-	public FunctorInvocationException(String message, Throwable cause) {
-		super(message, cause);
-	}
+  /**
+   * @param message
+   * @param cause
+   */
+  public FunctorInvocationException(String message, Throwable cause) {
+    super(message, cause);
+  }
 
-	/**
-	 * @param cause
-	 */
-	public FunctorInvocationException(Throwable cause) {
-		this(cause.getMessage(), cause);
-	}
+  /**
+   * @param cause
+   */
+  public FunctorInvocationException(Throwable cause) {
+    this(cause.getMessage(), cause);
+  }
 }

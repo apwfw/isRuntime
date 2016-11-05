@@ -34,19 +34,19 @@ package de.intarsys.tools.converter;
  */
 public class LongFromNumberConverter implements IConverter<Number, Long> {
 
-	@Override
-	public Long convert(Number source) throws ConversionException {
-		return source.longValue();
-	}
+  @Override
+  public Long convert(Number source) throws ConversionException {
+    return source.longValue();
+  }
 
-	@Override
-	public Class<?> getSourceType() {
-		return Number.class;
-	}
+  @Override
+  public Class<?> getSourceType() {
+    return Number.class;
+  }
 
-	@Override
-	public Class<?> getTargetType() {
-		return Long.class;
-	}
+  @Override
+  public Class<?> getTargetType() {
+    return Long.class;
+  }
 
 }

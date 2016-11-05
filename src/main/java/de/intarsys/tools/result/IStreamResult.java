@@ -34,7 +34,6 @@ import de.intarsys.tools.locator.ILocatorSupport;
 
 /**
  * An {@link IResult} whose content can be expressed with an {@link ILocator}.
- * 
  */
 public interface IStreamResult extends IResult, ILocatorSupport {
 

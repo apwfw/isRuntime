@@ -5,21 +5,21 @@ import de.intarsys.tools.converter.IConverter;
 import de.intarsys.tools.functor.IArgs;
 
 /**
- * 
+ *
  */
 public class PreferenceValueFromArgsConverter implements
-		IConverter<IArgs, IArgs> {
+    IConverter<IArgs, IArgs> {
 
-	public IArgs convert(IArgs source) throws ConversionException {
-		return source;
-	}
+  public IArgs convert(IArgs source) throws ConversionException {
+    return source;
+  }
 
-	public Class<?> getSourceType() {
-		return IArgs.class;
-	}
+  public Class<?> getSourceType() {
+    return IArgs.class;
+  }
 
-	public Class<?> getTargetType() {
-		return PreferenceValue.class;
-	}
+  public Class<?> getTargetType() {
+    return PreferenceValue.class;
+  }
 
 }

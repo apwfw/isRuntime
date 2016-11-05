@@ -40,116 +40,116 @@ import java.io.FileFilter;
  */
 public class TempTools {
 
-	private static File tempDir;
+  private static File tempDir;
 
-	private static File tempDirVM;
+  private static File tempDirVM;
 
-	private static FileTools.Lock lock;
+  private static FileTools.Lock lock;
 
-	private static int fileCounter = 0;
+  private static int fileCounter = 0;
 
-	private static int dirCounter = 0;
+  private static int dirCounter = 0;
 
-	static {
-		cleanUp();
-	}
+  static {
+    cleanUp();
+  }
 
-	/**
-	 * Clean up temporary directories.
-	 */
-	protected static void cleanUp() {
-		File[] files = getTempDir().listFiles(new FileFilter() {
-			@Override
-			public boolean accept(File file) {
-				if (file.isDirectory()
-						&& file.getName().startsWith(TempTools.class.getName())) {
-					return true;
-				}
-				return false;
-			}
+  /**
+   * Clean up temporary directories.
+   */
+  protected static void cleanUp() {
+    File[] files = getTempDir().listFiles(new FileFilter() {
+      @Override
+      public boolean accept(File file) {
+        if (file.isDirectory()
+            && file.getName().startsWith(TempTools.class.getName())) {
+          return true;
+        }
+        return false;
+      }
 
-		});
-		if (files == null) {
-			return;
-		}
-		for (int i = 0; i < files.length; i++) {
-			cleanUpTempDir(files[i]);
-		}
-	}
+    });
+    if (files == null) {
+      return;
+    }
+    for (int i = 0; i < files.length; i++) {
+      cleanUpTempDir(files[i]);
+    }
+  }
 
-	/**
-	 * Clean up a single temporary directory
-	 * 
-	 * @param file
-	 */
-	protected static void cleanUpTempDir(File file) {
-		FileTools.Lock tempLock = FileTools.lock(file);
-		if (tempLock == null) {
-			return;
-		}
-		tempLock.release();
-		// orphaned directory, try to clean up
-		FileTools.deleteRecursivly(file);
-	}
+  /**
+   * Clean up a single temporary directory
+   *
+   * @param file
+   */
+  protected static void cleanUpTempDir(File file) {
+    FileTools.Lock tempLock = FileTools.lock(file);
+    if (tempLock == null) {
+      return;
+    }
+    tempLock.release();
+    // orphaned directory, try to clean up
+    FileTools.deleteRecursivly(file);
+  }
 
-	synchronized public static File createTempDir(String prefix, String suffix) {
-		// resource local to unique VM temp directory
-		// - don't need to check for name
-		String tempName = prefix + dirCounter++ + suffix;
-		File tempFile = new File(TempTools.getTempDirVM(), tempName);
-		tempFile.mkdirs();
-		return tempFile;
-	}
+  synchronized public static File createTempDir(String prefix, String suffix) {
+    // resource local to unique VM temp directory
+    // - don't need to check for name
+    String tempName = prefix + dirCounter++ + suffix;
+    File tempFile = new File(TempTools.getTempDirVM(), tempName);
+    tempFile.mkdirs();
+    return tempFile;
+  }
 
-	/**
-	 * Create the root directory for all temp files
-	 * 
-	 * @param parent
-	 * @return
-	 */
-	protected static File createTempDirVM(File parent) {
-		String name = TempTools.class.getName();
-		File tempFile = new File(parent, name);
-		int counter = 0;
-		while (true) {
-			tempFile = new File(parent, name + "_" + counter);
-			if (!tempFile.exists() && tempFile.mkdirs()) {
-				lock = FileTools.lock(tempFile);
-				if (lock != null) {
-					break;
-				}
-			}
-			counter++;
-		}
-		return tempFile;
-	}
+  /**
+   * Create the root directory for all temp files
+   *
+   * @param parent
+   * @return
+   */
+  protected static File createTempDirVM(File parent) {
+    String name = TempTools.class.getName();
+    File tempFile = new File(parent, name);
+    int counter = 0;
+    while (true) {
+      tempFile = new File(parent, name + "_" + counter);
+      if (!tempFile.exists() && tempFile.mkdirs()) {
+        lock = FileTools.lock(tempFile);
+        if (lock != null) {
+          break;
+        }
+      }
+      counter++;
+    }
+    return tempFile;
+  }
 
-	synchronized public static File createTempFile(String prefix, String suffix) {
-		// resource local to unique VM temp directory
-		String tempName = prefix + suffix;
-		File tempFile = new File(TempTools.getTempDirVM(), tempName);
-		if (tempFile.exists()) {
-			tempName = prefix + fileCounter++ + suffix;
-			tempFile = new File(TempTools.getTempDirVM(), tempName);
-		}
-		return tempFile;
-	}
+  synchronized public static File createTempFile(String prefix, String suffix) {
+    // resource local to unique VM temp directory
+    String tempName = prefix + suffix;
+    File tempFile = new File(TempTools.getTempDirVM(), tempName);
+    if (tempFile.exists()) {
+      tempName = prefix + fileCounter++ + suffix;
+      tempFile = new File(TempTools.getTempDirVM(), tempName);
+    }
+    return tempFile;
+  }
 
-	public static File getTempDir() {
-		if (tempDir == null) {
-			tempDir = new File(System.getProperty("java.io.tmpdir"));
-		}
-		return tempDir;
-	}
+  public static File getTempDir() {
+    if (tempDir == null) {
+      tempDir = new File(System.getProperty("java.io.tmpdir"));
+    }
+    return tempDir;
+  }
 
-	public static File getTempDirVM() {
-		if (tempDirVM == null) {
-			tempDirVM = createTempDirVM(getTempDir());
-		}
-		return tempDirVM;
-	}
+  public static void setTempDir(File pTempDir) {
+    tempDir = pTempDir;
+  }
 
-	public static void setTempDir(File pTempDir) {
-		tempDir = pTempDir;
-	}
+  public static File getTempDirVM() {
+    if (tempDirVM == null) {
+      tempDirVM = createTempDirVM(getTempDir());
+    }
+    return tempDirVM;
+  }
 }

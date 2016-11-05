@@ -29,15 +29,15 @@
  */
 package de.intarsys.tools.converter;
 
-import java.util.logging.Logger;
-
 import de.intarsys.tools.logging.LogTools;
 import de.intarsys.tools.message.MessageBundle;
 import de.intarsys.tools.message.MessageBundleTools;
 
-public class PACKAGE {
-	public final static Logger Log = LogTools.getLogger(PACKAGE.class);
+import java.util.logging.Logger;
 
-	public static final MessageBundle Messages = MessageBundleTools
-			.getMessageBundle(PACKAGE.class);
+public class PACKAGE {
+  public final static Logger Log = LogTools.getLogger(PACKAGE.class);
+
+  public static final MessageBundle Messages = MessageBundleTools
+      .getMessageBundle(PACKAGE.class);
 }

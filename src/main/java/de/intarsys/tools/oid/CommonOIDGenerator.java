@@ -30,13 +30,13 @@
 package de.intarsys.tools.oid;
 
 /**
- * 
+ *
  */
 public abstract class CommonOIDGenerator implements IOIDGenerator {
-	/**
-	 * 
-	 */
-	protected CommonOIDGenerator() {
-		super();
-	}
+  /**
+   *
+   */
+  protected CommonOIDGenerator() {
+    super();
+  }
 }

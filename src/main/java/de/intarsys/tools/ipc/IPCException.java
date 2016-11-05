@@ -31,27 +31,27 @@ package de.intarsys.tools.ipc;
 
 public class IPCException extends IPCObject {
 
-	final private Exception exception;
+  final private Exception exception;
 
-	public IPCException(Exception exception) {
-		super();
-		this.exception = exception;
-	}
+  public IPCException(Exception exception) {
+    super();
+    this.exception = exception;
+  }
 
-	public String getCode() {
-		return "";
-	}
+  public String getCode() {
+    return "";
+  }
 
-	public Exception getException() {
-		return exception;
-	}
+  public Exception getException() {
+    return exception;
+  }
 
-	public String getMessage() {
-		return "";
-	}
+  public String getMessage() {
+    return "";
+  }
 
-	public String getRemoteInfo() {
-		return "";
-	}
+  public String getRemoteInfo() {
+    return "";
+  }
 
 }

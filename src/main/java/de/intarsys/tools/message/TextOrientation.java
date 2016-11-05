@@ -37,35 +37,34 @@ import java.util.Locale;
  */
 public class TextOrientation {
 
-	public static TextOrientation get() {
-		return new TextOrientation(Locale.getDefault());
-	}
+  private Locale locale;
+  private ComponentOrientation orientation;
 
-	public static TextOrientation getHebrew() {
-		return new TextOrientation(new Locale("iw"));
-	}
+  public TextOrientation(Locale locale) {
+    this.locale = locale;
+  }
 
-	private Locale locale;
+  public static TextOrientation get() {
+    return new TextOrientation(Locale.getDefault());
+  }
 
-	private ComponentOrientation orientation;
+  public static TextOrientation getHebrew() {
+    return new TextOrientation(new Locale("iw"));
+  }
 
-	public TextOrientation(Locale locale) {
-		this.locale = locale;
-	}
+  protected ComponentOrientation getOrientation() {
+    if (orientation == null) {
+      orientation = ComponentOrientation.getOrientation(locale);
+    }
+    return orientation;
+  }
 
-	protected ComponentOrientation getOrientation() {
-		if (orientation == null) {
-			orientation = ComponentOrientation.getOrientation(locale);
-		}
-		return orientation;
-	}
+  public boolean isHorizontal() {
+    return getOrientation().isHorizontal();
+  }
 
-	public boolean isHorizontal() {
-		return getOrientation().isHorizontal();
-	}
-
-	public boolean isLeftToRight() {
-		return getOrientation().isLeftToRight();
-	}
+  public boolean isLeftToRight() {
+    return getOrientation().isLeftToRight();
+  }
 
 }

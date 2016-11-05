@@ -34,23 +34,23 @@ package de.intarsys.tools.converter;
  */
 public class LongFromStringConverter implements IConverter<String, Long> {
 
-	@Override
-	public Long convert(String source) throws ConversionException {
-		try {
-			return (long) (Long.parseLong(source));
-		} catch (Exception e) {
-			throw new ConversionException(e);
-		}
-	}
+  @Override
+  public Long convert(String source) throws ConversionException {
+    try {
+      return (long) (Long.parseLong(source));
+    } catch (Exception e) {
+      throw new ConversionException(e);
+    }
+  }
 
-	@Override
-	public Class<?> getSourceType() {
-		return String.class;
-	}
+  @Override
+  public Class<?> getSourceType() {
+    return String.class;
+  }
 
-	@Override
-	public Class<?> getTargetType() {
-		return Long.class;
-	}
+  @Override
+  public Class<?> getTargetType() {
+    return Long.class;
+  }
 
 }

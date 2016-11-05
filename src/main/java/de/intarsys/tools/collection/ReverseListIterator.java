@@ -36,51 +36,51 @@ import java.util.List;
  * This iterator enumerates the elements of a list in reverse order.
  */
 public class ReverseListIterator<T> implements Iterator<T>, Iterable<T> {
-	private final List<T> list;
+  private final List<T> list;
 
-	private final int size;
+  private final int size;
 
-	private int current;
+  private int current;
 
-	/**
-	 * 
-	 */
-	public ReverseListIterator(List<T> list) {
-		super();
-		this.list = list;
-		size = list.size();
-		current = size;
-	}
+  /**
+   *
+   */
+  public ReverseListIterator(List<T> list) {
+    super();
+    this.list = list;
+    size = list.size();
+    current = size;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.Iterator#hasNext()
-	 */
-	public boolean hasNext() {
-		return current > 0;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.util.Iterator#hasNext()
+   */
+  public boolean hasNext() {
+    return current > 0;
+  }
 
-	public Iterator<T> iterator() {
-		return this;
-	}
+  public Iterator<T> iterator() {
+    return this;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.Iterator#next()
-	 */
-	public T next() {
-		current--;
-		return list.get(current);
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.util.Iterator#next()
+   */
+  public T next() {
+    current--;
+    return list.get(current);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.Iterator#remove()
-	 */
-	public void remove() {
-		throw new UnsupportedOperationException();
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.util.Iterator#remove()
+   */
+  public void remove() {
+    throw new UnsupportedOperationException();
+  }
 }

@@ -30,72 +30,72 @@
 package de.intarsys.tools.message;
 
 /**
- * 
- * 
+ *
+ *
  */
 public class Message {
-	private String key;
+  private String key;
 
-	private String suffix;
+  private String suffix;
 
-	private Class clazz;
+  private Class clazz;
 
-	private MessageBundle bundle;
+  private MessageBundle bundle;
 
-	public Message(MessageBundle bundle, String key) {
-		this.bundle = bundle;
-		this.key = key;
-	}
+  public Message(MessageBundle bundle, String key) {
+    this.bundle = bundle;
+    this.key = key;
+  }
 
-	public Message(Object implementor, String suffix) {
-		if (implementor instanceof Class) {
-			this.clazz = (Class) implementor;
-		} else {
-			this.clazz = implementor.getClass();
-		}
-		this.suffix = suffix;
-	}
+  public Message(Object implementor, String suffix) {
+    if (implementor instanceof Class) {
+      this.clazz = (Class) implementor;
+    } else {
+      this.clazz = implementor.getClass();
+    }
+    this.suffix = suffix;
+  }
 
-	public String get() {
-		return getBundle().getString(getKey());
-	}
+  public String get() {
+    return getBundle().getString(getKey());
+  }
 
-	public String get(String arg1) {
-		return getBundle().getString(getKey(), arg1);
-	}
+  public String get(String arg1) {
+    return getBundle().getString(getKey(), arg1);
+  }
 
-	public String get(String arg1, String arg2) {
-		return getBundle().getString(getKey(), arg1, arg2);
-	}
+  public String get(String arg1, String arg2) {
+    return getBundle().getString(getKey(), arg1, arg2);
+  }
 
-	public String get(String arg1, String arg2, String arg3) {
-		return getBundle().getString(getKey(), arg1, arg2, arg3);
-	}
+  public String get(String arg1, String arg2, String arg3) {
+    return getBundle().getString(getKey(), arg1, arg2, arg3);
+  }
 
-	public String get(String arg1, String arg2, String arg3, String arg4) {
-		return getBundle().getString(getKey(), arg1, arg2, arg3, arg4);
-	}
+  public String get(String arg1, String arg2, String arg3, String arg4) {
+    return getBundle().getString(getKey(), arg1, arg2, arg3, arg4);
+  }
 
-	public MessageBundle getBundle() {
-		if (bundle == null) {
-			bundle = MessageBundleTools.getMessageBundle(clazz);
-		}
-		return bundle;
-	}
+  public MessageBundle getBundle() {
+    if (bundle == null) {
+      bundle = MessageBundleTools.getMessageBundle(clazz);
+    }
+    return bundle;
+  }
 
-	public Object getClazz() {
-		return clazz;
-	}
+  public Object getClazz() {
+    return clazz;
+  }
 
-	public String getKey() {
-		if (key == null) {
-			key = MessageBundleTools.getClassName(this.clazz) + "." + suffix;
-		}
-		return key;
-	}
+  public String getKey() {
+    if (key == null) {
+      key = MessageBundleTools.getClassName(this.clazz) + "." + suffix;
+    }
+    return key;
+  }
 
-	@Override
-	public String toString() {
-		return get();
-	}
+  @Override
+  public String toString() {
+    return get();
+  }
 }

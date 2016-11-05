@@ -37,26 +37,23 @@ package de.intarsys.tools.reflect;
  * {@link ObjectTools} methods!
  */
 public interface IBasicAccessSupport {
-	/**
-	 * Make a reflective get access to <code>name</code>.
-	 * 
-	 * @param name
-	 *            The name of the field to get.
-	 * @return The field value
-	 * @throws FieldException
-	 */
-	public Object basicGetValue(String name) throws FieldException;
+  /**
+   * Make a reflective get access to <code>name</code>.
+   *
+   * @param name The name of the field to get.
+   * @return The field value
+   * @throws FieldException
+   */
+  public Object basicGetValue(String name) throws FieldException;
 
-	/**
-	 * Make a reflective set access to <code>name</code>.
-	 * 
-	 * @param name
-	 *            The name of the field to get.
-	 * @param value
-	 *            The new value for the field
-	 * @return The previous field value. This is an optional feature.
-	 * @throws FieldException
-	 */
-	public Object basicSetValue(String name, Object value) throws FieldException;
+  /**
+   * Make a reflective set access to <code>name</code>.
+   *
+   * @param name  The name of the field to get.
+   * @param value The new value for the field
+   * @return The previous field value. This is an optional feature.
+   * @throws FieldException
+   */
+  public Object basicSetValue(String name, Object value) throws FieldException;
 
 }

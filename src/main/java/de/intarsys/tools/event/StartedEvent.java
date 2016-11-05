@@ -31,18 +31,17 @@ package de.intarsys.tools.event;
 
 /**
  * An event indicating the start of an application component.
- * 
  */
 public class StartedEvent extends Event {
-	public static final EventType ID = new EventType(StartedEvent.class
-			.getName());
+  public static final EventType ID = new EventType(StartedEvent.class
+      .getName());
 
-	public StartedEvent(Object source) {
-		super(source);
-	}
+  public StartedEvent(Object source) {
+    super(source);
+  }
 
-	@Override
-	public EventType getEventType() {
-		return ID;
-	}
+  @Override
+  public EventType getEventType() {
+    return ID;
+  }
 }

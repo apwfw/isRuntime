@@ -31,28 +31,26 @@ package de.intarsys.tools.ui;
 
 /**
  * An object that can publish itself as a concrete toolkit component.
- * 
- * @param <C>
- *            The toolkit container component
- * @param <T>
- *            The toolkit component
+ *
+ * @param <C> The toolkit container component
+ * @param <T> The toolkit component
  */
 public interface IComponentProvider<C, T> {
 
-	/**
-	 * Create the associated toolkit component. This is a factory method called
-	 * by a container to create a concrete UI component.
-	 * 
-	 * @param parent
-	 */
-	public void createComponent(C parent);
+  /**
+   * Create the associated toolkit component. This is a factory method called
+   * by a container to create a concrete UI component.
+   *
+   * @param parent
+   */
+  public void createComponent(C parent);
 
-	/**
-	 * The associated toolkit component. This is not valid until after a call to
-	 * createComponent.
-	 * 
-	 * @return The associated toolkit component.
-	 */
-	public T getComponent();
+  /**
+   * The associated toolkit component. This is not valid until after a call to
+   * createComponent.
+   *
+   * @return The associated toolkit component.
+   */
+  public T getComponent();
 
 }

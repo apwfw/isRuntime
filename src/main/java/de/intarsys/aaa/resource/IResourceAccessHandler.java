@@ -35,16 +35,15 @@ import de.intarsys.aaa.permission.IPermission;
  * An {@link IResourceAccessHandler} can protect access to an {@link IResource}.
  * <p>
  * See {@link IPermission} for an implementation.
- * 
  */
 public interface IResourceAccessHandler {
 
-	/**
-	 * <true> if this handler grants access to the resource.
-	 * 
-	 * @param resource
-	 * @return <true> if this handler grants access to the resource.
-	 */
-	public boolean isAccessGranted(IResource resource);
+  /**
+   * <true> if this handler grants access to the resource.
+   *
+   * @param resource
+   * @return <true> if this handler grants access to the resource.
+   */
+  public boolean isAccessGranted(IResource resource);
 
 }

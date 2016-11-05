@@ -35,9 +35,9 @@ package de.intarsys.tools.serialize;
  */
 public interface ISerializationFactory {
 
-	public IDeserializer createDeserializer(SerializationContext context);
+  public IDeserializer createDeserializer(SerializationContext context);
 
-	public ISerializer createSerializer(SerializationContext context);
+  public ISerializer createSerializer(SerializationContext context);
 
-	public Class getSerializationType();
+  public Class getSerializationType();
 }

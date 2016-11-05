@@ -35,21 +35,18 @@ import java.io.Serializable;
  * The type of an {@link Event}.
  * <p>
  * This is an unique object representing the type / class of an event instance.
- * 
  */
 public class EventType implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+  public static final EventType ALWAYS = new EventType("always"); //$NON-NLS-1$
+  private static final long serialVersionUID = 1L;
+  final private String name;
 
-	public static final EventType ALWAYS = new EventType("always"); //$NON-NLS-1$
+  public EventType(String name) {
+    this.name = name;
+  }
 
-	final private String name;
-
-	public EventType(String name) {
-		this.name = name;
-	}
-
-	public String getName() {
-		return name;
-	}
+  public String getName() {
+    return name;
+  }
 }

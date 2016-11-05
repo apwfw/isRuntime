@@ -34,28 +34,28 @@ package de.intarsys.tools.adapter;
  */
 public class AdapterTools {
 
-	/**
-	 * An object of type <code>clazz</code> that represents <code>object</code>.
-	 * <p>
-	 * This method should return <code>null</code> if adaption is not possible.
-	 * 
-	 * @param <T>
-	 * @param object
-	 * @param clazz
-	 * @return An object of type <code>clazz</code> that represents
-	 *         <code>object</code>.
-	 */
-	static public <T> T getAdapter(Object object, Class<T> clazz) {
-		T result = null;
-		if (clazz.isInstance(object)) {
-			result = (T) object;
-		}
-		if (object instanceof IAdapterSupport) {
-			result = ((IAdapterSupport) object).getAdapter(clazz);
-		}
-		if (result == null) {
-			result = AdapterOutlet.get().getAdapter(object, clazz);
-		}
-		return result;
-	}
+  /**
+   * An object of type <code>clazz</code> that represents <code>object</code>.
+   * <p>
+   * This method should return <code>null</code> if adaption is not possible.
+   *
+   * @param <T>
+   * @param object
+   * @param clazz
+   * @return An object of type <code>clazz</code> that represents
+   * <code>object</code>.
+   */
+  static public <T> T getAdapter(Object object, Class<T> clazz) {
+    T result = null;
+    if (clazz.isInstance(object)) {
+      result = (T) object;
+    }
+    if (object instanceof IAdapterSupport) {
+      result = ((IAdapterSupport) object).getAdapter(clazz);
+    }
+    if (result == null) {
+      result = AdapterOutlet.get().getAdapter(object, clazz);
+    }
+    return result;
+  }
 }

@@ -36,16 +36,16 @@ import java.util.Date;
  */
 public class CanonicalFromDateConverter implements IConverter<Date, Long> {
 
-	public Long convert(Date source) throws ConversionException {
-		return source.getTime();
-	}
+  public Long convert(Date source) throws ConversionException {
+    return source.getTime();
+  }
 
-	public Class<?> getSourceType() {
-		return Date.class;
-	}
+  public Class<?> getSourceType() {
+    return Date.class;
+  }
 
-	public Class<?> getTargetType() {
-		return Canonical.class;
-	}
+  public Class<?> getTargetType() {
+    return Canonical.class;
+  }
 
 }

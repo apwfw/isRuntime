@@ -33,10 +33,9 @@ package de.intarsys.aaa.resource;
  * An {@link IResource} is the target of a permission check.
  * <p>
  * Anything can be modeled as an {@link IResource}.
- * 
  */
 public interface IResource {
 
-	public String getId();
+  public String getId();
 
 }

@@ -5,13 +5,13 @@ package de.intarsys.tools.monitor;
  */
 public class MonitorRegistry {
 
-	private static IMonitorRegistry ACTIVE = new StandardMonitorRegistry();
+  private static IMonitorRegistry ACTIVE = new StandardMonitorRegistry();
 
-	public static IMonitorRegistry get() {
-		return ACTIVE;
-	}
+  public static IMonitorRegistry get() {
+    return ACTIVE;
+  }
 
-	public static void set(IMonitorRegistry active) {
-		ACTIVE = active;
-	}
+  public static void set(IMonitorRegistry active) {
+    ACTIVE = active;
+  }
 }

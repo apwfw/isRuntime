@@ -34,27 +34,27 @@ package de.intarsys.tools.reflect;
  */
 public class MethodNotFoundException extends MethodException {
 
-	private String name;
+  private String name;
 
-	/**
-	 * 
-	 */
-	public MethodNotFoundException(String name) {
-		super();
-		this.name = name;
-	}
+  /**
+   *
+   */
+  public MethodNotFoundException(String name) {
+    super();
+    this.name = name;
+  }
 
-	@Override
-	public String getMessage() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("method '");
-		sb.append(getName());
-		sb.append("' not found");
-		return sb.toString();
-	}
+  @Override
+  public String getMessage() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("method '");
+    sb.append(getName());
+    sb.append("' not found");
+    return sb.toString();
+  }
 
-	@Override
-	public String getName() {
-		return name;
-	}
+  @Override
+  public String getName() {
+    return name;
+  }
 }

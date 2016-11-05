@@ -38,137 +38,136 @@ import java.io.StringReader;
  * <p>
  * The parser supports single numbers, enumeration of numbers and intervals.
  * </p>
- * 
+ * <p>
  * <pre>
  * S ::= NumberString
  * NumberString ::= ( Number | Interval) [ &quot;;&quot; (Number | Interval) ]*
  * Interval ::= Number &quot;-&quot; Number
  * Number ::= a valid number literal
  * </pre>
- * 
  */
 public class NumberParser {
 
-	public static NumberWrapper parse(String value) throws IOException {
-		if (value == null) {
-			return null;
-		}
-		return new NumberParser(false).parse(new StringReader(value));
-	}
+  final private boolean integer;
 
-	public static NumberWrapper parseInteger(String value) throws IOException {
-		if (value == null) {
-			return null;
-		}
-		return new NumberParser(true).parse(new StringReader(value));
-	}
+  protected NumberParser(boolean integer) {
+    super();
+    this.integer = integer;
+  }
 
-	final private boolean integer;
+  public static NumberWrapper parse(String value) throws IOException {
+    if (value == null) {
+      return null;
+    }
+    return new NumberParser(false).parse(new StringReader(value));
+  }
 
-	protected NumberParser(boolean integer) {
-		super();
-		this.integer = integer;
-	}
+  public static NumberWrapper parseInteger(String value) throws IOException {
+    if (value == null) {
+      return null;
+    }
+    return new NumberParser(true).parse(new StringReader(value));
+  }
 
-	public boolean isInteger() {
-		return integer;
-	}
+  public boolean isInteger() {
+    return integer;
+  }
 
-	protected boolean isIntervalSeparator(char c) {
-		return (c == NumberInterval.SEPARATOR);
-	}
+  protected boolean isIntervalSeparator(char c) {
+    return (c == NumberInterval.SEPARATOR);
+  }
 
-	protected boolean isListSeparator(char c) {
-		return (c == NumberList.SEPARATOR);
-	}
+  protected boolean isListSeparator(char c) {
+    return (c == NumberList.SEPARATOR);
+  }
 
-	protected boolean isNumberChar(char c) {
-		return c == '.' || c >= '0' || c <= '9' || c == '-' || c == '+'
-				|| (c == ',' && !isInteger());
-	}
+  protected boolean isNumberChar(char c) {
+    return c == '.' || c >= '0' || c <= '9' || c == '-' || c == '+'
+        || (c == ',' && !isInteger());
+  }
 
-	protected NumberWrapper parse(StringReader r) throws IOException {
-		NumberList numberList = new NumberList();
-		parse(r, numberList);
-		return numberList;
-	}
+  protected NumberWrapper parse(StringReader r) throws IOException {
+    NumberList numberList = new NumberList();
+    parse(r, numberList);
+    return numberList;
+  }
 
-	protected void parse(StringReader r, NumberList numberList)
-			throws IOException {
-		StringBuilder sb = new StringBuilder();
-		Double number = null;
-		NumberInterval interval = null;
-		for (int i = r.read(); i > -1; i = r.read()) {
-			char c = (char) i;
-			if (Character.isWhitespace(c)) {
-				//
-			} else if (isListSeparator(c)) {
-				if (interval != null) {
-					if (interval.getTo() == null) {
-						throw new IOException("number expected");
-					}
-					numberList.add(interval);
-					interval = null;
-					number = null;
-				} else if (number != null) {
-					numberList.add(new NumberInstance(number));
-					number = null;
-				}
-			} else if (number != null && c == '-') {
-				interval = new NumberInterval();
-				interval.setFrom(number);
-				number = null;
-			} else if (isNumberChar(c)) {
-				if (number != null) {
-					throw new IOException("invalid char '" + c + "'");
-				}
-				sb.setLength(0);
-				sb.append(c);
-				number = parseNumber(r, sb);
-				if (interval != null) {
-					interval.setTo(number);
-				}
-			} else {
-			}
-		}
-		if (interval != null) {
-			if (interval.getTo() == null) {
-				throw new IOException("number expected");
-			}
-			numberList.add(interval);
-		} else if (number != null) {
-			numberList.add(new NumberInstance(number));
-		}
-	}
+  protected void parse(StringReader r, NumberList numberList)
+      throws IOException {
+    StringBuilder sb = new StringBuilder();
+    Double number = null;
+    NumberInterval interval = null;
+    for (int i = r.read(); i > -1; i = r.read()) {
+      char c = (char) i;
+      if (Character.isWhitespace(c)) {
+        //
+      } else if (isListSeparator(c)) {
+        if (interval != null) {
+          if (interval.getTo() == null) {
+            throw new IOException("number expected");
+          }
+          numberList.add(interval);
+          interval = null;
+          number = null;
+        } else if (number != null) {
+          numberList.add(new NumberInstance(number));
+          number = null;
+        }
+      } else if (number != null && c == '-') {
+        interval = new NumberInterval();
+        interval.setFrom(number);
+        number = null;
+      } else if (isNumberChar(c)) {
+        if (number != null) {
+          throw new IOException("invalid char '" + c + "'");
+        }
+        sb.setLength(0);
+        sb.append(c);
+        number = parseNumber(r, sb);
+        if (interval != null) {
+          interval.setTo(number);
+        }
+      } else {
+      }
+    }
+    if (interval != null) {
+      if (interval.getTo() == null) {
+        throw new IOException("number expected");
+      }
+      numberList.add(interval);
+    } else if (number != null) {
+      numberList.add(new NumberInstance(number));
+    }
+  }
 
-	protected Double parseNumber(Reader r, StringBuilder sb) throws IOException {
-		r.mark(1);
-		int i = r.read();
-		while (i != -1) {
-			char c = (char) i;
-			if (Character.isWhitespace(c)) {
-				break;
-			} else if (isListSeparator(c)) {
-				break;
-			} else if (isIntervalSeparator(c)) {
-				break;
-			} else if (isNumberChar(c)) {
-				sb.append(c);
-			} else {
-				throw new IOException("invalid char '" + c + "'");
-			}
-			r.mark(1);
-			i = r.read();
-		}
-		r.reset();
-		try {
-			return toNumber(sb);
-		} catch (Exception e) {
-			throw new IOException("number format exception");
-		}
-	}
+  protected Double parseNumber(Reader r, StringBuilder sb) throws IOException {
+    r.mark(1);
+    int i = r.read();
+    while (i != -1) {
+      char c = (char) i;
+      if (Character.isWhitespace(c)) {
+        break;
+      } else if (isListSeparator(c)) {
+        break;
+      } else if (isIntervalSeparator(c)) {
+        break;
+      } else if (isNumberChar(c)) {
+        sb.append(c);
+      } else {
+        throw new IOException("invalid char '" + c + "'");
+      }
+      r.mark(1);
+      i = r.read();
+    }
+    r.reset();
+    try {
+      return toNumber(sb);
+    } catch (Exception e) {
+      throw new IOException("number format exception");
+    }
+  }
 
-	protected double toNumber(StringBuilder sb) {
-		return Double.parseDouble(sb.toString());
-	}
+  protected double toNumber(StringBuilder sb) {
+    return Double.parseDouble(sb.toString());
+  }
 }

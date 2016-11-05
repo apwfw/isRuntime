@@ -36,57 +36,56 @@ import java.util.Map;
  * A "meta" class for any object. This is used to dynamically extend the objects
  * features via the registration of additional methods (and maybe attributes
  * some time).
- * 
  */
 public class Class implements IClass {
 
-	final private Map methods = new HashMap();
+  final private Map methods = new HashMap();
 
-	final private Map fields = new HashMap();
+  final private Map fields = new HashMap();
 
-	final private IClassSelector selector;
+  final private IClassSelector selector;
 
-	public Class(IClassSelector selector) {
-		this.selector = selector;
-	}
+  public Class(IClassSelector selector) {
+    this.selector = selector;
+  }
 
-	/**
-	 * 
-	 */
-	public Class(java.lang.Class javaclass) {
-		this(new JavaClassSelector(javaclass));
-	}
+  /**
+   *
+   */
+  public Class(java.lang.Class javaclass) {
+    this(new JavaClassSelector(javaclass));
+  }
 
-	public Class(java.lang.Class javaclass, Object id) {
-		this(new JavaInstanceSelector(javaclass, id));
-	}
+  public Class(java.lang.Class javaclass, Object id) {
+    this(new JavaInstanceSelector(javaclass, id));
+  }
 
-	public IField[] getFields() {
-		return (IField[]) fields.values().toArray(new IField[fields.size()]);
-	}
+  public IField[] getFields() {
+    return (IField[]) fields.values().toArray(new IField[fields.size()]);
+  }
 
-	public IMethod[] getMethods() {
-		return (IMethod[]) methods.values()
-				.toArray(new IMethod[methods.size()]);
-	}
+  public IMethod[] getMethods() {
+    return (IMethod[]) methods.values()
+        .toArray(new IMethod[methods.size()]);
+  }
 
-	public IClassSelector getSelector() {
-		return selector;
-	}
+  public IClassSelector getSelector() {
+    return selector;
+  }
 
-	public IField lookupField(String name) {
-		return (IField) fields.get(name);
-	}
+  public IField lookupField(String name) {
+    return (IField) fields.get(name);
+  }
 
-	public IMethod lookupMethod(String name) {
-		return (IMethod) methods.get(name);
-	}
+  public IMethod lookupMethod(String name) {
+    return (IMethod) methods.get(name);
+  }
 
-	public void registerField(IField property) {
-		fields.put(property.getName(), property);
-	}
+  public void registerField(IField property) {
+    fields.put(property.getName(), property);
+  }
 
-	public void registerMethod(IMethod method) {
-		methods.put(method.getName(), method);
-	}
+  public void registerMethod(IMethod method) {
+    methods.put(method.getName(), method);
+  }
 }

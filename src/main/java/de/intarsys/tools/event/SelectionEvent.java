@@ -31,19 +31,18 @@ package de.intarsys.tools.event;
 
 /**
  * An event indicating a selection.
- * 
  */
 public class SelectionEvent extends Event {
 
-	public static final EventType ID = new EventType(SelectionEvent.class
-			.getName());
+  public static final EventType ID = new EventType(SelectionEvent.class
+      .getName());
 
-	public SelectionEvent(Object source) {
-		super(source);
-	}
+  public SelectionEvent(Object source) {
+    super(source);
+  }
 
-	@Override
-	public EventType getEventType() {
-		return ID;
-	}
+  @Override
+  public EventType getEventType() {
+    return ID;
+  }
 }

@@ -29,159 +29,157 @@
  */
 package de.intarsys.tools.monitor;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
-import org.w3c.dom.Element;
-
 import de.intarsys.tools.dom.ElementConfigurationException;
 import de.intarsys.tools.dom.ElementTools;
+import org.w3c.dom.Element;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 /**
  * A monitor for taking time samples in the application.
  */
 public class MemberMonitor extends Monitor {
-	// the clas we monitor
-	private Class clazz;
+  // the clas we monitor
+  private Class clazz;
 
-	private Method method;
+  private Method method;
 
-	private Field field;
+  private Field field;
 
-	public MemberMonitor() {
-		super();
-	}
+  public MemberMonitor() {
+    super();
+  }
 
-	/**
-	 * Create instance
-	 * 
-	 * @param name
-	 *            monitor name
-	 */
-	public MemberMonitor(String name) {
-		super(name);
-	}
+  /**
+   * Create instance
+   *
+   * @param name monitor name
+   */
+  public MemberMonitor(String name) {
+    super(name);
+  }
 
-	public MemberMonitor(String name, Class clazz, Field field) {
-		super(name);
-		this.clazz = clazz;
-		this.field = field;
-	}
+  public MemberMonitor(String name, Class clazz, Field field) {
+    super(name);
+    this.clazz = clazz;
+    this.field = field;
+  }
 
-	public MemberMonitor(String name, Class clazz, Method method) {
-		super(name);
-		this.clazz = clazz;
-		this.method = method;
-	}
+  public MemberMonitor(String name, Class clazz, Method method) {
+    super(name);
+    this.clazz = clazz;
+    this.method = method;
+  }
 
-	@Override
-	public void configure(Element element) throws ElementConfigurationException {
-		super.configure(element);
-		String className = ElementTools.getPathString(element,
-				"monitoredclass", null);
-		if (className == null) {
-			throw new ElementConfigurationException(
-					"<monitoredclass> may not be null");
-		}
-		try {
-			clazz = Class.forName(className);
-		} catch (ClassNotFoundException e) {
-			throw new ElementConfigurationException(className + " not found");
-		} catch (SecurityException e) {
-			throw new ElementConfigurationException(className
-					+ " not permitted");
-		} catch (IllegalArgumentException e) {
-			throw new ElementConfigurationException(className
-					+ " not instantiable");
-		}
-		String methodName = ElementTools.getPathString(element,
-				"monitoredmethod", null);
-		if (methodName != null) {
-			try {
-				method = getClazz().getMethod(methodName, new Class[0]);
-			} catch (SecurityException e) {
-				throw new ElementConfigurationException(methodName
-						+ " not permitted");
-			} catch (IllegalArgumentException e) {
-				throw new ElementConfigurationException(methodName
-						+ " not instantiable");
-			} catch (NoSuchMethodException e) {
-				throw new ElementConfigurationException(methodName
-						+ " not found");
-			}
-		}
-		String fieldName = ElementTools.getPathString(element,
-				"monitoredfield", null);
-		if (fieldName != null) {
-			try {
-				field = getClazz().getField(fieldName);
-			} catch (SecurityException e) {
-				throw new ElementConfigurationException(fieldName
-						+ " not permitted");
-			} catch (IllegalArgumentException e) {
-				throw new ElementConfigurationException(fieldName
-						+ " not instantiable");
-			} catch (NoSuchFieldException e) {
-				throw new ElementConfigurationException(fieldName
-						+ " not found");
-			}
-		}
-		if ((field == null) && (method == null)) {
-			throw new ElementConfigurationException(
-					"field or method must be set");
-		}
-	}
+  @Override
+  public void configure(Element element) throws ElementConfigurationException {
+    super.configure(element);
+    String className = ElementTools.getPathString(element,
+        "monitoredclass", null);
+    if (className == null) {
+      throw new ElementConfigurationException(
+          "<monitoredclass> may not be null");
+    }
+    try {
+      clazz = Class.forName(className);
+    } catch (ClassNotFoundException e) {
+      throw new ElementConfigurationException(className + " not found");
+    } catch (SecurityException e) {
+      throw new ElementConfigurationException(className
+          + " not permitted");
+    } catch (IllegalArgumentException e) {
+      throw new ElementConfigurationException(className
+          + " not instantiable");
+    }
+    String methodName = ElementTools.getPathString(element,
+        "monitoredmethod", null);
+    if (methodName != null) {
+      try {
+        method = getClazz().getMethod(methodName, new Class[0]);
+      } catch (SecurityException e) {
+        throw new ElementConfigurationException(methodName
+            + " not permitted");
+      } catch (IllegalArgumentException e) {
+        throw new ElementConfigurationException(methodName
+            + " not instantiable");
+      } catch (NoSuchMethodException e) {
+        throw new ElementConfigurationException(methodName
+            + " not found");
+      }
+    }
+    String fieldName = ElementTools.getPathString(element,
+        "monitoredfield", null);
+    if (fieldName != null) {
+      try {
+        field = getClazz().getField(fieldName);
+      } catch (SecurityException e) {
+        throw new ElementConfigurationException(fieldName
+            + " not permitted");
+      } catch (IllegalArgumentException e) {
+        throw new ElementConfigurationException(fieldName
+            + " not instantiable");
+      } catch (NoSuchFieldException e) {
+        throw new ElementConfigurationException(fieldName
+            + " not found");
+      }
+    }
+    if ((field == null) && (method == null)) {
+      throw new ElementConfigurationException(
+          "field or method must be set");
+    }
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.monitor.Monitor#createMonitorTrace()
-	 */
-	@Override
-	protected MemberMonitorTrace createMonitorTrace() {
-		return new MemberMonitorTrace(this);
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.monitor.Monitor#createMonitorTrace()
+   */
+  @Override
+  protected MemberMonitorTrace createMonitorTrace() {
+    return new MemberMonitorTrace(this);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.intarsys.tools.monitor.Monitor#doCalculation(de.intarsys.tools.monitor
-	 * .IMonitorTrace)
-	 */
-	@Override
-	protected void doCalculation(MonitorTrace trace) {
-		if (trace.getStart() < statistic.min) {
-			statistic.min = trace.getStart();
-		}
-		if (trace.getStop() < statistic.min) {
-			statistic.min = trace.getStop();
-		}
+  /*
+   * (non-Javadoc)
+   *
+   * @see
+   * de.intarsys.tools.monitor.Monitor#doCalculation(de.intarsys.tools.monitor
+   * .IMonitorTrace)
+   */
+  @Override
+  protected void doCalculation(MonitorTrace trace) {
+    if (trace.getStart() < statistic.min) {
+      statistic.min = trace.getStart();
+    }
+    if (trace.getStop() < statistic.min) {
+      statistic.min = trace.getStop();
+    }
 
-		if (trace.getStart() > statistic.max) {
-			statistic.max = trace.getStart();
-		}
-		if (trace.getStop() > statistic.max) {
-			statistic.max = trace.getStop();
-		}
+    if (trace.getStart() > statistic.max) {
+      statistic.max = trace.getStart();
+    }
+    if (trace.getStop() > statistic.max) {
+      statistic.max = trace.getStop();
+    }
 
-		statistic.total = last - first;
+    statistic.total = last - first;
 
-		statistic.avg = ((statistic.avg * statistic.count) + trace.getStop())
-				/ (statistic.count + 1);
+    statistic.avg = ((statistic.avg * statistic.count) + trace.getStop())
+        / (statistic.count + 1);
 
-		statistic.count++;
-	}
+    statistic.count++;
+  }
 
-	protected Class getClazz() {
-		return clazz;
-	}
+  protected Class getClazz() {
+    return clazz;
+  }
 
-	protected Field getField() {
-		return field;
-	}
+  protected Field getField() {
+    return field;
+  }
 
-	protected Method getMethod() {
-		return method;
-	}
+  protected Method getMethod() {
+    return method;
+  }
 }

@@ -39,7 +39,7 @@ import java.io.OutputStream;
  * <p>
  * This stream is piped in the reading process, any characters read are written
  * to an associated {@link OutputStream} object.
- * 
+ * <p>
  * <pre>
  * Client -&gt; LogInputStream -&gt; InputStream -&gt; Source
  *            |
@@ -49,44 +49,44 @@ import java.io.OutputStream;
  */
 public class LogInputStream extends FilterInputStream {
 
-	private OutputStream log;
+  private OutputStream log;
 
-	public LogInputStream(InputStream newin, OutputStream newlog) {
-		super(newin);
-		setLog(newlog);
-	}
+  public LogInputStream(InputStream newin, OutputStream newlog) {
+    super(newin);
+    setLog(newlog);
+  }
 
-	@Override
-	public void close() throws IOException {
-		super.close();
-		if ((log != null)) {
-			log.close();
-		}
-	}
+  @Override
+  public void close() throws IOException {
+    super.close();
+    if ((log != null)) {
+      log.close();
+    }
+  }
 
-	public java.io.OutputStream getLog() {
-		return log;
-	}
+  public java.io.OutputStream getLog() {
+    return log;
+  }
 
-	@Override
-	public int read() throws java.io.IOException {
-		int b = super.read();
-		if ((b > -1) && (log != null)) {
-			log.write(b);
-		}
-		return b;
-	}
+  public void setLog(java.io.OutputStream newLog) {
+    log = newLog;
+  }
 
-	@Override
-	public int read(byte[] b, int off, int len) throws IOException {
-		int bytes = super.read(b, off, len);
-		if ((bytes > -1) && (log != null)) {
-			log.write(b, off, bytes);
-		}
-		return bytes;
-	}
+  @Override
+  public int read() throws java.io.IOException {
+    int b = super.read();
+    if ((b > -1) && (log != null)) {
+      log.write(b);
+    }
+    return b;
+  }
 
-	public void setLog(java.io.OutputStream newLog) {
-		log = newLog;
-	}
+  @Override
+  public int read(byte[] b, int off, int len) throws IOException {
+    int bytes = super.read(b, off, len);
+    if ((bytes > -1) && (log != null)) {
+      log.write(b, off, bytes);
+    }
+    return bytes;
+  }
 }

@@ -34,16 +34,16 @@ package de.intarsys.tools.converter;
  */
 public class FloatFromNumberConverter implements IConverter<Number, Float> {
 
-	public Float convert(Number source) throws ConversionException {
-		return source.floatValue();
-	}
+  public Float convert(Number source) throws ConversionException {
+    return source.floatValue();
+  }
 
-	public Class<?> getSourceType() {
-		return Number.class;
-	}
+  public Class<?> getSourceType() {
+    return Number.class;
+  }
 
-	public Class<?> getTargetType() {
-		return Float.class;
-	}
+  public Class<?> getTargetType() {
+    return Float.class;
+  }
 
 }

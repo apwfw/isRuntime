@@ -33,7 +33,6 @@ import java.io.Serializable;
 
 /**
  * A common superclass for {@link IResource}
- * 
  */
 public abstract class Resource implements IResource, Serializable {
 

@@ -37,6 +37,6 @@ import java.io.IOException;
  */
 public interface ISerializer {
 
-	public void serialize(Object object) throws IOException;
+  public void serialize(Object object) throws IOException;
 
 }

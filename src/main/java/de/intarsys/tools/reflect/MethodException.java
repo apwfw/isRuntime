@@ -31,25 +31,24 @@ package de.intarsys.tools.reflect;
 
 /**
  * An exception while performing an object method.
- * 
  */
 public abstract class MethodException extends ReflectionException {
 
-	public MethodException() {
-		super();
-	}
+  public MethodException() {
+    super();
+  }
 
-	public MethodException(String message) {
-		super(message);
-	}
+  public MethodException(String message) {
+    super(message);
+  }
 
-	public MethodException(String message, Throwable cause) {
-		super(message, cause);
-	}
+  public MethodException(String message, Throwable cause) {
+    super(message, cause);
+  }
 
-	public MethodException(Throwable cause) {
-		super(cause);
-	}
+  public MethodException(Throwable cause) {
+    super(cause);
+  }
 
-	abstract public String getName();
+  abstract public String getName();
 }

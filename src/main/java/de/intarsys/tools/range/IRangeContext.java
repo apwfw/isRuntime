@@ -35,10 +35,10 @@ package de.intarsys.tools.range;
  */
 public interface IRangeContext {
 
-	public int getCurrent();
+  public int getCurrent();
 
-	public int getMax();
+  public int getMax();
 
-	public int getMin();
+  public int getMin();
 
 }

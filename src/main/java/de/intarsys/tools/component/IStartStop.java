@@ -35,37 +35,34 @@ import java.util.Set;
  * This describes the components ability to explicitly start or stop its
  * lifecycle. This is an alternative and more detailed description than
  * supported by IStartable and should be preferred.
- * 
  */
 public interface IStartStop extends IInstantiable {
-	/**
-	 * Answer <code>true</code> if this object is started
-	 * 
-	 * @return Answer <code>true</code> if this object is started.
-	 */
-	public boolean isStarted();
+  /**
+   * Answer <code>true</code> if this object is started
+   *
+   * @return Answer <code>true</code> if this object is started.
+   */
+  public boolean isStarted();
 
-	/**
-	 * Start the component lifecycle. A RuntimeException is expected when
-	 * starting the component fails.
-	 * 
-	 */
-	public void start();
+  /**
+   * Start the component lifecycle. A RuntimeException is expected when
+   * starting the component fails.
+   */
+  public void start();
 
-	/**
-	 * Stop the component lifecycle. All resources should be freed. A
-	 * RuntimeException is expected when stopping the component fails.
-	 */
-	public void stop();
+  /**
+   * Stop the component lifecycle. All resources should be freed. A
+   * RuntimeException is expected when stopping the component fails.
+   */
+  public void stop();
 
-	/**
-	 * Ask the component if it agrees to end its lifecycle at the very moment.
-	 * The component may deny this request, but it must be prepared anyway to be
-	 * stopped.
-	 * 
-	 * @param visited
-	 *            The optional set of already visited objects in the stop
-	 *            request cycle.
-	 */
-	public boolean stopRequested(Set visited);
+  /**
+   * Ask the component if it agrees to end its lifecycle at the very moment.
+   * The component may deny this request, but it must be prepared anyway to be
+   * stopped.
+   *
+   * @param visited The optional set of already visited objects in the stop
+   *                request cycle.
+   */
+  public boolean stopRequested(Set visited);
 }

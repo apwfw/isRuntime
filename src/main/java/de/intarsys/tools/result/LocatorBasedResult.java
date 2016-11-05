@@ -29,36 +29,35 @@
  */
 package de.intarsys.tools.result;
 
-import java.io.IOException;
-
 import de.intarsys.tools.locator.ILocator;
 import de.intarsys.tools.stream.StreamTools;
 
+import java.io.IOException;
+
 /**
  * A concrete {@link ILocator} based result implementation.
- * 
  */
 public class LocatorBasedResult extends StreamResult {
 
-	final private ILocator locator;
+  final private ILocator locator;
 
-	public LocatorBasedResult(String contentType, ILocator locator) {
-		super(contentType);
-		this.locator = locator;
-		setName(locator.getLocalName());
-		setType(locator.getType());
-	}
+  public LocatorBasedResult(String contentType, ILocator locator) {
+    super(contentType);
+    this.locator = locator;
+    setName(locator.getLocalName());
+    setType(locator.getType());
+  }
 
-	public ILocator getLocator() {
-		return locator;
-	}
+  public ILocator getLocator() {
+    return locator;
+  }
 
-	@Override
-	public String toString() {
-		try {
-			return StreamTools.toString(locator.getReader());
-		} catch (IOException e) {
-			return "<io exception>"; //$NON-NLS-1$
-		}
-	}
+  @Override
+  public String toString() {
+    try {
+      return StreamTools.toString(locator.getReader());
+    } catch (IOException e) {
+      return "<io exception>"; //$NON-NLS-1$
+    }
+  }
 }

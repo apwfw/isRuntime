@@ -34,19 +34,19 @@ package de.intarsys.tools.adapter;
  */
 public interface IAdapterOutlet extends IAdapterFactory<Object> {
 
-	/**
-	 * Register a new {@link IAdapterFactory}
-	 * 
-	 * @param factory
-	 */
-	public void registerAdapterFactory(IAdapterFactory<?> factory);
+  /**
+   * Register a new {@link IAdapterFactory}
+   *
+   * @param factory
+   */
+  public void registerAdapterFactory(IAdapterFactory<?> factory);
 
-	/**
-	 * Unregister an {@link IAdapterFactory}. Nothing happens if
-	 * <code>factory</code> was not registered before.
-	 * 
-	 * @param factory
-	 */
-	public void unregisterAdapterFactory(IAdapterFactory<?> factory);
+  /**
+   * Unregister an {@link IAdapterFactory}. Nothing happens if
+   * <code>factory</code> was not registered before.
+   *
+   * @param factory
+   */
+  public void unregisterAdapterFactory(IAdapterFactory<?> factory);
 
 }

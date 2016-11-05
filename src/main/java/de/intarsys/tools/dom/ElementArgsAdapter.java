@@ -29,173 +29,172 @@
  */
 package de.intarsys.tools.dom;
 
+import de.intarsys.tools.functor.ArgTools;
+import de.intarsys.tools.functor.IArgs;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Element;
+
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import org.w3c.dom.Attr;
-import org.w3c.dom.Element;
-
-import de.intarsys.tools.functor.ArgTools;
-import de.intarsys.tools.functor.IArgs;
-
 public class ElementArgsAdapter implements IArgs {
 
-	protected class Binding implements IBinding {
-		private String name;
+  private final Element element;
 
-		public Binding(String name) {
-			super();
-			this.name = name;
-		}
+  public ElementArgsAdapter(Element element) {
+    super();
+    this.element = element;
+  }
 
-		@Override
-		public String getName() {
-			return name;
-		}
+  public IBinding add(Object object) {
+    throw new UnsupportedOperationException("can't write"); //$NON-NLS-1$
+  }
 
-		@Override
-		public Object getValue() {
-			return ElementArgsAdapter.this.get(name);
-		}
+  @Override
+  public Iterator<IBinding> bindings() {
+    return new Iterator<IBinding>() {
+      private Iterator elements = DOMTools.getElementIterator(element);
+      private Iterator attributes = DOMTools
+          .getAttributeIterator(element);
 
-		@Override
-		public boolean isDefined() {
-			return ElementArgsAdapter.this.isDefined(name);
-		}
+      @Override
+      public boolean hasNext() {
+        return elements.hasNext() || attributes.hasNext();
+      }
 
-		@Override
-		public void setValue(Object value) {
-			ElementArgsAdapter.this.put(name, value);
-		}
+      @Override
+      public IBinding next() {
+        IBinding binding;
+        if (elements.hasNext()) {
+          Element element = (Element) elements.next();
+          return new Binding(element.getTagName());
+        } else if (attributes.hasNext()) {
+          Attr attribute = (Attr) attributes.next();
+          return new Binding(attribute.getName());
+        } else {
+          throw new NoSuchElementException();
+        }
+      }
 
-	}
+      @Override
+      public void remove() {
+        throw new UnsupportedOperationException();
+      }
+    };
+  }
 
-	private final Element element;
+  public void clear() {
+    throw new UnsupportedOperationException("can't write"); //$NON-NLS-1$
+  }
 
-	public ElementArgsAdapter(Element element) {
-		super();
-		this.element = element;
-	}
+  @Override
+  public IArgs copy() {
+    return new ElementArgsAdapter(element);
+  }
 
-	public IBinding add(Object object) {
-		throw new UnsupportedOperationException("can't write"); //$NON-NLS-1$
-	}
+  @Override
+  public IBinding declare(final String name) {
+    return new Binding(name);
+  }
 
-	@Override
-	public Iterator<IBinding> bindings() {
-		return new Iterator<IBinding>() {
-			private Iterator elements = DOMTools.getElementIterator(element);
-			private Iterator attributes = DOMTools
-					.getAttributeIterator(element);
+  public Object get(int index) {
+    // not supported
+    return null;
+  }
 
-			@Override
-			public boolean hasNext() {
-				return elements.hasNext() || attributes.hasNext();
-			}
+  public Object get(int index, Object defaultValue) {
+    return defaultValue;
+  }
 
-			@Override
-			public IBinding next() {
-				IBinding binding;
-				if (elements.hasNext()) {
-					Element element = (Element) elements.next();
-					return new Binding(element.getTagName());
-				} else if (attributes.hasNext()) {
-					Attr attribute = (Attr) attributes.next();
-					return new Binding(attribute.getName());
-				} else {
-					throw new NoSuchElementException();
-				}
-			}
+  public Object get(String name) {
+    Attr result = element.getAttributeNode(name);
+    if (result == null) {
+      Element[] children = DOMTools.getElements(element, name);
+      if (children != null && children.length > 0) {
+        return new ElementChildrenArgsAdapter(children);
+      }
+      return null;
+    }
+    return result.getValue();
+  }
 
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException();
-			}
-		};
-	}
+  public Object get(String name, Object defaultValue) {
+    Attr result = element.getAttributeNode(name);
+    if (result == null) {
+      Element[] children = DOMTools.getElements(element, name);
+      if (children != null && children.length > 0) {
+        return new ElementChildrenArgsAdapter(children);
+      } else {
+        return defaultValue;
+      }
+    }
+    return result.getValue();
+  }
 
-	public void clear() {
-		throw new UnsupportedOperationException("can't write"); //$NON-NLS-1$
-	}
+  public boolean isDefined(String name) {
+    return get(name) != null;
+  }
 
-	@Override
-	public IArgs copy() {
-		return new ElementArgsAdapter(element);
-	}
+  public Set names() {
+    // not supported
+    return Collections.EMPTY_SET;
+  }
 
-	@Override
-	public IBinding declare(final String name) {
-		return new Binding(name);
-	}
+  public IBinding put(int index, Object value) {
+    throw new UnsupportedOperationException("can't write to ArgsAdapter"); //$NON-NLS-1$
+  }
 
-	public Object get(int index) {
-		// not supported
-		return null;
-	}
+  public IBinding put(String name, Object value) {
+    throw new UnsupportedOperationException("can't write to ArgsAdapter"); //$NON-NLS-1$
+  }
 
-	public Object get(int index, Object defaultValue) {
-		return defaultValue;
-	}
+  public int size() {
+    return 0;
+  }
 
-	public Object get(String name) {
-		Attr result = element.getAttributeNode(name);
-		if (result == null) {
-			Element[] children = DOMTools.getElements(element, name);
-			if (children != null && children.length > 0) {
-				return new ElementChildrenArgsAdapter(children);
-			}
-			return null;
-		}
-		return result.getValue();
-	}
+  @Override
+  public String toString() {
+    return ArgTools.toString(this, ""); //$NON-NLS-1$
+  }
 
-	public Object get(String name, Object defaultValue) {
-		Attr result = element.getAttributeNode(name);
-		if (result == null) {
-			Element[] children = DOMTools.getElements(element, name);
-			if (children != null && children.length > 0) {
-				return new ElementChildrenArgsAdapter(children);
-			} else {
-				return defaultValue;
-			}
-		}
-		return result.getValue();
-	}
+  public void undefine(int index) {
+    throw new UnsupportedOperationException("can't write to ArgsAdapter"); //$NON-NLS-1$
+  }
 
-	public boolean isDefined(String name) {
-		return get(name) != null;
-	}
+  public void undefine(String name) {
+    throw new UnsupportedOperationException("can't write to ArgsAdapter"); //$NON-NLS-1$
+  }
 
-	public Set names() {
-		// not supported
-		return Collections.EMPTY_SET;
-	}
+  protected class Binding implements IBinding {
+    private String name;
 
-	public IBinding put(int index, Object value) {
-		throw new UnsupportedOperationException("can't write to ArgsAdapter"); //$NON-NLS-1$
-	}
+    public Binding(String name) {
+      super();
+      this.name = name;
+    }
 
-	public IBinding put(String name, Object value) {
-		throw new UnsupportedOperationException("can't write to ArgsAdapter"); //$NON-NLS-1$
-	}
+    @Override
+    public String getName() {
+      return name;
+    }
 
-	public int size() {
-		return 0;
-	}
+    @Override
+    public Object getValue() {
+      return ElementArgsAdapter.this.get(name);
+    }
 
-	@Override
-	public String toString() {
-		return ArgTools.toString(this, ""); //$NON-NLS-1$
-	}
+    @Override
+    public void setValue(Object value) {
+      ElementArgsAdapter.this.put(name, value);
+    }
 
-	public void undefine(int index) {
-		throw new UnsupportedOperationException("can't write to ArgsAdapter"); //$NON-NLS-1$
-	}
+    @Override
+    public boolean isDefined() {
+      return ElementArgsAdapter.this.isDefined(name);
+    }
 
-	public void undefine(String name) {
-		throw new UnsupportedOperationException("can't write to ArgsAdapter"); //$NON-NLS-1$
-	}
+  }
 
 }

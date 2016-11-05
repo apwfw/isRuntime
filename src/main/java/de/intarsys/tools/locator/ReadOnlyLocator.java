@@ -31,17 +31,16 @@ package de.intarsys.tools.locator;
 
 /**
  * A simple read only locator.
- * 
  */
 public class ReadOnlyLocator extends DelegatingLocator {
 
-	public ReadOnlyLocator(ILocator delegate) {
-		super(delegate);
-	}
+  public ReadOnlyLocator(ILocator delegate) {
+    super(delegate);
+  }
 
-	@Override
-	public boolean isReadOnly() {
-		return true;
-	}
+  @Override
+  public boolean isReadOnly() {
+    return true;
+  }
 
 }

@@ -34,16 +34,16 @@ package de.intarsys.tools.converter;
  */
 public class CanonicalFromObjectConverter implements IConverter<Object, Object> {
 
-	public Object convert(Object source) throws ConversionException {
-		return String.valueOf(source);
-	}
+  public Object convert(Object source) throws ConversionException {
+    return String.valueOf(source);
+  }
 
-	public Class<?> getSourceType() {
-		return Object.class;
-	}
+  public Class<?> getSourceType() {
+    return Object.class;
+  }
 
-	public Class<?> getTargetType() {
-		return Canonical.class;
-	}
+  public Class<?> getTargetType() {
+    return Canonical.class;
+  }
 
 }

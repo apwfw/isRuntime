@@ -36,117 +36,116 @@ import java.util.NoSuchElementException;
 /**
  * An iterator to enumerate sequentially the elements in a hierarchical
  * collection.
- * 
  */
 public class NestedIterator implements Iterator {
 
-	//
-	private Iterator innerIterator = null;
+  //
+  private Iterator innerIterator = null;
 
-	private Object outerCurrent;
+  private Object outerCurrent;
 
-	//
-	private Iterator outerIterator = null;
+  //
+  private Iterator outerIterator = null;
 
-	private boolean tryInner = true;
+  private boolean tryInner = true;
 
-	public NestedIterator(Iterator i) {
-		super();
-		setOuterIterator(i);
-	}
+  public NestedIterator(Iterator i) {
+    super();
+    setOuterIterator(i);
+  }
 
-	public NestedIterator(List l) {
-		super();
-		setOuterIterator(l.iterator());
-	}
+  public NestedIterator(List l) {
+    super();
+    setOuterIterator(l.iterator());
+  }
 
-	protected void createInnerIterator() {
-		setInnerIterator(null);
-		if (getOuterCurrent() != null) {
-			if (getOuterCurrent() instanceof List) {
-				setInnerIterator(new NestedIterator(((List) getOuterCurrent())
-						.iterator()));
-			}
-			if (getOuterCurrent() instanceof Iterable) {
-				setInnerIterator(new NestedIterator(
-						((Iterable) getOuterCurrent()).iterator()));
-			}
-			if (getOuterCurrent() instanceof Iterator) {
-				setInnerIterator(new NestedIterator(
-						(Iterator) getOuterCurrent()));
-			}
-		}
-	}
+  protected void createInnerIterator() {
+    setInnerIterator(null);
+    if (getOuterCurrent() != null) {
+      if (getOuterCurrent() instanceof List) {
+        setInnerIterator(new NestedIterator(((List) getOuterCurrent())
+            .iterator()));
+      }
+      if (getOuterCurrent() instanceof Iterable) {
+        setInnerIterator(new NestedIterator(
+            ((Iterable) getOuterCurrent()).iterator()));
+      }
+      if (getOuterCurrent() instanceof Iterator) {
+        setInnerIterator(new NestedIterator(
+            (Iterator) getOuterCurrent()));
+      }
+    }
+  }
 
-	protected java.util.Iterator getInnerIterator() {
-		return innerIterator;
-	}
+  protected java.util.Iterator getInnerIterator() {
+    return innerIterator;
+  }
 
-	protected java.lang.Object getOuterCurrent() {
-		return outerCurrent;
-	}
+  private void setInnerIterator(java.util.Iterator newInnerIterator) {
+    innerIterator = newInnerIterator;
+  }
 
-	protected java.util.Iterator getOuterIterator() {
-		return outerIterator;
-	}
+  protected java.lang.Object getOuterCurrent() {
+    return outerCurrent;
+  }
 
-	public boolean hasNext() {
-		if (isTryInner()) {
-			if (!getOuterIterator().hasNext()) {
-				return false;
-			}
-			setTryInner(false);
-			setOuterCurrent(getOuterIterator().next());
-			createInnerIterator();
-		}
-		if (getInnerIterator() == null) {
-			// no nesting
-			return true;
-		} else {
-			if (getInnerIterator().hasNext()) {
-				// running on inner
-				return true;
-			} else {
-				// inner has run out, reset to outer
-				setTryInner(true);
-				return hasNext();
-			}
-		}
-	}
+  private void setOuterCurrent(java.lang.Object newOuterCurrent) {
+    outerCurrent = newOuterCurrent;
+  }
 
-	private boolean isTryInner() {
-		return tryInner;
-	}
+  protected java.util.Iterator getOuterIterator() {
+    return outerIterator;
+  }
 
-	public java.lang.Object next() {
-		if (!hasNext()) {
-			throw new NoSuchElementException("no more elements");
-		}
-		if (getInnerIterator() == null) {
-			setTryInner(true);
-			return getOuterCurrent();
-		} else {
-			return getInnerIterator().next();
-		}
-	}
+  private void setOuterIterator(java.util.Iterator newOuterIterator) {
+    outerIterator = newOuterIterator;
+  }
 
-	public void remove() {
-		throw new UnsupportedOperationException("iterator not modifiable");
-	}
+  public boolean hasNext() {
+    if (isTryInner()) {
+      if (!getOuterIterator().hasNext()) {
+        return false;
+      }
+      setTryInner(false);
+      setOuterCurrent(getOuterIterator().next());
+      createInnerIterator();
+    }
+    if (getInnerIterator() == null) {
+      // no nesting
+      return true;
+    } else {
+      if (getInnerIterator().hasNext()) {
+        // running on inner
+        return true;
+      } else {
+        // inner has run out, reset to outer
+        setTryInner(true);
+        return hasNext();
+      }
+    }
+  }
 
-	private void setInnerIterator(java.util.Iterator newInnerIterator) {
-		innerIterator = newInnerIterator;
-	}
+  private boolean isTryInner() {
+    return tryInner;
+  }
 
-	private void setOuterCurrent(java.lang.Object newOuterCurrent) {
-		outerCurrent = newOuterCurrent;
-	}
+  private void setTryInner(boolean newTryInner) {
+    tryInner = newTryInner;
+  }
 
-	private void setOuterIterator(java.util.Iterator newOuterIterator) {
-		outerIterator = newOuterIterator;
-	}
+  public java.lang.Object next() {
+    if (!hasNext()) {
+      throw new NoSuchElementException("no more elements");
+    }
+    if (getInnerIterator() == null) {
+      setTryInner(true);
+      return getOuterCurrent();
+    } else {
+      return getInnerIterator().next();
+    }
+  }
 
-	private void setTryInner(boolean newTryInner) {
-		tryInner = newTryInner;
-	}
+  public void remove() {
+    throw new UnsupportedOperationException("iterator not modifiable");
+  }
 }

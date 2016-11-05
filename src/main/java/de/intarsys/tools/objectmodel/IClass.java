@@ -31,51 +31,46 @@ package de.intarsys.tools.objectmodel;
 
 /**
  * The abstraction of a class in this object model.
- * 
  */
 public interface IClass {
 
-	/**
-	 * All known {@link IField} instances of this. If no fields are available,
-	 * this method returns an empty array.
-	 * 
-	 * @return All known {@link IField} instances of this.
-	 */
-	public IField[] getFields();
+  /**
+   * All known {@link IField} instances of this. If no fields are available,
+   * this method returns an empty array.
+   *
+   * @return All known {@link IField} instances of this.
+   */
+  public IField[] getFields();
 
-	/**
-	 * All known {@link IMethod} instances of this. If no methods are available,
-	 * this method returns an empty array.
-	 * 
-	 * @return All known {@link IMethod} instances of this.
-	 */
-	public IMethod[] getMethods();
+  /**
+   * All known {@link IMethod} instances of this. If no methods are available,
+   * this method returns an empty array.
+   *
+   * @return All known {@link IMethod} instances of this.
+   */
+  public IMethod[] getMethods();
 
-	/**
-	 * The unique selector to this {@link IClass}.
-	 * 
-	 * @return The unique selector to this {@link IClass}.
-	 */
-	public IClassSelector getSelector();
+  /**
+   * The unique selector to this {@link IClass}.
+   *
+   * @return The unique selector to this {@link IClass}.
+   */
+  public IClassSelector getSelector();
 
-	/**
-	 * The single {@link IField} with the given name.
-	 * 
-	 * @param name
-	 *            The name of the {@link IField} to lookup.
-	 * 
-	 * @return The single {@link IField} with the given name.
-	 */
-	public IField lookupField(String name);
+  /**
+   * The single {@link IField} with the given name.
+   *
+   * @param name The name of the {@link IField} to lookup.
+   * @return The single {@link IField} with the given name.
+   */
+  public IField lookupField(String name);
 
-	/**
-	 * The single {@link IMethod} with the given name.
-	 * 
-	 * @param name
-	 *            The name of the {@link IMethod} to lookup.
-	 * 
-	 * @return The single {@link IMethod} with the given name.
-	 */
-	public IMethod lookupMethod(String name);
+  /**
+   * The single {@link IMethod} with the given name.
+   *
+   * @param name The name of the {@link IMethod} to lookup.
+   * @return The single {@link IMethod} with the given name.
+   */
+  public IMethod lookupMethod(String name);
 
 }

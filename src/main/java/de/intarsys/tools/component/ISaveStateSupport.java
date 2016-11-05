@@ -32,18 +32,15 @@ package de.intarsys.tools.component;
 /**
  * An object supporting state dumps. A "save state" is created and restored
  * transparently by the component.
- * 
- * 
  */
 public interface ISaveStateSupport {
-	/**
-	 * Restore a previously saved state.
-	 * 
-	 */
-	public void restoreState(Object saveState);
+  /**
+   * Restore a previously saved state.
+   */
+  public void restoreState(Object saveState);
 
-	/**
-	 * Create a restorable dump of the objects state.
-	 */
-	public Object saveState();
+  /**
+   * Create a restorable dump of the objects state.
+   */
+  public Object saveState();
 }

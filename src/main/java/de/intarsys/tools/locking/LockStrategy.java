@@ -31,14 +31,14 @@ package de.intarsys.tools.locking;
 
 public class LockStrategy {
 
-	private static ILockStrategy ACTIVE = new NullLockStrategy();
+  private static ILockStrategy ACTIVE = new NullLockStrategy();
 
-	static public ILockStrategy get() {
-		return ACTIVE;
-	}
+  static public ILockStrategy get() {
+    return ACTIVE;
+  }
 
-	static public void set(ILockStrategy active) {
-		ACTIVE = active;
-	}
+  static public void set(ILockStrategy active) {
+    ACTIVE = active;
+  }
 
 }

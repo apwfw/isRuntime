@@ -29,65 +29,65 @@
  */
 package de.intarsys.tools.xml;
 
+import de.intarsys.tools.stream.StreamTools;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 
-import de.intarsys.tools.stream.StreamTools;
-
 public class XMLTools {
 
-	public static String decodeSpecialChars(String encodedString)
-			throws IOException {
-		EntityDecoder decoder = new EntityDecoder(new StringReader(
-				encodedString), false);
-		try {
-			return StreamTools.toString(decoder);
-		} finally {
-			StreamTools.close(decoder);
-		}
-	}
+  /**
+   * This is a non instantiable tool class
+   */
+  private XMLTools() {
+    super();
+  }
 
-	public static String encodeDefault(String plainString) {
-		Reader in = new HTMLEncodeLineBreaks(new XMLEncodeSpecialChars(
-				new StringReader(plainString)));
-		Writer out = new StringWriter();
-		try {
-			StreamTools.copyEncoded(in, out);
-		} catch (IOException e) {
-			// these readers do not produce such errors.
-		}
-		return out.toString();
-	}
+  public static String decodeSpecialChars(String encodedString)
+      throws IOException {
+    EntityDecoder decoder = new EntityDecoder(new StringReader(
+        encodedString), false);
+    try {
+      return StreamTools.toString(decoder);
+    } finally {
+      StreamTools.close(decoder);
+    }
+  }
 
-	public static String encodeLineBreaks(String plainString) {
-		Reader in = new HTMLEncodeLineBreaks(new StringReader(plainString));
-		Writer out = new StringWriter();
-		try {
-			StreamTools.copyEncoded(in, out);
-		} catch (IOException e) {
-			// these readers do not produce such errors.
-		}
-		return out.toString();
-	}
+  public static String encodeDefault(String plainString) {
+    Reader in = new HTMLEncodeLineBreaks(new XMLEncodeSpecialChars(
+        new StringReader(plainString)));
+    Writer out = new StringWriter();
+    try {
+      StreamTools.copyEncoded(in, out);
+    } catch (IOException e) {
+      // these readers do not produce such errors.
+    }
+    return out.toString();
+  }
 
-	public static String encodeSpecialChars(String plainString) {
-		Reader in = new XMLEncodeSpecialChars(new StringReader(plainString));
-		Writer out = new StringWriter();
-		try {
-			StreamTools.copyEncoded(in, out);
-		} catch (IOException e) {
-			// these readers do not produce such errors.
-		}
-		return out.toString();
-	}
+  public static String encodeLineBreaks(String plainString) {
+    Reader in = new HTMLEncodeLineBreaks(new StringReader(plainString));
+    Writer out = new StringWriter();
+    try {
+      StreamTools.copyEncoded(in, out);
+    } catch (IOException e) {
+      // these readers do not produce such errors.
+    }
+    return out.toString();
+  }
 
-	/**
-	 * This is a non instantiable tool class
-	 */
-	private XMLTools() {
-		super();
-	}
+  public static String encodeSpecialChars(String plainString) {
+    Reader in = new XMLEncodeSpecialChars(new StringReader(plainString));
+    Writer out = new StringWriter();
+    try {
+      StreamTools.copyEncoded(in, out);
+    } catch (IOException e) {
+      // these readers do not produce such errors.
+    }
+    return out.toString();
+  }
 }

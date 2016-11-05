@@ -33,32 +33,27 @@ package de.intarsys.tools.reflect;
  * An object supporting handling reflective access to fields of a delegate.
  */
 public interface IAccessHandler {
-	/**
-	 * Make a reflective get access to the field <code>name</code> within
-	 * <code>receiver</code>
-	 * 
-	 * @param receiver
-	 *            The object hosting the field.
-	 * @param name
-	 *            The name of the field to get.
-	 * @return The field value
-	 * @throws FieldException
-	 */
-	public Object getValue(Object receiver, String name) throws FieldException;
+  /**
+   * Make a reflective get access to the field <code>name</code> within
+   * <code>receiver</code>
+   *
+   * @param receiver The object hosting the field.
+   * @param name     The name of the field to get.
+   * @return The field value
+   * @throws FieldException
+   */
+  public Object getValue(Object receiver, String name) throws FieldException;
 
-	/**
-	 * Make a reflective set access to the field <code>name</code> within
-	 * <code>receiver</code>
-	 * 
-	 * @param receiver
-	 *            The object hosting the field.
-	 * @param name
-	 *            The name of the field to get.
-	 * @param value
-	 *            The new value for the field
-	 * @return The previous field value. This is an optional feature.
-	 * @throws FieldException
-	 */
-	public Object setValue(Object receiver, String name, Object value)
-			throws FieldException;
+  /**
+   * Make a reflective set access to the field <code>name</code> within
+   * <code>receiver</code>
+   *
+   * @param receiver The object hosting the field.
+   * @param name     The name of the field to get.
+   * @param value    The new value for the field
+   * @return The previous field value. This is an optional feature.
+   * @throws FieldException
+   */
+  public Object setValue(Object receiver, String name, Object value)
+      throws FieldException;
 }

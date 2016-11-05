@@ -33,29 +33,29 @@ import de.intarsys.tools.enumeration.EnumItem;
 import de.intarsys.tools.enumeration.EnumMeta;
 
 /**
- * 
+ *
  */
 public class EnumRange extends EnumItem {
 
-	public static final EnumRange FIRST = new EnumRange("first");
-	public static final EnumRange LAST = new EnumRange("last");
-	public static final EnumRange ALL = new EnumRange("all");
-	public static final EnumRange CURRENT = new EnumRange("current");
+  public static final EnumRange FIRST = new EnumRange("first");
+  public static final EnumRange LAST = new EnumRange("last");
+  public static final EnumRange ALL = new EnumRange("all");
+  public static final EnumRange CURRENT = new EnumRange("current");
 
-	/**
-	 * The meta data for the enumeration.
-	 */
-	final public static EnumMeta META = getMeta(EnumRange.class);
+  /**
+   * The meta data for the enumeration.
+   */
+  final public static EnumMeta META = getMeta(EnumRange.class);
 
-	static {
-		ALL.setDefault();
-	}
+  static {
+    ALL.setDefault();
+  }
 
-	/**
-     * 
-     */
-	public EnumRange(String id) {
-		super(id);
-	}
+  /**
+   *
+   */
+  public EnumRange(String id) {
+    super(id);
+  }
 
 }

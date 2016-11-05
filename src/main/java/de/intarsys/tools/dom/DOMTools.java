@@ -29,6 +29,21 @@
  */
 package de.intarsys.tools.dom;
 
+import de.intarsys.tools.collection.ArrayTools;
+import de.intarsys.tools.stream.StreamTools;
+import de.intarsys.tools.string.StringTools;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -41,294 +56,277 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
-import de.intarsys.tools.collection.ArrayTools;
-import de.intarsys.tools.stream.StreamTools;
-import de.intarsys.tools.string.StringTools;
-
 public class DOMTools {
 
-	public static final Element[] NO_ELEMENTS = new Element[0];
+  public static final Element[] NO_ELEMENTS = new Element[0];
 
-	public static Iterator<Attr> getAttributeIterator(Element element) {
-		final NamedNodeMap nodes = element.getAttributes();
-		return new Iterator<Attr>() {
-			private int i = 0;
+  private DOMTools() {
+    //
+  }
 
-			@Override
-			public boolean hasNext() {
-				return i < nodes.getLength();
-			}
+  public static Iterator<Attr> getAttributeIterator(Element element) {
+    final NamedNodeMap nodes = element.getAttributes();
+    return new Iterator<Attr>() {
+      private int i = 0;
 
-			@Override
-			public Attr next() {
-				return (Attr) nodes.item(i++);
-			}
+      @Override
+      public boolean hasNext() {
+        return i < nodes.getLength();
+      }
 
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException();
-			}
-		};
-	}
+      @Override
+      public Attr next() {
+        return (Attr) nodes.item(i++);
+      }
 
-	public static int getAttrInt(Element elem, String name, int defaultValue) {
-		String value = elem.getAttribute(name);
-		if (StringTools.isEmpty(value)) {
-			return defaultValue;
-		} else {
-			try {
-				return Integer.parseInt(value.trim());
-			} catch (NumberFormatException e) {
-				return defaultValue;
-			}
-		}
-	}
+      @Override
+      public void remove() {
+        throw new UnsupportedOperationException();
+      }
+    };
+  }
 
-	public static String getAttrString(Element elem, String name,
-			String defaultValue) {
-		String value = elem.getAttribute(name);
-		if (StringTools.isEmpty(value)) {
-			return defaultValue;
-		} else {
-			return value;
-		}
-	}
+  public static int getAttrInt(Element elem, String name, int defaultValue) {
+    String value = elem.getAttribute(name);
+    if (StringTools.isEmpty(value)) {
+      return defaultValue;
+    } else {
+      try {
+        return Integer.parseInt(value.trim());
+      } catch (NumberFormatException e) {
+        return defaultValue;
+      }
+    }
+  }
 
-	public static Element getDirectChild(Element element, String name) {
-		NodeList children = element.getChildNodes();
-		for (int i = 0; i < children.getLength(); i++) {
-			if (children.item(i).getNodeType() == Element.ELEMENT_NODE) {
-				Element child = (Element) children.item(i);
-				if (name.equals(child.getLocalName())) {
-					return child;
-				}
-			}
-		}
-		return null;
-	}
+  public static String getAttrString(Element elem, String name,
+                                     String defaultValue) {
+    String value = elem.getAttribute(name);
+    if (StringTools.isEmpty(value)) {
+      return defaultValue;
+    } else {
+      return value;
+    }
+  }
 
-	public static Element[] getDirectChildren(Element element) {
-		NodeList children = element.getChildNodes();
-		if (children.getLength() == 0) {
-			return NO_ELEMENTS;
-		}
-		return toElementArray(children);
-	}
+  public static Element getDirectChild(Element element, String name) {
+    NodeList children = element.getChildNodes();
+    for (int i = 0; i < children.getLength(); i++) {
+      if (children.item(i).getNodeType() == Element.ELEMENT_NODE) {
+        Element child = (Element) children.item(i);
+        if (name.equals(child.getLocalName())) {
+          return child;
+        }
+      }
+    }
+    return null;
+  }
 
-	public static Element[] getDirectChildren(Element element, String name) {
-		Element[] children = getDirectChildren(element);
-		if (children.length == 0) {
-			return children;
-		}
-		ArrayList<Element> result = new ArrayList<Element>();
-		for (Element child : children) {
-			if (child.getLocalName().equals(name)) {
-				result.add(child);
-			}
-		}
-		return (Element[]) ArrayTools.toArray(Element.class, result);
-	}
+  public static Element[] getDirectChildren(Element element) {
+    NodeList children = element.getChildNodes();
+    if (children.getLength() == 0) {
+      return NO_ELEMENTS;
+    }
+    return toElementArray(children);
+  }
 
-	public static Element getElement(Document document, String name) {
-		Element element = document.getDocumentElement();
-		return getElement(element, name);
-	}
+  public static Element[] getDirectChildren(Element element, String name) {
+    Element[] children = getDirectChildren(element);
+    if (children.length == 0) {
+      return children;
+    }
+    ArrayList<Element> result = new ArrayList<Element>();
+    for (Element child : children) {
+      if (child.getLocalName().equals(name)) {
+        result.add(child);
+      }
+    }
+    return (Element[]) ArrayTools.toArray(Element.class, result);
+  }
 
-	public static Element getElement(Element element, String name) {
-		String[] segments = name.split("\\."); //$NON-NLS-1$
-		if (segments.length == 1) {
-			NodeList nodes = element.getElementsByTagNameNS("*", segments[0]); //$NON-NLS-1$
-			if (nodes.getLength() == 0) {
-				return null;
-			}
-			return (Element) nodes.item(0);
-		} else {
-			for (int i = 0; i < segments.length; i++) {
-				element = getElement(element, segments[i]);
-				if (element == null) {
-					return null;
-				}
-			}
-			return element;
-		}
-	}
+  public static Element getElement(Document document, String name) {
+    Element element = document.getDocumentElement();
+    return getElement(element, name);
+  }
 
-	public static Iterator<Element> getElementIterator(Element element) {
-		final NodeList nodes = element.getElementsByTagNameNS("*", "*"); //$NON-NLS-1$
-		return new Iterator<Element>() {
-			private int i = 0;
+  public static Element getElement(Element element, String name) {
+    String[] segments = name.split("\\."); //$NON-NLS-1$
+    if (segments.length == 1) {
+      NodeList nodes = element.getElementsByTagNameNS("*", segments[0]); //$NON-NLS-1$
+      if (nodes.getLength() == 0) {
+        return null;
+      }
+      return (Element) nodes.item(0);
+    } else {
+      for (int i = 0; i < segments.length; i++) {
+        element = getElement(element, segments[i]);
+        if (element == null) {
+          return null;
+        }
+      }
+      return element;
+    }
+  }
 
-			@Override
-			public boolean hasNext() {
-				return i < nodes.getLength();
-			}
+  public static Iterator<Element> getElementIterator(Element element) {
+    final NodeList nodes = element.getElementsByTagNameNS("*", "*"); //$NON-NLS-1$
+    return new Iterator<Element>() {
+      private int i = 0;
 
-			@Override
-			public Element next() {
-				return (Element) nodes.item(i++);
-			}
+      @Override
+      public boolean hasNext() {
+        return i < nodes.getLength();
+      }
 
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException();
-			}
-		};
-	}
+      @Override
+      public Element next() {
+        return (Element) nodes.item(i++);
+      }
 
-	public static Iterator<Element> getElementIterator(Element element,
-			String name) {
-		String[] segments = name.split("\\."); //$NON-NLS-1$
-		if (segments.length == 1) {
-			final NodeList nodes = element.getElementsByTagNameNS(
-					"*", segments[0]); //$NON-NLS-1$
-			return new Iterator<Element>() {
-				private int i = 0;
+      @Override
+      public void remove() {
+        throw new UnsupportedOperationException();
+      }
+    };
+  }
 
-				@Override
-				public boolean hasNext() {
-					return i < nodes.getLength();
-				}
+  public static Iterator<Element> getElementIterator(Element element,
+                                                     String name) {
+    String[] segments = name.split("\\."); //$NON-NLS-1$
+    if (segments.length == 1) {
+      final NodeList nodes = element.getElementsByTagNameNS(
+          "*", segments[0]); //$NON-NLS-1$
+      return new Iterator<Element>() {
+        private int i = 0;
 
-				@Override
-				public Element next() {
-					return (Element) nodes.item(i++);
-				}
+        @Override
+        public boolean hasNext() {
+          return i < nodes.getLength();
+        }
 
-				@Override
-				public void remove() {
-					throw new UnsupportedOperationException();
-				}
-			};
-		} else {
-			for (int i = 0; i < segments.length - 1; i++) {
-				element = getElement(element, segments[i]);
-				if (element == null) {
-					return null;
-				}
-			}
-			return getElementIterator(element, segments[segments.length - 1]);
-		}
-	}
+        @Override
+        public Element next() {
+          return (Element) nodes.item(i++);
+        }
 
-	public static Element[] getElements(Element element) {
-		NodeList nodes = element.getElementsByTagNameNS("*", "*"); //$NON-NLS-1$
-		return toElementArray(nodes);
-	}
+        @Override
+        public void remove() {
+          throw new UnsupportedOperationException();
+        }
+      };
+    } else {
+      for (int i = 0; i < segments.length - 1; i++) {
+        element = getElement(element, segments[i]);
+        if (element == null) {
+          return null;
+        }
+      }
+      return getElementIterator(element, segments[segments.length - 1]);
+    }
+  }
 
-	public static Element[] getElements(Element element, String name) {
-		String[] segments = name.split("\\."); //$NON-NLS-1$
-		if (segments.length == 1) {
-			NodeList nodes = element.getElementsByTagNameNS("*", segments[0]); //$NON-NLS-1$
-			return toElementArray(nodes);
-		} else {
-			for (int i = 0; i < segments.length - 1; i++) {
-				element = getElement(element, segments[i]);
-				if (element == null) {
-					return null;
-				}
-			}
-			return getElements(element, segments[segments.length - 1]);
-		}
-	}
+  public static Element[] getElements(Element element) {
+    NodeList nodes = element.getElementsByTagNameNS("*", "*"); //$NON-NLS-1$
+    return toElementArray(nodes);
+  }
 
-	public static Element getFirstDirectChild(Element element) {
-		NodeList children = element.getChildNodes();
-		for (int i = 0; i < children.getLength(); i++) {
-			if (children.item(i).getNodeType() == Element.ELEMENT_NODE) {
-				return (Element) children.item(i);
-			}
-		}
-		return null;
-	}
+  public static Element[] getElements(Element element, String name) {
+    String[] segments = name.split("\\."); //$NON-NLS-1$
+    if (segments.length == 1) {
+      NodeList nodes = element.getElementsByTagNameNS("*", segments[0]); //$NON-NLS-1$
+      return toElementArray(nodes);
+    } else {
+      for (int i = 0; i < segments.length - 1; i++) {
+        element = getElement(element, segments[i]);
+        if (element == null) {
+          return null;
+        }
+      }
+      return getElements(element, segments[segments.length - 1]);
+    }
+  }
 
-	/**
-	 * Scans all namespace declarations
-	 * 
-	 * @param element
-	 * @return All declared namespaces
-	 */
-	public static Map<String, String> getNamespaceDeclarations(Element element) {
-		Map<String, String> namespaces = new HashMap<String, String>(10);
-		NamedNodeMap attributes = element.getAttributes();
-		for (int i = 0; i < attributes.getLength(); i++) {
-			Node node = attributes.item(i);
-			if ("xmlns".equals(node.getPrefix())) { //$NON-NLS-1$
-				String nsName = node.getLocalName();
-				String nsUri = node.getTextContent();
-				namespaces.put(nsName, nsUri);
-			}
-		}
-		return namespaces;
-	}
+  public static Element getFirstDirectChild(Element element) {
+    NodeList children = element.getChildNodes();
+    for (int i = 0; i < children.getLength(); i++) {
+      if (children.item(i).getNodeType() == Element.ELEMENT_NODE) {
+        return (Element) children.item(i);
+      }
+    }
+    return null;
+  }
 
-	static public Element parseElement(byte[] value) throws IOException,
-			SAXException {
-		InputSource source = new InputSource(new ByteArrayInputStream(value));
-		return parseElement(source);
-	}
+  /**
+   * Scans all namespace declarations
+   *
+   * @param element
+   * @return All declared namespaces
+   */
+  public static Map<String, String> getNamespaceDeclarations(Element element) {
+    Map<String, String> namespaces = new HashMap<String, String>(10);
+    NamedNodeMap attributes = element.getAttributes();
+    for (int i = 0; i < attributes.getLength(); i++) {
+      Node node = attributes.item(i);
+      if ("xmlns".equals(node.getPrefix())) { //$NON-NLS-1$
+        String nsName = node.getLocalName();
+        String nsUri = node.getTextContent();
+        namespaces.put(nsName, nsUri);
+      }
+    }
+    return namespaces;
+  }
 
-	static public Element parseElement(File file) throws IOException,
-			SAXException {
-		InputStream is = new FileInputStream(file);
-		BufferedInputStream bis = new BufferedInputStream(is, 10000);
-		return parseElement(bis, true);
-	}
+  static public Element parseElement(byte[] value) throws IOException,
+      SAXException {
+    InputSource source = new InputSource(new ByteArrayInputStream(value));
+    return parseElement(source);
+  }
 
-	static protected Element parseElement(InputSource source)
-			throws IOException, SAXException {
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		DocumentBuilder db;
-		try {
-			db = dbf.newDocumentBuilder();
-		} catch (ParserConfigurationException e) {
-			throw new IOException("parser configuration error", e);
-		}
-		Document doc = db.parse(source);
-		return doc.getDocumentElement();
-	}
+  static public Element parseElement(File file) throws IOException,
+      SAXException {
+    InputStream is = new FileInputStream(file);
+    BufferedInputStream bis = new BufferedInputStream(is, 10000);
+    return parseElement(bis, true);
+  }
 
-	static public Element parseElement(InputStream is, boolean close)
-			throws IOException, SAXException {
-		try {
-			InputSource source = new InputSource(is);
-			return parseElement(source);
-		} finally {
-			if (close) {
-				StreamTools.close(is);
-			}
-		}
-	}
+  static protected Element parseElement(InputSource source)
+      throws IOException, SAXException {
+    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    DocumentBuilder db;
+    try {
+      db = dbf.newDocumentBuilder();
+    } catch (ParserConfigurationException e) {
+      throw new IOException("parser configuration error", e);
+    }
+    Document doc = db.parse(source);
+    return doc.getDocumentElement();
+  }
 
-	static public Element parseElement(String value) throws IOException,
-			SAXException {
-		InputSource source = new InputSource(new StringReader(value));
-		return parseElement(source);
-	}
+  static public Element parseElement(InputStream is, boolean close)
+      throws IOException, SAXException {
+    try {
+      InputSource source = new InputSource(is);
+      return parseElement(source);
+    } finally {
+      if (close) {
+        StreamTools.close(is);
+      }
+    }
+  }
 
-	public static Element[] toElementArray(NodeList nodes) {
-		ArrayList<Element> result = new ArrayList<Element>();
-		for (int i = 0; i < nodes.getLength(); i++) {
-			if (nodes.item(i).getNodeType() == Element.ELEMENT_NODE) {
-				result.add((Element) nodes.item(i));
-			}
-		}
-		return (Element[]) ArrayTools.toArray(Element.class, result);
-	}
+  static public Element parseElement(String value) throws IOException,
+      SAXException {
+    InputSource source = new InputSource(new StringReader(value));
+    return parseElement(source);
+  }
 
-	private DOMTools() {
-		//
-	}
+  public static Element[] toElementArray(NodeList nodes) {
+    ArrayList<Element> result = new ArrayList<Element>();
+    for (int i = 0; i < nodes.getLength(); i++) {
+      if (nodes.item(i).getNodeType() == Element.ELEMENT_NODE) {
+        result.add((Element) nodes.item(i));
+      }
+    }
+    return (Element[]) ArrayTools.toArray(Element.class, result);
+  }
 }

@@ -38,8 +38,8 @@ package de.intarsys.tools.reflect;
  */
 public interface IBasicRegistrySupport {
 
-	public Object basicRegister(Object value) throws MethodException;
+  public Object basicRegister(Object value) throws MethodException;
 
-	public Object basicUnregister(Object value) throws MethodException;
+  public Object basicUnregister(Object value) throws MethodException;
 
 }

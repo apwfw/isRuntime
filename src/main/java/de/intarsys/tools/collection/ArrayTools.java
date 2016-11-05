@@ -36,47 +36,47 @@ import java.util.List;
 
 public class ArrayTools {
 
-	public static Object createFromList(Class objectClass, List list) {
-		Object array = Array.newInstance(objectClass, list.size());
-		int index = 0;
-		for (Iterator i = list.iterator(); i.hasNext(); index++) {
-			Object element = i.next();
-			Array.set(array, index, element);
-		}
-		return array;
-	}
+  private ArrayTools() {
+  }
 
-	public static void reverse(byte[] array) {
-		reverse(array, 0, array.length);
-	}
+  public static Object createFromList(Class objectClass, List list) {
+    Object array = Array.newInstance(objectClass, list.size());
+    int index = 0;
+    for (Iterator i = list.iterator(); i.hasNext(); index++) {
+      Object element = i.next();
+      Array.set(array, index, element);
+    }
+    return array;
+  }
 
-	public static void reverse(byte[] array, int index, int length) {
-		byte temp;
-		for (int i = 0; i < length / 2; i++) {
-			temp = array[index + i];
-			array[index + i] = array[index + length - i - 1];
-			array[index + length - i - 1] = temp;
-		}
-	}
+  public static void reverse(byte[] array) {
+    reverse(array, 0, array.length);
+  }
 
-	public static <T> void reverse(T[] array) {
-		reverse(array, 0, array.length);
-	}
+  public static void reverse(byte[] array, int index, int length) {
+    byte temp;
+    for (int i = 0; i < length / 2; i++) {
+      temp = array[index + i];
+      array[index + i] = array[index + length - i - 1];
+      array[index + length - i - 1] = temp;
+    }
+  }
 
-	public static <T> void reverse(T[] array, int index, int length) {
-		T temp;
-		for (int i = 0; i < length / 2; i++) {
-			temp = array[index + i];
-			array[index + i] = array[index + length - i - 1];
-			array[index + length - i - 1] = temp;
-		}
-	}
+  public static <T> void reverse(T[] array) {
+    reverse(array, 0, array.length);
+  }
 
-	public static Object toArray(Class clazz, Collection collection) {
-		return collection.toArray((Object[]) Array.newInstance(clazz,
-				collection.size()));
-	}
+  public static <T> void reverse(T[] array, int index, int length) {
+    T temp;
+    for (int i = 0; i < length / 2; i++) {
+      temp = array[index + i];
+      array[index + i] = array[index + length - i - 1];
+      array[index + length - i - 1] = temp;
+    }
+  }
 
-	private ArrayTools() {
-	}
+  public static Object toArray(Class clazz, Collection collection) {
+    return collection.toArray((Object[]) Array.newInstance(clazz,
+        collection.size()));
+  }
 }

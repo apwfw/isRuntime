@@ -29,48 +29,48 @@
  */
 package de.intarsys.tools.range;
 
-import java.io.IOException;
-import java.util.List;
-
 import de.intarsys.tools.functor.IArgs;
 import de.intarsys.tools.number.NumberWrapper;
 import de.intarsys.tools.string.StringTools;
 
+import java.io.IOException;
+import java.util.List;
+
 public class RangeTools {
 
-	public static IRange getRange(IArgs args, String argName,
-			IRange defaultValue) {
-		Object optionValue = args.get(argName);
-		if (optionValue == null) {
-			return defaultValue;
-		}
-		return toRange(optionValue);
-	}
+  public static IRange getRange(IArgs args, String argName,
+                                IRange defaultValue) {
+    Object optionValue = args.get(argName);
+    if (optionValue == null) {
+      return defaultValue;
+    }
+    return toRange(optionValue);
+  }
 
-	public static IRange toRange(Object object) {
-		if (object instanceof IRange) {
-			return (IRange) object;
-		} else if (object instanceof NumberWrapper) {
-			return new DefinedRange((NumberWrapper) object);
-		} else if (object instanceof Integer) {
-			return DefinedRange.create((Integer) object);
-		} else if (object instanceof List) {
-			return DefinedRange.create((List) object);
-		} else if (object instanceof String) {
-			String stringValue = (String) object;
-			if (StringTools.isNumeric(stringValue)) {
-				try {
-					return DefinedRange.create(stringValue);
-				} catch (IOException e) {
-					throw new IllegalArgumentException("range");
-				}
-			} else {
-				EnumRange rangeItem = (EnumRange) EnumRange.META
-						.getItemOrDefault(stringValue);
-				return new NamedRange(rangeItem);
-			}
-		}
-		throw new IllegalArgumentException("range");
-	}
+  public static IRange toRange(Object object) {
+    if (object instanceof IRange) {
+      return (IRange) object;
+    } else if (object instanceof NumberWrapper) {
+      return new DefinedRange((NumberWrapper) object);
+    } else if (object instanceof Integer) {
+      return DefinedRange.create((Integer) object);
+    } else if (object instanceof List) {
+      return DefinedRange.create((List) object);
+    } else if (object instanceof String) {
+      String stringValue = (String) object;
+      if (StringTools.isNumeric(stringValue)) {
+        try {
+          return DefinedRange.create(stringValue);
+        } catch (IOException e) {
+          throw new IllegalArgumentException("range");
+        }
+      } else {
+        EnumRange rangeItem = (EnumRange) EnumRange.META
+            .getItemOrDefault(stringValue);
+        return new NamedRange(rangeItem);
+      }
+    }
+    throw new IllegalArgumentException("range");
+  }
 
 }

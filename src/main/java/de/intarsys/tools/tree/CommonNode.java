@@ -32,368 +32,359 @@ import de.intarsys.tools.presentation.IPresentationSupport;
  * {@link INodeHandler} where the node behavior is encapsulated. This allows for
  * a more generic node implementation with the drawback of a "instanceof" style
  * of coding in the callback handler.
- * 
- * @param <T>
- *            The type of the wrapped POJO
+ *
+ * @param <T> The type of the wrapped POJO
  */
 abstract public class CommonNode<T> implements IPresentationSupport,
-		INotificationSupport, IAttributeSupport {
+    INotificationSupport, IAttributeSupport {
 
-	private static final CommonNode<?>[] NODES_EMPTY = new CommonNode[0];
+  private static final CommonNode<?>[] NODES_EMPTY = new CommonNode[0];
+  final private EventDispatcher eventDispatcher;
+  final private INotificationListener listenObjectChange = new INotificationListener() {
+    public void handleEvent(Event event) {
+      onEvent(event);
+    }
+  };
+  final private T object;
+  final private CommonNode<?> parent;
+  private AttributeMap attributes;
+  private CommonNode<?>[] cachedChildren;
+  final private INotificationListener listenObjectDestroy = new INotificationListener() {
+    public void handleEvent(Event event) {
+      onDestroy(event);
+    }
+  };
+  private INodeHandler nodeHandler;
 
-	/**
-	 * Return the node associated with object. If no such node exists it will be
-	 * created as a child of parent.
-	 * <p>
-	 * The strategy of associating an object o a node is up to the factory.
-	 * 
-	 * @param parent
-	 * @param role
-	 * @param object
-	 * @return Return the UNIQUE node associated with object.
-	 */
-	synchronized public static CommonNode<?> getNode(CommonNode<?> parent,
-			CommonNodeFactory<?> role, Object object) {
-		CommonNode<?> result = role.lookupNode(parent, object);
-		if (result == null) {
-			CommonNodeFactory<?> factory = role.lookupFactory(object);
-			result = factory.createNode(parent, object);
-			role.registerNode(parent, result);
-		}
-		return result;
-	}
+  protected CommonNode(CommonNode<?> parent, T object) {
+    super();
+    this.parent = parent;
+    if (parent != null) {
+      this.nodeHandler = parent.nodeHandler;
+    }
+    this.object = object;
+    this.eventDispatcher = new EventDispatcher(this);
+    arm();
+  }
 
-	private AttributeMap attributes;
+  /**
+   * Return the node associated with object. If no such node exists it will be
+   * created as a child of parent.
+   * <p>
+   * The strategy of associating an object o a node is up to the factory.
+   *
+   * @param parent
+   * @param role
+   * @param object
+   * @return Return the UNIQUE node associated with object.
+   */
+  synchronized public static CommonNode<?> getNode(CommonNode<?> parent,
+                                                   CommonNodeFactory<?> role, Object object) {
+    CommonNode<?> result = role.lookupNode(parent, object);
+    if (result == null) {
+      CommonNodeFactory<?> factory = role.lookupFactory(object);
+      result = factory.createNode(parent, object);
+      role.registerNode(parent, result);
+    }
+    return result;
+  }
 
-	private CommonNode<?>[] cachedChildren;
+  /*
+   * (non-Javadoc)
+   *
+   * @see
+   * de.intarsys.tools.event.INotificationSupport#addNotificationListener(
+   * de.intarsys.tools.event.EventType,
+   * de.intarsys.tools.event.INotificationListener)
+   */
+  public void addNotificationListener(EventType type,
+                                      INotificationListener listener) {
+    eventDispatcher.addNotificationListener(type, listener);
+  }
 
-	final private EventDispatcher eventDispatcher;
+  protected void arm() {
+    if (object instanceof INotificationSupport) {
+      ((INotificationSupport) object).addNotificationListener(
+          AttributeChangedEvent.ID, listenObjectChange);
+      ((INotificationSupport) object).addNotificationListener(
+          DestroyedEvent.ID, listenObjectDestroy);
+    }
+  }
 
-	final private INotificationListener listenObjectChange = new INotificationListener() {
-		public void handleEvent(Event event) {
-			onEvent(event);
-		}
-	};
+  protected CommonNode<?>[] basicCreateChildren() {
+    return NODES_EMPTY;
+  }
 
-	final private INotificationListener listenObjectDestroy = new INotificationListener() {
-		public void handleEvent(Event event) {
-			onDestroy(event);
-		}
-	};
+  protected String basicGetDescription() {
+    return getTip();
+  }
 
-	final private T object;
+  protected String basicGetIconName() {
+    return null;
+  }
 
-	final private CommonNode<?> parent;
+  protected String basicGetLabel() {
+    return object.toString();
+  }
 
-	private INodeHandler nodeHandler;
+  protected String basicGetObjectDescription() {
+    if (getObject() instanceof IPresentationSupport) {
+      return ((IPresentationSupport) getObject()).getDescription();
+    } else {
+      return basicGetDescription();
+    }
+  }
 
-	protected CommonNode(CommonNode<?> parent, T object) {
-		super();
-		this.parent = parent;
-		if (parent != null) {
-			this.nodeHandler = parent.nodeHandler;
-		}
-		this.object = object;
-		this.eventDispatcher = new EventDispatcher(this);
-		arm();
-	}
+  protected String basicGetObjectIconName() {
+    if (getObject() instanceof IPresentationSupport) {
+      return ((IPresentationSupport) getObject()).getIconName();
+    } else {
+      return basicGetIconName();
+    }
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.intarsys.tools.event.INotificationSupport#addNotificationListener(
-	 * de.intarsys.tools.event.EventType,
-	 * de.intarsys.tools.event.INotificationListener)
-	 */
-	public void addNotificationListener(EventType type,
-			INotificationListener listener) {
-		eventDispatcher.addNotificationListener(type, listener);
-	}
+  protected String basicGetObjectLabel() {
+    if (getObject() instanceof IPresentationSupport) {
+      return ((IPresentationSupport) getObject()).getLabel();
+    } else {
+      return basicGetLabel();
+    }
+  }
 
-	protected void arm() {
-		if (object instanceof INotificationSupport) {
-			((INotificationSupport) object).addNotificationListener(
-					AttributeChangedEvent.ID, listenObjectChange);
-			((INotificationSupport) object).addNotificationListener(
-					DestroyedEvent.ID, listenObjectDestroy);
-		}
-	}
+  protected String basicGetObjectTip() {
+    if (getObject() instanceof IPresentationSupport) {
+      return ((IPresentationSupport) getObject()).getTip();
+    } else {
+      return basicGetTip();
+    }
+  }
 
-	protected CommonNode<?>[] basicCreateChildren() {
-		return NODES_EMPTY;
-	}
+  protected String basicGetTip() {
+    return getLabel();
+  }
 
-	protected String basicGetDescription() {
-		return getTip();
-	}
+  protected boolean basicHasChildren() {
+    return cachedChildren == null || cachedChildren.length != 0;
+  }
 
-	protected String basicGetIconName() {
-		return null;
-	}
+  protected void disarm() {
+    if (object instanceof INotificationSupport) {
+      ((INotificationSupport) object).removeNotificationListener(
+          AttributeChangedEvent.ID, listenObjectChange);
+      ((INotificationSupport) object).removeNotificationListener(
+          DestroyedEvent.ID, listenObjectDestroy);
+    }
+  }
 
-	protected String basicGetLabel() {
-		return object.toString();
-	}
+  /**
+   * Dispose all resources and associations. This object is not reused any
+   * more
+   */
+  protected void dispose() {
+    disarm();
+    disposeChildren();
+    if (attributes != null) {
+      attributes.clear();
+    }
+    if (eventDispatcher != null) {
+      eventDispatcher.clear();
+    }
+  }
 
-	protected String basicGetObjectDescription() {
-		if (getObject() instanceof IPresentationSupport) {
-			return ((IPresentationSupport) getObject()).getDescription();
-		} else {
-			return basicGetDescription();
-		}
-	}
+  protected void disposeChildren() {
+    if (cachedChildren == null) {
+      return;
+    }
+    for (CommonNode<?> child : cachedChildren) {
+      child.dispose();
+    }
+    updateChildren();
+  }
 
-	protected String basicGetObjectIconName() {
-		if (getObject() instanceof IPresentationSupport) {
-			return ((IPresentationSupport) getObject()).getIconName();
-		} else {
-			return basicGetIconName();
-		}
-	}
+  synchronized public Object getAttribute(Object key) {
+    if (attributes == null) {
+      return null;
+    }
+    return attributes.getAttribute(key);
+  }
 
-	protected String basicGetObjectLabel() {
-		if (getObject() instanceof IPresentationSupport) {
-			return ((IPresentationSupport) getObject()).getLabel();
-		} else {
-			return basicGetLabel();
-		}
-	}
+  /**
+   * Return all child nodes of this.
+   *
+   * @return Return all child nodes of this.
+   */
+  public CommonNode<?>[] getChildren() {
+    if (cachedChildren == null) {
+      if (nodeHandler == null) {
+        cachedChildren = basicCreateChildren();
+      } else {
+        cachedChildren = nodeHandler.createChildren(this);
+      }
+    }
+    return cachedChildren;
+  }
 
-	protected String basicGetObjectTip() {
-		if (getObject() instanceof IPresentationSupport) {
-			return ((IPresentationSupport) getObject()).getTip();
-		} else {
-			return basicGetTip();
-		}
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.presentation.IPresentationSupport#getDescription()
+   */
+  public String getDescription() {
+    if (nodeHandler != null) {
+      return nodeHandler.getDescription(this);
+    }
+    return basicGetObjectDescription();
+  }
 
-	protected String basicGetTip() {
-		return getLabel();
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.presentation.IPresentationSupport#getIconName()
+   */
+  public String getIconName() {
+    if (nodeHandler != null) {
+      return nodeHandler.getIconName(this);
+    }
+    return basicGetObjectIconName();
+  }
 
-	protected boolean basicHasChildren() {
-		return cachedChildren == null || cachedChildren.length != 0;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.presentation.IPresentationSupport#getLabel()
+   */
+  public String getLabel() {
+    if (nodeHandler != null) {
+      return nodeHandler.getLabel(this);
+    }
+    return basicGetObjectLabel();
+  }
 
-	protected void disarm() {
-		if (object instanceof INotificationSupport) {
-			((INotificationSupport) object).removeNotificationListener(
-					AttributeChangedEvent.ID, listenObjectChange);
-			((INotificationSupport) object).removeNotificationListener(
-					DestroyedEvent.ID, listenObjectDestroy);
-		}
-	}
+  public INodeHandler getNodeHandler() {
+    return nodeHandler;
+  }
 
-	/**
-	 * Dispose all resources and associations. This object is not reused any
-	 * more
-	 */
-	protected void dispose() {
-		disarm();
-		disposeChildren();
-		if (attributes != null) {
-			attributes.clear();
-		}
-		if (eventDispatcher != null) {
-			eventDispatcher.clear();
-		}
-	}
+  public void setNodeHandler(INodeHandler nodeHandler) {
+    this.nodeHandler = nodeHandler;
+    unlinkChildren();
+  }
 
-	protected void disposeChildren() {
-		if (cachedChildren == null) {
-			return;
-		}
-		for (CommonNode<?> child : cachedChildren) {
-			child.dispose();
-		}
-		updateChildren();
-	}
+  /**
+   * The object represented by this node.
+   *
+   * @return The object represented by this node.
+   */
+  public T getObject() {
+    return object;
+  }
 
-	synchronized public Object getAttribute(Object key) {
-		if (attributes == null) {
-			return null;
-		}
-		return attributes.getAttribute(key);
-	}
+  /**
+   * The optional parent node.
+   *
+   * @return The optional parent node.
+   */
+  public CommonNode<?> getParent() {
+    return parent;
+  }
 
-	/**
-	 * Return all child nodes of this.
-	 * 
-	 * @return Return all child nodes of this.
-	 */
-	public CommonNode<?>[] getChildren() {
-		if (cachedChildren == null) {
-			if (nodeHandler == null) {
-				cachedChildren = basicCreateChildren();
-			} else {
-				cachedChildren = nodeHandler.createChildren(this);
-			}
-		}
-		return cachedChildren;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.presentation.IPresentationSupport#getTip()
+   */
+  public String getTip() {
+    if (nodeHandler != null) {
+      return nodeHandler.getTip(this);
+    }
+    return basicGetObjectTip();
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.presentation.IPresentationSupport#getDescription()
-	 */
-	public String getDescription() {
-		if (nodeHandler != null) {
-			return nodeHandler.getDescription(this);
-		}
-		return basicGetObjectDescription();
-	}
+  /**
+   * <code>true</code> if this node has children.
+   *
+   * @return <code>true</code> if this node has children.
+   */
+  public boolean hasChildren() {
+    if (nodeHandler == null) {
+      return basicHasChildren();
+    } else {
+      return nodeHandler.hasChildren(this);
+    }
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.presentation.IPresentationSupport#getIconName()
-	 */
-	public String getIconName() {
-		if (nodeHandler != null) {
-			return nodeHandler.getIconName(this);
-		}
-		return basicGetObjectIconName();
-	}
+  protected boolean isReusable() {
+    return true;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.presentation.IPresentationSupport#getLabel()
-	 */
-	public String getLabel() {
-		if (nodeHandler != null) {
-			return nodeHandler.getLabel(this);
-		}
-		return basicGetObjectLabel();
-	}
+  protected void onAttributeChanged(AttributeChangedEvent event) {
+    // redefine to update whatever attribute / children have changed...
+    triggerChange("label", null, null); //$NON-NLS-1$
+  }
 
-	public INodeHandler getNodeHandler() {
-		return nodeHandler;
-	}
+  protected void onDestroy(Event event) {
+    dispose();
+  }
 
-	/**
-	 * The object represented by this node.
-	 * 
-	 * @return The object represented by this node.
-	 */
-	public T getObject() {
-		return object;
-	}
+  protected void onEvent(Event event) {
+    if (event instanceof AttributeChangedEvent) {
+      onAttributeChanged((AttributeChangedEvent) event);
+    }
+  }
 
-	/**
-	 * The optional parent node.
-	 * 
-	 * @return The optional parent node.
-	 */
-	public CommonNode<?> getParent() {
-		return parent;
-	}
+  synchronized public Object removeAttribute(Object key) {
+    if (attributes == null) {
+      return null;
+    }
+    return attributes.removeAttribute(key);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.presentation.IPresentationSupport#getTip()
-	 */
-	public String getTip() {
-		if (nodeHandler != null) {
-			return nodeHandler.getTip(this);
-		}
-		return basicGetObjectTip();
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see
+   * de.intarsys.tools.event.INotificationSupport#removeNotificationListener
+   * (de.intarsys.tools.event.EventType,
+   * de.intarsys.tools.event.INotificationListener)
+   */
+  public void removeNotificationListener(EventType type,
+                                         INotificationListener listener) {
+    eventDispatcher.removeNotificationListener(type, listener);
+  }
 
-	/**
-	 * <code>true</code> if this node has children.
-	 * 
-	 * @return <code>true</code> if this node has children.
-	 */
-	public boolean hasChildren() {
-		if (nodeHandler == null) {
-			return basicHasChildren();
-		} else {
-			return nodeHandler.hasChildren(this);
-		}
-	}
+  synchronized public Object setAttribute(Object key, Object value) {
+    if (attributes == null) {
+      attributes = new AttributeMap();
+    }
+    return attributes.setAttribute(key, value);
+  }
 
-	protected boolean isReusable() {
-		return true;
-	}
+  protected void triggerChange(Object attribute, Object oldValue,
+                               Object newValue) {
+    eventDispatcher.triggerEvent(new AttributeChangedEvent(this, attribute,
+        oldValue, newValue));
+  }
 
-	protected void onAttributeChanged(AttributeChangedEvent event) {
-		// redefine to update whatever attribute / children have changed...
-		triggerChange("label", null, null); //$NON-NLS-1$
-	}
+  protected void unlink() {
+    if (!isReusable()) {
+      dispose();
+    }
+  }
 
-	protected void onDestroy(Event event) {
-		dispose();
-	}
+  protected void unlinkChildren() {
+    if (cachedChildren == null) {
+      return;
+    }
+    for (CommonNode<?> child : cachedChildren) {
+      child.unlink();
+    }
+    updateChildren();
+  }
 
-	protected void onEvent(Event event) {
-		if (event instanceof AttributeChangedEvent) {
-			onAttributeChanged((AttributeChangedEvent) event);
-		}
-	}
-
-	synchronized public Object removeAttribute(Object key) {
-		if (attributes == null) {
-			return null;
-		}
-		return attributes.removeAttribute(key);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.intarsys.tools.event.INotificationSupport#removeNotificationListener
-	 * (de.intarsys.tools.event.EventType,
-	 * de.intarsys.tools.event.INotificationListener)
-	 */
-	public void removeNotificationListener(EventType type,
-			INotificationListener listener) {
-		eventDispatcher.removeNotificationListener(type, listener);
-	}
-
-	synchronized public Object setAttribute(Object key, Object value) {
-		if (attributes == null) {
-			attributes = new AttributeMap();
-		}
-		return attributes.setAttribute(key, value);
-	}
-
-	public void setNodeHandler(INodeHandler nodeHandler) {
-		this.nodeHandler = nodeHandler;
-		unlinkChildren();
-	}
-
-	protected void triggerChange(Object attribute, Object oldValue,
-			Object newValue) {
-		eventDispatcher.triggerEvent(new AttributeChangedEvent(this, attribute,
-				oldValue, newValue));
-	}
-
-	protected void unlink() {
-		if (!isReusable()) {
-			dispose();
-		}
-	}
-
-	protected void unlinkChildren() {
-		if (cachedChildren == null) {
-			return;
-		}
-		for (CommonNode<?> child : cachedChildren) {
-			child.unlink();
-		}
-		updateChildren();
-	}
-
-	protected void updateChildren() {
-		if (cachedChildren == null) {
-			return;
-		}
-		cachedChildren = null;
-		triggerChange("children", null, null); //$NON-NLS-1$
-	}
+  protected void updateChildren() {
+    if (cachedChildren == null) {
+      return;
+    }
+    cachedChildren = null;
+    triggerChange("children", null, null); //$NON-NLS-1$
+  }
 }

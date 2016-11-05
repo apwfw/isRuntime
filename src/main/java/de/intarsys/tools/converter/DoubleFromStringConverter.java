@@ -34,20 +34,20 @@ package de.intarsys.tools.converter;
  */
 public class DoubleFromStringConverter implements IConverter<String, Double> {
 
-	public Double convert(String source) throws ConversionException {
-		try {
-			return Double.parseDouble(source);
-		} catch (Exception e) {
-			throw new ConversionException(e);
-		}
-	}
+  public Double convert(String source) throws ConversionException {
+    try {
+      return Double.parseDouble(source);
+    } catch (Exception e) {
+      throw new ConversionException(e);
+    }
+  }
 
-	public Class<?> getSourceType() {
-		return String.class;
-	}
+  public Class<?> getSourceType() {
+    return String.class;
+  }
 
-	public Class<?> getTargetType() {
-		return Double.class;
-	}
+  public Class<?> getTargetType() {
+    return Double.class;
+  }
 
 }

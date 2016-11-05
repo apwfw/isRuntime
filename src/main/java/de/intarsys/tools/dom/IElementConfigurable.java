@@ -36,6 +36,6 @@ import org.w3c.dom.Element;
  */
 public interface IElementConfigurable {
 
-	public void configure(Element element) throws ElementConfigurationException;
+  public void configure(Element element) throws ElementConfigurationException;
 
 }

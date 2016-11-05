@@ -39,38 +39,38 @@ import de.intarsys.tools.functor.IArgs;
  */
 public class EnvironmentResolver implements IStringEvaluator {
 
-	private IFileEnvironment environment;
+  private IFileEnvironment environment;
 
-	public EnvironmentResolver() {
-		this(FileEnvironment.get());
-	}
+  public EnvironmentResolver() {
+    this(FileEnvironment.get());
+  }
 
-	public EnvironmentResolver(IFileEnvironment environment) {
-		this.environment = environment;
-	}
+  public EnvironmentResolver(IFileEnvironment environment) {
+    this.environment = environment;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.intarsys.tools.expression.IStringEvaluator#evaluate(java.lang.String,
-	 * de.intarsys.tools.functor.IArgs)
-	 */
-	public Object evaluate(String expression, IArgs args)
-			throws EvaluationException {
-		if ("basedir".equals(expression)) { //$NON-NLS-1$
-			return environment.getBaseDir().getAbsolutePath();
-		}
-		if ("profiledir".equals(expression)) { //$NON-NLS-1$
-			return environment.getProfileDir().getAbsolutePath();
-		}
-		if ("workingdir".equals(expression)) { //$NON-NLS-1$
-			return environment.getWorkingDir().getAbsolutePath();
-		}
-		if ("tempdir".equals(expression)) { //$NON-NLS-1$
-			return environment.getTempDir().getAbsolutePath();
-		}
-		throw new EvaluationException("can't evaluate '" + expression + "'"); //$NON-NLS-1$ //$NON-NLS-2$
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see
+   * de.intarsys.tools.expression.IStringEvaluator#evaluate(java.lang.String,
+   * de.intarsys.tools.functor.IArgs)
+   */
+  public Object evaluate(String expression, IArgs args)
+      throws EvaluationException {
+    if ("basedir".equals(expression)) { //$NON-NLS-1$
+      return environment.getBaseDir().getAbsolutePath();
+    }
+    if ("profiledir".equals(expression)) { //$NON-NLS-1$
+      return environment.getProfileDir().getAbsolutePath();
+    }
+    if ("workingdir".equals(expression)) { //$NON-NLS-1$
+      return environment.getWorkingDir().getAbsolutePath();
+    }
+    if ("tempdir".equals(expression)) { //$NON-NLS-1$
+      return environment.getTempDir().getAbsolutePath();
+    }
+    throw new EvaluationException("can't evaluate '" + expression + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+  }
 
 }

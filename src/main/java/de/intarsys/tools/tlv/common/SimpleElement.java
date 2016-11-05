@@ -21,61 +21,60 @@ import java.io.IOException;
  * <p>
  * If N is zero, there is no value field, i.e., the data object is empty.
  * Otherwise (N > 0), the value field consists of N consecutive bytes.
- * 
  */
 public class SimpleElement extends TlvElement {
 
-	static public SimpleElement parseElement(byte[] encoded, int offset,
-			int length) throws IOException {
-		SimpleInputStream is = new SimpleInputStream(encoded, offset, length);
-		return (SimpleElement) is.readElement();
-	}
+  public SimpleElement(int identifier, byte[] buffer) {
+    super(identifier, buffer);
+    if (identifier <= 0 || identifier >= 255) {
+      throw new IllegalArgumentException("illegal identifier value");
+    }
+  }
 
-	static public TlvTemplate parseTemplate(byte[] encoded, int offset,
-			int length) throws IOException {
-		SimpleInputStream is = new SimpleInputStream(encoded, offset, length);
-		return new TlvTemplate(is);
-	}
+  public SimpleElement(int identifier, byte[] buffer, int offset, int length) {
+    super(identifier, buffer, offset, length);
+    if (identifier <= 0 || identifier >= 255) {
+      throw new IllegalArgumentException("illegal identifier value");
+    }
+  }
 
-	public SimpleElement(int identifier, byte[] buffer) {
-		super(identifier, buffer);
-		if (identifier <= 0 || identifier >= 255) {
-			throw new IllegalArgumentException("illegal identifier value");
-		}
-	}
+  static public SimpleElement parseElement(byte[] encoded, int offset,
+                                           int length) throws IOException {
+    SimpleInputStream is = new SimpleInputStream(encoded, offset, length);
+    return (SimpleElement) is.readElement();
+  }
 
-	public SimpleElement(int identifier, byte[] buffer, int offset, int length) {
-		super(identifier, buffer, offset, length);
-		if (identifier <= 0 || identifier >= 255) {
-			throw new IllegalArgumentException("illegal identifier value");
-		}
-	}
+  static public TlvTemplate parseTemplate(byte[] encoded, int offset,
+                                          int length) throws IOException {
+    SimpleInputStream is = new SimpleInputStream(encoded, offset, length);
+    return new TlvTemplate(is);
+  }
 
-	@Override
-	public TlvInputStream createTlvInputStream(byte[] pBytes, int pOffset,
-			int pLength) throws TlvFormatException {
-		return new SimpleInputStream(pBytes, pOffset, pLength);
-	}
+  @Override
+  public TlvInputStream createTlvInputStream(byte[] pBytes, int pOffset,
+                                             int pLength) throws TlvFormatException {
+    return new SimpleInputStream(pBytes, pOffset, pLength);
+  }
 
-	@Override
-	public byte[] getEncoded() {
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		out.write(getIdentifier());
-		if (getLength() < 255) {
-			out.write(getLength());
-		} else if (getLength() <= 0xFFFF) {
-			out.write(0xff);
-			out.write((getLength() >> 8) & 0xFF);
-			out.write(getLength() & 0xFF);
-		} else {
-			throw new IllegalArgumentException("size > 0xFFFF not supported"); //$NON-NLS-1$
-		}
-		out.write(buffer, offset, length);
-		return out.toByteArray();
-	}
+  @Override
+  public byte[] getEncoded() {
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    out.write(getIdentifier());
+    if (getLength() < 255) {
+      out.write(getLength());
+    } else if (getLength() <= 0xFFFF) {
+      out.write(0xff);
+      out.write((getLength() >> 8) & 0xFF);
+      out.write(getLength() & 0xFF);
+    } else {
+      throw new IllegalArgumentException("size > 0xFFFF not supported"); //$NON-NLS-1$
+    }
+    out.write(buffer, offset, length);
+    return out.toByteArray();
+  }
 
-	@Override
-	public boolean isComposite() {
-		return false;
-	}
+  @Override
+  public boolean isComposite() {
+    return false;
+  }
 }

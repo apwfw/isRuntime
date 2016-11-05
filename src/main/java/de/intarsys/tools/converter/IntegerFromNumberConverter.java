@@ -34,16 +34,16 @@ package de.intarsys.tools.converter;
  */
 public class IntegerFromNumberConverter implements IConverter<Number, Integer> {
 
-	public Integer convert(Number source) throws ConversionException {
-		return source.intValue();
-	}
+  public Integer convert(Number source) throws ConversionException {
+    return source.intValue();
+  }
 
-	public Class<?> getSourceType() {
-		return Number.class;
-	}
+  public Class<?> getSourceType() {
+    return Number.class;
+  }
 
-	public Class<?> getTargetType() {
-		return Integer.class;
-	}
+  public Class<?> getTargetType() {
+    return Integer.class;
+  }
 
 }

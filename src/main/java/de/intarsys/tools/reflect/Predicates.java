@@ -4,94 +4,93 @@ import de.intarsys.tools.functor.IArgs;
 
 public class Predicates {
 
-	public static class Not implements IMethodHandler {
-		private final IMethodHandler operator;
+  public static final IMethodHandler FALSE = new IMethodHandler() {
+    public Object invoke(Object receiver, IArgs args)
+        throws MethodInvocationException {
+      return false;
+    }
+  };
+  public static final IMethodHandler TRUE = new IMethodHandler() {
+    public Object invoke(Object receiver, IArgs args)
+        throws MethodInvocationException {
+      return true;
+    }
+  };
 
-		public Not(IMethodHandler operator) {
-			super();
-			this.operator = operator;
-		}
+  public static IMethodHandler and(IMethodHandler... op) {
+    if (op == null || op.length == 0) {
+      return FALSE;
+    }
+    if (op.length == 1) {
+      return op[0];
+    }
+    return new And(op);
+  }
 
-		public Object invoke(Object receiver, IArgs args)
-				throws MethodInvocationException {
-			return operator.invoke(receiver, args) == Boolean.FALSE;
-		}
-	}
+  public static IMethodHandler or(IMethodHandler... op) {
+    if (op == null || op.length == 0) {
+      return TRUE;
+    }
+    if (op.length == 1) {
+      return op[0];
+    }
+    return new Or(op);
+  }
 
-	public static class And implements IMethodHandler {
-		private final IMethodHandler[] operators;
+  public static IMethodHandler not(IMethodHandler op) {
+    return new Not(op);
+  }
 
-		public And(IMethodHandler[] operators) {
-			super();
-			this.operators = operators;
-		}
+  public static class Not implements IMethodHandler {
+    private final IMethodHandler operator;
 
-		public Object invoke(Object receiver, IArgs args)
-				throws MethodInvocationException {
-			for (IMethodHandler handler : operators) {
-				if (handler.invoke(receiver, args) != Boolean.TRUE) {
-					return false;
-				}
-			}
-			return true;
-		}
-	}
+    public Not(IMethodHandler operator) {
+      super();
+      this.operator = operator;
+    }
 
-	public static class Or implements IMethodHandler {
-		private final IMethodHandler[] operators;
+    public Object invoke(Object receiver, IArgs args)
+        throws MethodInvocationException {
+      return operator.invoke(receiver, args) == Boolean.FALSE;
+    }
+  }
 
-		public Or(IMethodHandler[] operators) {
-			super();
-			this.operators = operators;
-		}
+  public static class And implements IMethodHandler {
+    private final IMethodHandler[] operators;
 
-		public Object invoke(Object receiver, IArgs args)
-				throws MethodInvocationException {
-			for (IMethodHandler handler : operators) {
-				if (handler.invoke(receiver, args) == Boolean.TRUE) {
-					return true;
-				}
-			}
-			return false;
-		}
-	}
+    public And(IMethodHandler[] operators) {
+      super();
+      this.operators = operators;
+    }
 
-	public static final IMethodHandler FALSE = new IMethodHandler() {
-		public Object invoke(Object receiver, IArgs args)
-				throws MethodInvocationException {
-			return false;
-		}
-	};
+    public Object invoke(Object receiver, IArgs args)
+        throws MethodInvocationException {
+      for (IMethodHandler handler : operators) {
+        if (handler.invoke(receiver, args) != Boolean.TRUE) {
+          return false;
+        }
+      }
+      return true;
+    }
+  }
 
-	public static final IMethodHandler TRUE = new IMethodHandler() {
-		public Object invoke(Object receiver, IArgs args)
-				throws MethodInvocationException {
-			return true;
-		}
-	};
+  public static class Or implements IMethodHandler {
+    private final IMethodHandler[] operators;
 
-	public static IMethodHandler and(IMethodHandler... op) {
-		if (op == null || op.length == 0) {
-			return FALSE;
-		}
-		if (op.length == 1) {
-			return op[0];
-		}
-		return new And(op);
-	}
+    public Or(IMethodHandler[] operators) {
+      super();
+      this.operators = operators;
+    }
 
-	public static IMethodHandler or(IMethodHandler... op) {
-		if (op == null || op.length == 0) {
-			return TRUE;
-		}
-		if (op.length == 1) {
-			return op[0];
-		}
-		return new Or(op);
-	}
-
-	public static IMethodHandler not(IMethodHandler op) {
-		return new Not(op);
-	}
+    public Object invoke(Object receiver, IArgs args)
+        throws MethodInvocationException {
+      for (IMethodHandler handler : operators) {
+        if (handler.invoke(receiver, args) == Boolean.TRUE) {
+          return true;
+        }
+      }
+      return false;
+    }
+  }
 
 }

@@ -34,13 +34,13 @@ package de.intarsys.tools.authenticate;
  */
 public class NullPasswordProvider implements IPasswordProvider {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.authenticate.IPasswordProvider#getPassword()
-	 */
-	public char[] getPassword() {
-		return null;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.authenticate.IPasswordProvider#getPassword()
+   */
+  public char[] getPassword() {
+    return null;
+  }
 
 }

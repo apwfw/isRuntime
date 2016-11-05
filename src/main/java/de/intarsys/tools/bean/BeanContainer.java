@@ -31,17 +31,16 @@ package de.intarsys.tools.bean;
 
 /**
  * Singleton access to the {@link IBeanContainer}.
- * 
  */
 public class BeanContainer {
 
-	private static IBeanContainer ACTIVE = new StandardBeanContainer();
+  private static IBeanContainer ACTIVE = new StandardBeanContainer();
 
-	public static IBeanContainer get() {
-		return ACTIVE;
-	}
+  public static IBeanContainer get() {
+    return ACTIVE;
+  }
 
-	public static void set(IBeanContainer active) {
-		ACTIVE = active;
-	}
+  public static void set(IBeanContainer active) {
+    ACTIVE = active;
+  }
 }

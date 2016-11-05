@@ -34,11 +34,11 @@ package de.intarsys.tools.objectmodel;
  */
 public interface IClassSelector {
 
-	/**
-	 * A name for the {@link IClassSelector}.
-	 * 
-	 * @return A name for the {@link IClassSelector}.
-	 */
-	public String getName();
+  /**
+   * A name for the {@link IClassSelector}.
+   *
+   * @return A name for the {@link IClassSelector}.
+   */
+  public String getName();
 
 }

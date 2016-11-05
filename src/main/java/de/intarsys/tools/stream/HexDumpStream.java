@@ -35,85 +35,83 @@ import java.io.OutputStream;
 
 /**
  * A stream object dumping its data in hex format.
- * 
  */
 public class HexDumpStream extends FilterOutputStream {
-	private static final char[] hex = { '0', '1', '2', '3', '4', '5', '6', '7',
-			'8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
+  private static final char[] hex = {'0', '1', '2', '3', '4', '5', '6', '7',
+      '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
-	private static int BYTES_PER_LINE = 16;
+  private static int BYTES_PER_LINE = 16;
 
-	private int tbc = 0;
+  private int tbc = 0;
 
-	private int lbc = 0;
+  private int lbc = 0;
 
-	private char[] line = new char[BYTES_PER_LINE];
+  private char[] line = new char[BYTES_PER_LINE];
 
-	/**
-	 * Creates a new HexOutputStream.
-	 * 
-	 * @param out
-	 *            The input stream.
-	 */
-	public HexDumpStream(OutputStream out) {
-		super(out);
-	}
+  /**
+   * Creates a new HexOutputStream.
+   *
+   * @param out The input stream.
+   */
+  public HexDumpStream(OutputStream out) {
+    super(out);
+  }
 
-	@Override
-	public void flush() throws IOException {
-		String tbcString = Long.toHexString(tbc);
-		int i;
-		for (i = tbcString.length(); i < 8;) {
-			out.write('0');
-			i++;
-		}
-		out.write(tbcString.getBytes());
-		out.write(' ');
-		for (i = 0; i < lbc;) {
-			out.write(hex[((line[i] >> 4) & 0xF)]);
-			out.write(hex[((line[i] >> 0) & 0xF)]);
-			out.write(' ');
-			i++;
-		}
-		for (; i < BYTES_PER_LINE;) {
-			out.write(' ');
-			out.write(' ');
-			out.write(' ');
-			i++;
-		}
-		out.write(' ');
-		for (i = 0; i < lbc;) {
-			if (Character.isISOControl(line[i])) {
-				out.write('.');
-			} else {
-				out.write(line[i]);
-			}
-			i++;
-		}
-		out.write(System.getProperty("line.separator").getBytes());
-		tbc += lbc;
-		lbc = 0;
-		super.flush();
-	}
+  @Override
+  public void flush() throws IOException {
+    String tbcString = Long.toHexString(tbc);
+    int i;
+    for (i = tbcString.length(); i < 8; ) {
+      out.write('0');
+      i++;
+    }
+    out.write(tbcString.getBytes());
+    out.write(' ');
+    for (i = 0; i < lbc; ) {
+      out.write(hex[((line[i] >> 4) & 0xF)]);
+      out.write(hex[((line[i] >> 0) & 0xF)]);
+      out.write(' ');
+      i++;
+    }
+    for (; i < BYTES_PER_LINE; ) {
+      out.write(' ');
+      out.write(' ');
+      out.write(' ');
+      i++;
+    }
+    out.write(' ');
+    for (i = 0; i < lbc; ) {
+      if (Character.isISOControl(line[i])) {
+        out.write('.');
+      } else {
+        out.write(line[i]);
+      }
+      i++;
+    }
+    out.write(System.getProperty("line.separator").getBytes());
+    tbc += lbc;
+    lbc = 0;
+    super.flush();
+  }
 
-	@Override
-	public synchronized void write(byte[] b) throws IOException {
-		write(b, 0, b.length);
-	}
+  @Override
+  public synchronized void write(byte[] b) throws IOException {
+    write(b, 0, b.length);
+  }
 
-	@Override
-	public synchronized void write(byte[] b, int off, int len)
-			throws IOException {
-		for (int i = 0; i < len; i++) {
-			write(b[off + i]);
-		}
-	}
+  @Override
+  public synchronized void write(byte[] b, int off, int len)
+      throws IOException {
+    for (int i = 0; i < len; i++) {
+      write(b[off + i]);
+    }
+  }
 
-	@Override
-	public synchronized void write(int b) throws IOException {
-		line[lbc++] = (char) b;
-		if (lbc >= BYTES_PER_LINE) {
-			flush();
-		}
-	}
+  @Override
+  public synchronized void write(int b) throws IOException {
+    line[lbc++] = (char) b;
+    if (lbc >= BYTES_PER_LINE) {
+      flush();
+    }
+  }
 }

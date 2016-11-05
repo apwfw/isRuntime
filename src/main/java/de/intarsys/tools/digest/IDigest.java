@@ -31,18 +31,17 @@ package de.intarsys.tools.digest;
 
 /**
  * A digital "fingerprint" for a piece of data.
- * 
  */
 public interface IDigest {
 
-	/**
-	 * @return the digest algorithm's JCA name
-	 */
-	public String getAlgorithmName();
+  /**
+   * @return the digest algorithm's JCA name
+   */
+  public String getAlgorithmName();
 
-	/**
-	 * @return raw bytes
-	 */
-	public byte[] getBytes();
+  /**
+   * @return raw bytes
+   */
+  public byte[] getBytes();
 
 }

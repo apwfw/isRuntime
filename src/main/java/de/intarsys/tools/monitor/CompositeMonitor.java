@@ -29,131 +29,132 @@
  */
 package de.intarsys.tools.monitor;
 
+import de.intarsys.tools.dom.ElementConfigurationException;
+import de.intarsys.tools.reflect.ObjectCreationException;
+import org.w3c.dom.Element;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.w3c.dom.Element;
-
-import de.intarsys.tools.dom.ElementConfigurationException;
-import de.intarsys.tools.reflect.ObjectCreationException;
-
 public class CompositeMonitor extends AbstractMonitor {
-	/** The monitors that are contained */
-	private IMonitor[] children = new IMonitor[0];
+  /**
+   * The monitors that are contained
+   */
+  private IMonitor[] children = new IMonitor[0];
 
-	public CompositeMonitor() {
-		super();
-	}
+  public CompositeMonitor() {
+    super();
+  }
 
-	public CompositeMonitor(String name) {
-		super(name);
-	}
+  public CompositeMonitor(String name) {
+    super(name);
+  }
 
-	public void addMonitor(IMonitor monitor) {
-		IMonitor[] newMonitors;
-		int count = 0;
-		if (children == null) {
-			count = 1;
-		} else {
-			count = children.length + 1;
-		}
-		newMonitors = new IMonitor[count];
-		System.arraycopy(children, 0, newMonitors, 0, count - 1);
-		newMonitors[count - 1] = monitor;
-		children = newMonitors;
-	}
+  public void addMonitor(IMonitor monitor) {
+    IMonitor[] newMonitors;
+    int count = 0;
+    if (children == null) {
+      count = 1;
+    } else {
+      count = children.length + 1;
+    }
+    newMonitors = new IMonitor[count];
+    System.arraycopy(children, 0, newMonitors, 0, count - 1);
+    newMonitors[count - 1] = monitor;
+    children = newMonitors;
+  }
 
-	@Override
-	public void configure(Element element) throws ElementConfigurationException {
-		super.configure(element);
-		try {
-			children = MonitorFactory.createMonitors(element);
-		} catch (ObjectCreationException e) {
-			throw new ElementConfigurationException(e);
-		}
-	}
+  @Override
+  public void configure(Element element) throws ElementConfigurationException {
+    super.configure(element);
+    try {
+      children = MonitorFactory.createMonitors(element);
+    } catch (ObjectCreationException e) {
+      throw new ElementConfigurationException(e);
+    }
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.monitor.AbstractMonitor#createMonitorTrace()
-	 */
-	@Override
-	protected CompositeMonitorTrace createMonitorTrace() {
-		ITrace[] traces = new ITrace[getChildren().length];
-		for (int i = 0; i < children.length; i++) {
-			traces[i] = children[i].getCurrentTrace();
-		}
-		CompositeMonitorTrace trace = new CompositeMonitorTrace(this, traces);
-		return trace;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.monitor.AbstractMonitor#createMonitorTrace()
+   */
+  @Override
+  protected CompositeMonitorTrace createMonitorTrace() {
+    ITrace[] traces = new ITrace[getChildren().length];
+    for (int i = 0; i < children.length; i++) {
+      traces[i] = children[i].getCurrentTrace();
+    }
+    CompositeMonitorTrace trace = new CompositeMonitorTrace(this, traces);
+    return trace;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.monitor.ICompositeMonitor#getChildren()
-	 */
-	public IMonitor[] getChildren() {
-		return children;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.monitor.ICompositeMonitor#getChildren()
+   */
+  public IMonitor[] getChildren() {
+    return children;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.monitor.IMonitor#getFormattedData()
-	 */
-	public Map getData() {
-		Map result = new HashMap();
-		for (int i = 0; i < children.length; i++) {
-			Map childData = children[i].getData();
-			for (Iterator it = childData.entrySet().iterator(); it.hasNext();) {
-				Map.Entry entry = (Map.Entry) it.next();
-				result.put("" + children[i].getName() + "." + entry.getKey(),
-						entry.getValue());
-			}
-		}
-		return result;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.monitor.IMonitor#getFormattedData()
+   */
+  public Map getData() {
+    Map result = new HashMap();
+    for (int i = 0; i < children.length; i++) {
+      Map childData = children[i].getData();
+      for (Iterator it = childData.entrySet().iterator(); it.hasNext(); ) {
+        Map.Entry entry = (Map.Entry) it.next();
+        result.put("" + children[i].getName() + "." + entry.getKey(),
+            entry.getValue());
+      }
+    }
+    return result;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.monitor.IMonitor#getFormattedData()
-	 */
-	public Map getFormattedData() {
-		Map result = new HashMap();
-		for (int i = 0; i < children.length; i++) {
-			Map childData = children[i].getFormattedData();
-			for (Iterator it = childData.entrySet().iterator(); it.hasNext();) {
-				Map.Entry entry = (Map.Entry) it.next();
-				result.put("" + children[i].getName() + "." + entry.getKey(),
-						entry.getValue());
-			}
-		}
-		return result;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.monitor.IMonitor#getFormattedData()
+   */
+  public Map getFormattedData() {
+    Map result = new HashMap();
+    for (int i = 0; i < children.length; i++) {
+      Map childData = children[i].getFormattedData();
+      for (Iterator it = childData.entrySet().iterator(); it.hasNext(); ) {
+        Map.Entry entry = (Map.Entry) it.next();
+        result.put("" + children[i].getName() + "." + entry.getKey(),
+            entry.getValue());
+      }
+    }
+    return result;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.monitor.IMonitor#reset()
-	 */
-	@Override
-	public void reset() {
-		super.reset();
-		for (int i = 0; i < children.length; i++) {
-			children[i].reset();
-		}
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.monitor.IMonitor#reset()
+   */
+  @Override
+  public void reset() {
+    super.reset();
+    for (int i = 0; i < children.length; i++) {
+      children[i].reset();
+    }
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "Composite Monitor " + getName();
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    return "Composite Monitor " + getName();
+  }
 }

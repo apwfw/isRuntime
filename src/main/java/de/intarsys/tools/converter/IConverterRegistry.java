@@ -34,12 +34,12 @@ package de.intarsys.tools.converter;
  */
 public interface IConverterRegistry {
 
-	public <T> T convert(Object source, Class<T> targetType)
-			throws ConversionException;
+  public <T> T convert(Object source, Class<T> targetType)
+      throws ConversionException;
 
-	public IConverter lookupConverter(Class targetType);
+  public IConverter lookupConverter(Class targetType);
 
-	public void registerConverter(IConverter converter);
+  public void registerConverter(IConverter converter);
 
-	public void unregisterConverter(IConverter converter);
+  public void unregisterConverter(IConverter converter);
 }

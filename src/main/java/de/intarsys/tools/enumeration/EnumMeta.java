@@ -39,104 +39,105 @@ import java.util.List;
  * The meta data for an enumeration implementation. This is a completely generic
  * implementation - you should only subclass "EnumItem" to define a new
  * enumeration.
- * 
  */
 public class EnumMeta<T extends EnumItem> {
 
-	final private Class enumClazz;
+  final private Class enumClazz;
 
-	final private List<T> items = new ArrayList<T>();
+  final private List<T> items = new ArrayList<T>();
 
-	private T enumDefault = null;
+  private T enumDefault = null;
 
-	/**
-	 * 
-	 */
-	public EnumMeta(Class enumClazz) {
-		super();
-		this.enumClazz = enumClazz;
-	}
+  /**
+   *
+   */
+  public EnumMeta(Class enumClazz) {
+    super();
+    this.enumClazz = enumClazz;
+  }
 
-	protected void addItem(T item) {
-		items.add(item);
-		if (items.size() == 1) {
-			item.setDefault();
-		}
-	}
+  protected void addItem(T item) {
+    items.add(item);
+    if (items.size() == 1) {
+      item.setDefault();
+    }
+  }
 
-	public T getDefault() {
-		return enumDefault;
-	}
+  public T getDefault() {
+    return enumDefault;
+  }
 
-	public Class getEnumClazz() {
-		return enumClazz;
-	}
+  protected void setDefault(T item) {
+    enumDefault = item;
+  }
 
-	public T getItem(String id) {
-		if (id == null) {
-			return null;
-		}
-		for (T element : items) {
-			if (element.getId().equals(id)) {
-				return element;
-			}
-		}
-		return null;
-	}
+  public Class getEnumClazz() {
+    return enumClazz;
+  }
 
-	public T getItemOrDefault(String id) {
-		T item = getItem(id);
-		if (item == null) {
-			item = getDefault();
-		}
-		return item;
-	}
+  public T getItem(String id) {
+    if (id == null) {
+      return null;
+    }
+    for (T element : items) {
+      if (element.getId().equals(id)) {
+        return element;
+      }
+    }
+    return null;
+  }
 
-	public T[] getItems() {
-		return items.toArray((T[]) Array.newInstance(enumClazz, items.size()));
-	}
+  public T getItemOrDefault(String id) {
+    T item = getItem(id);
+    if (item == null) {
+      item = getDefault();
+    }
+    return item;
+  }
 
-	public T getMax() {
-		T max = null;
-		for (T element : items) {
-			if ((max == null) || (element.getWeight() > max.getWeight())) {
-				max = element;
-			}
-		}
-		return max;
-	}
+  public T[] getItems() {
+    return items.toArray((T[]) Array.newInstance(enumClazz, items.size()));
+  }
 
-	public T getMin() {
-		T min = null;
-		for (T element : items) {
-			if ((min == null) || (element.getWeight() < min.getWeight())) {
-				min = element;
-			}
-		}
-		return min;
-	}
+  public T getMax() {
+    T max = null;
+    for (T element : items) {
+      if ((max == null) || (element.getWeight() > max.getWeight())) {
+        max = element;
+      }
+    }
+    return max;
+  }
 
-	protected void setDefault(T item) {
-		enumDefault = item;
-	}
+  public T getMin() {
+    T min = null;
+    for (T element : items) {
+      if ((min == null) || (element.getWeight() < min.getWeight())) {
+        min = element;
+      }
+    }
+    return min;
+  }
 
-	/**
-	 * Sort the items in ascending label order.
-	 */
-	public void sort() {
-		sort(new Comparator<EnumItem>() {
-			public int compare(EnumItem o1, EnumItem o2) {
-				return o1.getLabel().compareToIgnoreCase(o2.getLabel());
-			};
-		});
-	}
+  /**
+   * Sort the items in ascending label order.
+   */
+  public void sort() {
+    sort(new Comparator<EnumItem>() {
+      public int compare(EnumItem o1, EnumItem o2) {
+        return o1.getLabel().compareToIgnoreCase(o2.getLabel());
+      }
 
-	/**
-	 * Sort the items using the given Comparator.
-	 * 
-	 * @param c
-	 */
-	public void sort(Comparator<EnumItem> c) {
-		Collections.sort(items, c);
-	}
+      ;
+    });
+  }
+
+  /**
+   * Sort the items using the given Comparator.
+   *
+   * @param c
+   */
+  public void sort(Comparator<EnumItem> c) {
+    Collections.sort(items, c);
+  }
 }

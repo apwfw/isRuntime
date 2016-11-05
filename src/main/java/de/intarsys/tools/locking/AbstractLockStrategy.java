@@ -31,11 +31,10 @@ package de.intarsys.tools.locking;
 
 /**
  * Abstract {@link ILockStrategy} implementation.
- * 
  */
 abstract public class AbstractLockStrategy implements ILockStrategy {
 
-	protected AbstractLockStrategy() {
-		super();
-	}
+  protected AbstractLockStrategy() {
+    super();
+  }
 }

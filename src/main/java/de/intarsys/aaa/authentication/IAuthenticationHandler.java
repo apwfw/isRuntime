@@ -29,9 +29,9 @@
  */
 package de.intarsys.aaa.authentication;
 
-import java.io.Serializable;
-
 import de.intarsys.tools.authenticate.ICredential;
+
+import java.io.Serializable;
 
 /**
  * The authentication strategy.
@@ -39,29 +39,28 @@ import de.intarsys.tools.authenticate.ICredential;
  * The {@link IAuthenticationHandler} manages the login/logout of a subject.
  * After successful authentication with a given {@link ICredential}, getSubject
  * returns the currently active authenticated object.
- * 
  */
 public interface IAuthenticationHandler extends Serializable {
 
-	/**
-	 * The authenticated subject for the active authentication context.
-	 * 
-	 * @return The authenticated subject for the active authentication context.
-	 */
-	public ISubject getSubject();
+  /**
+   * The authenticated subject for the active authentication context.
+   *
+   * @return The authenticated subject for the active authentication context.
+   */
+  public ISubject getSubject();
 
-	/**
-	 * Perform the necessary authentication procedure for the given credential.
-	 * If successful, establish the subject for the active authentication
-	 * context.
-	 * 
-	 * @param credential
-	 * @throws AuthenticationException
-	 */
-	public void login(ICredential credential) throws AuthenticationException;
+  /**
+   * Perform the necessary authentication procedure for the given credential.
+   * If successful, establish the subject for the active authentication
+   * context.
+   *
+   * @param credential
+   * @throws AuthenticationException
+   */
+  public void login(ICredential credential) throws AuthenticationException;
 
-	/**
-	 * Remove the subject from the current authentication context.
-	 */
-	public void logout();
+  /**
+   * Remove the subject from the current authentication context.
+   */
+  public void logout();
 }

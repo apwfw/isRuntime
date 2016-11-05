@@ -31,22 +31,21 @@ package de.intarsys.tools.preferences;
 
 /**
  * A {@link PrefValueHolder} implementation for boolean typed values.
- * 
  */
 public class BooleanPrefValueHolder extends PrefValueHolder {
 
-	public BooleanPrefValueHolder(IPreferences preferences, String key,
-			boolean defaultValue) {
-		super(preferences, key, defaultValue);
-	}
+  public BooleanPrefValueHolder(IPreferences preferences, String key,
+                                boolean defaultValue) {
+    super(preferences, key, defaultValue);
+  }
 
-	public Object get() {
-		return getPreferences().getBoolean(getKey(),
-				(Boolean) getDefaultValue());
-	}
+  public Object get() {
+    return getPreferences().getBoolean(getKey(),
+        (Boolean) getDefaultValue());
+  }
 
-	public Object set(Object newValue) {
-		getPreferences().put(getKey(), (Boolean) newValue);
-		return null;
-	}
+  public Object set(Object newValue) {
+    getPreferences().put(getKey(), (Boolean) newValue);
+    return null;
+  }
 }

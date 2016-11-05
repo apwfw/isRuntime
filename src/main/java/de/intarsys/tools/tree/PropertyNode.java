@@ -1,12 +1,12 @@
 package de.intarsys.tools.tree;
 
-import java.text.Format;
-
 import de.intarsys.tools.event.AttributeChangedEvent;
 import de.intarsys.tools.presentation.IPresentationSupport;
 import de.intarsys.tools.reflect.FieldException;
 import de.intarsys.tools.reflect.ObjectTools;
 import de.intarsys.tools.string.StringTools;
+
+import java.text.Format;
 
 /**
  * A common superclass for a node providing detail information on a specifc
@@ -15,83 +15,82 @@ import de.intarsys.tools.string.StringTools;
  */
 public class PropertyNode extends CommonNode {
 
-	private Format propertyFormat;
+  final private boolean reusable;
+  private Format propertyFormat;
+  private String propertyLabel;
+  private String propertyName;
 
-	private String propertyLabel;
+  public PropertyNode(CommonNode parent, Object object, String label,
+                      String name, boolean reusable) {
+    super(parent, object);
+    this.propertyLabel = label;
+    this.propertyName = name;
+    this.reusable = reusable;
+  }
 
-	private String propertyName;
+  ;
 
-	final private boolean reusable;
+  @Override
+  public String getIconName() {
+    return "icons/treenode_property"; //$NON-NLS-1$
+  }
 
-	public PropertyNode(CommonNode parent, Object object, String label,
-			String name, boolean reusable) {
-		super(parent, object);
-		this.propertyLabel = label;
-		this.propertyName = name;
-		this.reusable = reusable;
-	};
+  @Override
+  public String getLabel() {
+    Object value = getPropertyValue();
+    String valueLabel;
+    if (propertyFormat != null) {
+      try {
+        valueLabel = propertyFormat.format(value);
+      } catch (Exception e) {
+        valueLabel = StringTools.safeString(value);
+      }
+    } else {
+      if (value instanceof IPresentationSupport) {
+        valueLabel = ((IPresentationSupport) value).getLabel();
+      } else {
+        valueLabel = StringTools.safeString(value);
+      }
+    }
+    return getPropertyLabel() + "=" + valueLabel; //$NON-NLS-1$
+  }
 
-	@Override
-	public String getIconName() {
-		return "icons/treenode_property"; //$NON-NLS-1$
-	}
+  public Format getPropertyFormat() {
+    return propertyFormat;
+  }
 
-	@Override
-	public String getLabel() {
-		Object value = getPropertyValue();
-		String valueLabel;
-		if (propertyFormat != null) {
-			try {
-				valueLabel = propertyFormat.format(value);
-			} catch (Exception e) {
-				valueLabel = StringTools.safeString(value);
-			}
-		} else {
-			if (value instanceof IPresentationSupport) {
-				valueLabel = ((IPresentationSupport) value).getLabel();
-			} else {
-				valueLabel = StringTools.safeString(value);
-			}
-		}
-		return getPropertyLabel() + "=" + valueLabel; //$NON-NLS-1$
-	}
+  public void setPropertyFormat(Format propertyFormat) {
+    this.propertyFormat = propertyFormat;
+  }
 
-	public Format getPropertyFormat() {
-		return propertyFormat;
-	}
+  public String getPropertyLabel() {
+    return propertyLabel;
+  }
 
-	public String getPropertyLabel() {
-		return propertyLabel;
-	}
+  public String getPropertyName() {
+    return propertyName;
+  }
 
-	public String getPropertyName() {
-		return propertyName;
-	}
+  public Object getPropertyValue() {
+    try {
+      return ObjectTools.get(getObject(), getPropertyName());
+    } catch (FieldException e) {
+      return "<not available>"; //$NON-NLS-1$
+    }
+  }
 
-	public Object getPropertyValue() {
-		try {
-			return ObjectTools.get(getObject(), getPropertyName());
-		} catch (FieldException e) {
-			return "<not available>"; //$NON-NLS-1$
-		}
-	}
+  @Override
+  protected boolean isReusable() {
+    return reusable;
+  }
 
-	@Override
-	protected boolean isReusable() {
-		return reusable;
-	}
-
-	@Override
-	protected void onAttributeChanged(AttributeChangedEvent event) {
-		String tempName = event.getAttribute() instanceof String ? (String) event
-				.getAttribute() : "?";
-		if (propertyName.startsWith(tempName)) {
-			super.onAttributeChanged(event);
-		}
-	}
-
-	public void setPropertyFormat(Format propertyFormat) {
-		this.propertyFormat = propertyFormat;
-	}
+  @Override
+  protected void onAttributeChanged(AttributeChangedEvent event) {
+    String tempName = event.getAttribute() instanceof String ? (String) event
+        .getAttribute() : "?";
+    if (propertyName.startsWith(tempName)) {
+      super.onAttributeChanged(event);
+    }
+  }
 
 }

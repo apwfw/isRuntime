@@ -33,21 +33,21 @@ package de.intarsys.tools.converter;
  * Convert a {@link String} to {@link Character}
  */
 public class CharacterFromStringConverter implements
-		IConverter<String, Character> {
+    IConverter<String, Character> {
 
-	public Character convert(String source) throws ConversionException {
-		if (source.length() >= 1) {
-			return source.charAt(0);
-		}
-		return ' ';
-	}
+  public Character convert(String source) throws ConversionException {
+    if (source.length() >= 1) {
+      return source.charAt(0);
+    }
+    return ' ';
+  }
 
-	public Class<?> getSourceType() {
-		return String.class;
-	}
+  public Class<?> getSourceType() {
+    return String.class;
+  }
 
-	public Class<?> getTargetType() {
-		return Character.class;
-	}
+  public Class<?> getTargetType() {
+    return Character.class;
+  }
 
 }

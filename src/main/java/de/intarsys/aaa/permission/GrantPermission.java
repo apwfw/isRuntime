@@ -33,12 +33,11 @@ import de.intarsys.aaa.resource.IResource;
 
 /**
  * A permission that grants every access.
- * 
  */
 public class GrantPermission implements IPermission {
 
-	public boolean isAccessGranted(IResource resource) {
-		return true;
-	}
+  public boolean isAccessGranted(IResource resource) {
+    return true;
+  }
 
 }

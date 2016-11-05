@@ -29,6 +29,12 @@
  */
 package de.intarsys.tools.locator;
 
+import de.intarsys.tools.charset.ICharsetAccess;
+import de.intarsys.tools.file.FileTools;
+import de.intarsys.tools.randomaccess.IRandomAccess;
+import de.intarsys.tools.randomaccess.RandomAccessByteArray;
+import de.intarsys.tools.string.StringTools;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -41,299 +47,293 @@ import java.io.Serializable;
 import java.io.Writer;
 import java.net.URL;
 
-import de.intarsys.tools.charset.ICharsetAccess;
-import de.intarsys.tools.file.FileTools;
-import de.intarsys.tools.randomaccess.IRandomAccess;
-import de.intarsys.tools.randomaccess.RandomAccessByteArray;
-import de.intarsys.tools.string.StringTools;
-
 /**
  * An adapter from a byte[] object to {@link ILocator}.
  */
 public class ByteArrayLocator extends CommonLocator implements Serializable,
-		ICharsetAccess {
+    ICharsetAccess {
 
-	protected byte[] content;
+  protected byte[] content;
 
-	protected int length;
+  protected int length;
 
-	private String fullName;
+  private String fullName;
 
-	private String localName;
+  private String localName;
 
-	private String type;
+  private String type;
 
-	private String charset;
+  private String charset;
 
-	public ByteArrayLocator(byte[] data, String pFullName) {
-		if (data == null) {
-			data = new byte[0];
-		}
-		this.content = data;
-		this.length = data.length;
-		setFullName(pFullName);
-	}
+  public ByteArrayLocator(byte[] data, String pFullName) {
+    if (data == null) {
+      data = new byte[0];
+    }
+    this.content = data;
+    this.length = data.length;
+    setFullName(pFullName);
+  }
 
-	public ByteArrayLocator(byte[] data, String pName, String pType) {
-		if (data == null) {
-			data = new byte[0];
-		}
-		this.content = data;
-		this.length = data.length;
-		if (StringTools.isEmpty(pType)) {
-			setFullName(pName);
-		} else {
-			setFullName(pName + "." + pType);
-		}
-	}
+  public ByteArrayLocator(byte[] data, String pName, String pType) {
+    if (data == null) {
+      data = new byte[0];
+    }
+    this.content = data;
+    this.length = data.length;
+    if (StringTools.isEmpty(pType)) {
+      setFullName(pName);
+    } else {
+      setFullName(pName + "." + pType);
+    }
+  }
 
-	@Override
-	public void delete() throws IOException {
-		// nothing to do...
-	}
+  @Override
+  public void delete() throws IOException {
+    // nothing to do...
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#exists()
-	 */
-	public boolean exists() {
-		return content != null;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#exists()
+   */
+  public boolean exists() {
+    return content != null;
+  }
 
-	public byte[] getBytes() {
-		byte[] result = new byte[length];
-		System.arraycopy(content, 0, result, 0, length);
-		return result;
-	}
+  public byte[] getBytes() {
+    byte[] result = new byte[length];
+    System.arraycopy(content, 0, result, 0, length);
+    return result;
+  }
 
-	public String getCharset() {
-		return charset;
-	}
+  public String getCharset() {
+    return charset;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getChild(java.lang.String)
-	 */
-	public ILocator getChild(String name) {
-		return null;
-	}
+  public void setCharset(String charset) {
+    this.charset = charset;
+  }
 
-	public byte[] getContent() {
-		return content;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getChild(java.lang.String)
+   */
+  public ILocator getChild(String name) {
+    return null;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getFullName()
-	 */
-	public String getFullName() {
-		return fullName;
-	}
+  public byte[] getContent() {
+    return content;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getInputStream()
-	 */
-	public InputStream getInputStream() {
-		return new ByteArrayInputStream(content, 0, length);
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getFullName()
+   */
+  public String getFullName() {
+    return fullName;
+  }
 
-	@Override
-	public long getLength() {
-		return length;
-	}
+  protected void setFullName(String newName) {
+    fullName = newName;
+    localName = FileTools.getBaseName(newName);
+    type = FileTools.getExtension(newName, getType());
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getLocalName()
-	 */
-	public String getLocalName() {
-		return localName;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getInputStream()
+   */
+  public InputStream getInputStream() {
+    return new ByteArrayInputStream(content, 0, length);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getOutputStream()
-	 */
-	public OutputStream getOutputStream() {
-		return new ByteArrayOutputStream() {
-			@Override
-			public void close() throws IOException {
-				super.close();
-				content = buf;
-				length = count;
-			}
+  @Override
+  public long getLength() {
+    return length;
+  }
 
-			@Override
-			public void flush() throws IOException {
-				super.flush();
-				content = buf;
-				length = count;
-			}
-		};
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getLocalName()
+   */
+  public String getLocalName() {
+    return localName;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getParent()
-	 */
-	public ILocator getParent() {
-		return null;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getOutputStream()
+   */
+  public OutputStream getOutputStream() {
+    return new ByteArrayOutputStream() {
+      @Override
+      public void close() throws IOException {
+        super.close();
+        content = buf;
+        length = count;
+      }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getRandomAccessData()
-	 */
-	public IRandomAccess getRandomAccess() {
-		return new RandomAccessByteArray(content, length) {
-			@Override
-			public void flush() throws IOException {
-				super.flush();
-				ByteArrayLocator.this.content = this.data;
-				ByteArrayLocator.this.length = this.length;
-			}
-		};
-	}
+      @Override
+      public void flush() throws IOException {
+        super.flush();
+        content = buf;
+        length = count;
+      }
+    };
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getReader()
-	 */
-	public Reader getReader() throws IOException {
-		if (getCharset() == null) {
-			return new InputStreamReader(getInputStream());
-		} else {
-			return new InputStreamReader(getInputStream(), getCharset());
-		}
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getParent()
+   */
+  public ILocator getParent() {
+    return null;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getReader(java.lang.String)
-	 */
-	public Reader getReader(String encoding) throws IOException {
-		return new InputStreamReader(getInputStream(), encoding);
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getRandomAccessData()
+   */
+  public IRandomAccess getRandomAccess() {
+    return new RandomAccessByteArray(content, length) {
+      @Override
+      public void flush() throws IOException {
+        super.flush();
+        ByteArrayLocator.this.content = this.data;
+        ByteArrayLocator.this.length = this.length;
+      }
+    };
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getType()
-	 */
-	public String getType() {
-		return type;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getReader()
+   */
+  public Reader getReader() throws IOException {
+    if (getCharset() == null) {
+      return new InputStreamReader(getInputStream());
+    } else {
+      return new InputStreamReader(getInputStream(), getCharset());
+    }
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getTypedName()
-	 */
-	public String getTypedName() {
-		return (type == null) ? localName : (localName + "." + type);
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getReader(java.lang.String)
+   */
+  public Reader getReader(String encoding) throws IOException {
+    return new InputStreamReader(getInputStream(), encoding);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getWriter()
-	 */
-	public Writer getWriter() throws IOException {
-		if (getCharset() == null) {
-			return new OutputStreamWriter(getOutputStream());
-		} else {
-			return new OutputStreamWriter(getOutputStream(), getCharset());
-		}
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getType()
+   */
+  public String getType() {
+    return type;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getWriter(java.lang.String)
-	 */
-	public Writer getWriter(String encoding) throws IOException {
-		return new OutputStreamWriter(getOutputStream(), encoding);
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getTypedName()
+   */
+  public String getTypedName() {
+    return (type == null) ? localName : (localName + "." + type);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#isDirectory()
-	 */
-	public boolean isDirectory() {
-		return false;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getWriter()
+   */
+  public Writer getWriter() throws IOException {
+    if (getCharset() == null) {
+      return new OutputStreamWriter(getOutputStream());
+    } else {
+      return new OutputStreamWriter(getOutputStream(), getCharset());
+    }
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.component.ISynchronizable#isOutOfSynch()
-	 */
-	public boolean isOutOfSynch() {
-		return false;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getWriter(java.lang.String)
+   */
+  public Writer getWriter(String encoding) throws IOException {
+    return new OutputStreamWriter(getOutputStream(), encoding);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.component.ISynchronizable#isSynchSynchronous()
-	 */
-	public boolean isSynchSynchronous() {
-		return false;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#isDirectory()
+   */
+  public boolean isDirectory() {
+    return false;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.intarsys.tools.locator.ILocator#listLocators(de.intarsys.tools.locator
-	 * .ILocatorNameFilter)
-	 */
-	public ILocator[] listLocators(ILocatorNameFilter filter) {
-		return new ILocator[0];
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.component.ISynchronizable#isOutOfSynch()
+   */
+  public boolean isOutOfSynch() {
+    return false;
+  }
 
-	@Override
-	public void rename(String newName) throws IOException {
-		setFullName(newName);
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.component.ISynchronizable#isSynchSynchronous()
+   */
+  public boolean isSynchSynchronous() {
+    return false;
+  }
 
-	public void setCharset(String charset) {
-		this.charset = charset;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see
+   * de.intarsys.tools.locator.ILocator#listLocators(de.intarsys.tools.locator
+   * .ILocatorNameFilter)
+   */
+  public ILocator[] listLocators(ILocatorNameFilter filter) {
+    return new ILocator[0];
+  }
 
-	protected void setFullName(String newName) {
-		fullName = newName;
-		localName = FileTools.getBaseName(newName);
-		type = FileTools.getExtension(newName, getType());
-	}
+  @Override
+  public void rename(String newName) throws IOException {
+    setFullName(newName);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.component.ISynchronizable#synch()
-	 */
-	public void synch() {
-		//
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.component.ISynchronizable#synch()
+   */
+  public void synch() {
+    //
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#toURL()
-	 */
-	public URL toURL() {
-		return null;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#toURL()
+   */
+  public URL toURL() {
+    return null;
+  }
 }

@@ -33,8 +33,7 @@ package de.intarsys.tools.component;
  * An object that handles exceptions. This is useful for generic implementation
  * like IAction objects, that want to encapsulate exception handling along with
  * the action implementation without knowing anything about their context.
- * 
  */
 public interface IExceptionHandler {
-	public void handleException(Exception e);
+  public void handleException(Exception e);
 }

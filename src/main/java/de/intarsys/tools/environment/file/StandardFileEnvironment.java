@@ -33,50 +33,50 @@ import java.io.File;
 
 public class StandardFileEnvironment implements IFileEnvironment {
 
-	private File baseDir;
+  private File baseDir;
 
-	private File profileDir;
+  private File profileDir;
 
-	private File workingDir;
+  private File workingDir;
 
-	private File tempDir;
+  private File tempDir;
 
-	public StandardFileEnvironment() {
-		baseDir = new File(System.getProperty("user.dir")); //$NON-NLS-1$
-		profileDir = new File(System.getProperty("user.home")); //$NON-NLS-1$
-		tempDir = new File(System.getProperty("java.io.tmpdir")); //$NON-NLS-1$
-		workingDir = new File(System.getProperty("user.dir")); //$NON-NLS-1$
-	}
+  public StandardFileEnvironment() {
+    baseDir = new File(System.getProperty("user.dir")); //$NON-NLS-1$
+    profileDir = new File(System.getProperty("user.home")); //$NON-NLS-1$
+    tempDir = new File(System.getProperty("java.io.tmpdir")); //$NON-NLS-1$
+    workingDir = new File(System.getProperty("user.dir")); //$NON-NLS-1$
+  }
 
-	public StandardFileEnvironment(File pBaseDir, File pProfileDir) {
-		baseDir = pBaseDir;
-		profileDir = pProfileDir;
-		tempDir = new File(System.getProperty("java.io.tmpdir")); //$NON-NLS-1$
-		workingDir = pBaseDir;
-	}
+  public StandardFileEnvironment(File pBaseDir, File pProfileDir) {
+    baseDir = pBaseDir;
+    profileDir = pProfileDir;
+    tempDir = new File(System.getProperty("java.io.tmpdir")); //$NON-NLS-1$
+    workingDir = pBaseDir;
+  }
 
-	public StandardFileEnvironment(File pBaseDir, File pProfileDir, File pTempDir,
-			File pWorkingDir) {
-		baseDir = pBaseDir;
-		profileDir = pProfileDir;
-		tempDir = pTempDir;
-		workingDir = pWorkingDir;
-	}
+  public StandardFileEnvironment(File pBaseDir, File pProfileDir, File pTempDir,
+                                 File pWorkingDir) {
+    baseDir = pBaseDir;
+    profileDir = pProfileDir;
+    tempDir = pTempDir;
+    workingDir = pWorkingDir;
+  }
 
-	public File getBaseDir() {
-		return baseDir;
-	}
+  public File getBaseDir() {
+    return baseDir;
+  }
 
-	public File getProfileDir() {
-		return profileDir;
-	}
+  public File getProfileDir() {
+    return profileDir;
+  }
 
-	public File getTempDir() {
-		return tempDir;
-	}
+  public File getTempDir() {
+    return tempDir;
+  }
 
-	public File getWorkingDir() {
-		return workingDir;
-	}
+  public File getWorkingDir() {
+    return workingDir;
+  }
 
 }

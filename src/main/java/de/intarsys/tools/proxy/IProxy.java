@@ -35,10 +35,10 @@ package de.intarsys.tools.proxy;
  * calling "getRealized".
  */
 public interface IProxy {
-	/**
-	 * The object represented by the receiver.
-	 * 
-	 * @return The object represented by the receiver.
-	 */
-	public Object getRealized();
+  /**
+   * The object represented by the receiver.
+   *
+   * @return The object represented by the receiver.
+   */
+  public Object getRealized();
 }

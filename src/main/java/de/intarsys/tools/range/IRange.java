@@ -33,6 +33,6 @@ import java.util.List;
 
 public interface IRange {
 
-	public List<Integer> getIndices(int current, int count);
+  public List<Integer> getIndices(int current, int count);
 
 }

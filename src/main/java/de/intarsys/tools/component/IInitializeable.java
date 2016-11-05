@@ -33,22 +33,21 @@ import javax.annotation.PostConstruct;
 
 /**
  * Component lifecycle feature. The component supports initialization.
- * 
  */
 public interface IInitializeable {
 
-	/**
-	 * Initialize the components state. A container will call this after
-	 * complete construction (dependency injection).
-	 * 
-	 * @see PostConstruct
-	 */
-	public void initializeAfterConstruction();
+  /**
+   * Initialize the components state. A container will call this after
+   * complete construction (dependency injection).
+   *
+   * @see PostConstruct
+   */
+  public void initializeAfterConstruction();
 
-	/**
-	 * Initialize the components state. A container will call this immediately
-	 * after instance creation.
-	 */
-	public void initializeAfterCreation();
+  /**
+   * Initialize the components state. A container will call this immediately
+   * after instance creation.
+   */
+  public void initializeAfterCreation();
 
 }

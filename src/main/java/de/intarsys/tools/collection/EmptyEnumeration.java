@@ -36,34 +36,32 @@ import java.util.NoSuchElementException;
  * An Enumeration without elements.
  */
 public class EmptyEnumeration implements Enumeration {
-	//
-	public final static Enumeration UNIQUE = new EmptyEnumeration();
+  //
+  public final static Enumeration UNIQUE = new EmptyEnumeration();
 
-	/**
-	 * Create an emtpy enumeration
-	 */
-	protected EmptyEnumeration() {
-		super();
-	}
+  /**
+   * Create an emtpy enumeration
+   */
+  protected EmptyEnumeration() {
+    super();
+  }
 
-	/**
-	 * Return always false as an emtpy enumeration has no elements.
-	 * 
-	 * @return Return always false as an emtpy enumeration has no elements.
-	 */
-	public boolean hasMoreElements() {
-		return false;
-	}
+  /**
+   * Return always false as an emtpy enumeration has no elements.
+   *
+   * @return Return always false as an emtpy enumeration has no elements.
+   */
+  public boolean hasMoreElements() {
+    return false;
+  }
 
-	/**
-	 * Throw always exception, as an empty enumeration has no elements.
-	 * 
-	 * @return never
-	 * 
-	 * @throws NoSuchElementException
-	 *             Is thrown always
-	 */
-	public java.lang.Object nextElement() {
-		throw new NoSuchElementException("no element available");
-	}
+  /**
+   * Throw always exception, as an empty enumeration has no elements.
+   *
+   * @return never
+   * @throws NoSuchElementException Is thrown always
+   */
+  public java.lang.Object nextElement() {
+    throw new NoSuchElementException("no element available");
+  }
 }

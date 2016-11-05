@@ -34,28 +34,25 @@ package de.intarsys.tools.reflect;
  */
 public interface IFieldHandler {
 
-	/**
-	 * Make a reflective read access to the field represented by this within the
-	 * <code>receiver</code>.
-	 * 
-	 * @param receiver
-	 *            The object hosting the field.
-	 * @return The field value
-	 * @throws FieldException
-	 */
-	public Object getValue(Object receiver) throws FieldAccessException;
+  /**
+   * Make a reflective read access to the field represented by this within the
+   * <code>receiver</code>.
+   *
+   * @param receiver The object hosting the field.
+   * @return The field value
+   * @throws FieldException
+   */
+  public Object getValue(Object receiver) throws FieldAccessException;
 
-	/**
-	 * Make a reflective write access to the field represented by this within
-	 * <code>receiver</code>.
-	 * 
-	 * @param receiver
-	 *            The object hosting the field.
-	 * @param value
-	 *            The new value for the field
-	 * @return The previous field value. This is an optional feature.
-	 * @throws FieldException
-	 */
-	public Object setValue(Object receiver, Object value)
-			throws FieldAccessException;
+  /**
+   * Make a reflective write access to the field represented by this within
+   * <code>receiver</code>.
+   *
+   * @param receiver The object hosting the field.
+   * @param value    The new value for the field
+   * @return The previous field value. This is an optional feature.
+   * @throws FieldException
+   */
+  public Object setValue(Object receiver, Object value)
+      throws FieldAccessException;
 }

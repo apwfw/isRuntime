@@ -31,21 +31,20 @@ package de.intarsys.tools.preferences;
 
 /**
  * A {@link PrefValueHolder} implementation for String typed values.
- * 
  */
 public class StringPrefValueHolder extends PrefValueHolder {
 
-	public StringPrefValueHolder(IPreferences preferences, String key,
-			String defaultValue) {
-		super(preferences, key, defaultValue);
-	}
+  public StringPrefValueHolder(IPreferences preferences, String key,
+                               String defaultValue) {
+    super(preferences, key, defaultValue);
+  }
 
-	public Object get() {
-		return getPreferences().get(getKey(), (String) getDefaultValue());
-	}
+  public Object get() {
+    return getPreferences().get(getKey(), (String) getDefaultValue());
+  }
 
-	public Object set(Object newValue) {
-		getPreferences().put(getKey(), (String) newValue);
-		return null;
-	}
+  public Object set(Object newValue) {
+    getPreferences().put(getKey(), (String) newValue);
+    return null;
+  }
 }

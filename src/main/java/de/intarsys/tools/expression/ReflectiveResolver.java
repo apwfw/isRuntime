@@ -35,28 +35,27 @@ import de.intarsys.tools.reflect.ObjectTools;
 /**
  * An {@link IStringEvaluator} that provides reflective access to an objects
  * properties.
- * 
  */
 public class ReflectiveResolver extends ContainerResolver {
 
-	private Object object;
+  private Object object;
 
-	/**
-	 * 
-	 */
-	public ReflectiveResolver(Object object) {
-		super();
-		this.object = object;
-	}
+  /**
+   *
+   */
+  public ReflectiveResolver(Object object) {
+    super();
+    this.object = object;
+  }
 
-	@Override
-	protected Object basicEvaluate(String expression, IArgs args)
-			throws EvaluationException {
-		try {
-			return ObjectTools.get(object, expression);
-		} catch (Exception e) {
-			throw new EvaluationException("property '" + expression //$NON-NLS-1$
-					+ "' not found in '" + object + "'"); //$NON-NLS-1$ //$NON-NLS-2$
-		}
-	}
+  @Override
+  protected Object basicEvaluate(String expression, IArgs args)
+      throws EvaluationException {
+    try {
+      return ObjectTools.get(object, expression);
+    } catch (Exception e) {
+      throw new EvaluationException("property '" + expression //$NON-NLS-1$
+          + "' not found in '" + object + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+    }
+  }
 }

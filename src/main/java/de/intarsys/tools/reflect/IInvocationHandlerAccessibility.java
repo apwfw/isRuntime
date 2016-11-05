@@ -37,20 +37,17 @@ import de.intarsys.tools.functor.IArgs;
  */
 public interface IInvocationHandlerAccessibility {
 
-	/**
-	 * <code>true</code> if calling the method <code>name</code> in
-	 * <code>receiver</code>is currently enabled.
-	 * 
-	 * @param receiver
-	 *            The object hosting the method.
-	 * @param name
-	 *            The name of the method.
-	 * @param args
-	 *            The arguments for the invocation.
-	 * @return <code>true</code> if calling the implementation is currently
-	 *         enabled.
-	 * @throws MethodException
-	 */
-	public boolean isInvokeEnabled(Object receiver, String name, IArgs args)
-			throws MethodException;
+  /**
+   * <code>true</code> if calling the method <code>name</code> in
+   * <code>receiver</code>is currently enabled.
+   *
+   * @param receiver The object hosting the method.
+   * @param name     The name of the method.
+   * @param args     The arguments for the invocation.
+   * @return <code>true</code> if calling the implementation is currently
+   * enabled.
+   * @throws MethodException
+   */
+  public boolean isInvokeEnabled(Object receiver, String name, IArgs args)
+      throws MethodException;
 }

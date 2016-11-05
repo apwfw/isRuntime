@@ -34,7 +34,6 @@ import java.lang.annotation.RetentionPolicy;
 
 /**
  * Mark an object that has to be protected by some security handling mechanism
- * 
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ProtectedResource {

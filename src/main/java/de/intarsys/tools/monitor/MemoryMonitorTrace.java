@@ -33,24 +33,23 @@ package de.intarsys.tools.monitor;
  * A trace that records heap size samples (approximately)
  */
 public class MemoryMonitorTrace extends MonitorTrace {
-	/**
-	 * Create a MemoryMonitorTrace
-	 * 
-	 * @param owner
-	 *            monitor owning the trace
-	 */
-	public MemoryMonitorTrace(Monitor owner) {
-		super(owner);
-	}
+  /**
+   * Create a MemoryMonitorTrace
+   *
+   * @param owner monitor owning the trace
+   */
+  public MemoryMonitorTrace(Monitor owner) {
+    super(owner);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.monitor.MonitorEvent#createSample()
-	 */
-	protected long createSampleValue() {
-		// Runtime.getRuntime().gc();
-		return Runtime.getRuntime().totalMemory()
-				- Runtime.getRuntime().freeMemory();
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.monitor.MonitorEvent#createSample()
+   */
+  protected long createSampleValue() {
+    // Runtime.getRuntime().gc();
+    return Runtime.getRuntime().totalMemory()
+        - Runtime.getRuntime().freeMemory();
+  }
 }

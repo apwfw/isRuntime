@@ -29,11 +29,6 @@
  */
 package de.intarsys.tools.ui;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.swing.SwingUtilities;
-
 import de.intarsys.tools.event.AttributeChangedEvent;
 import de.intarsys.tools.event.Event;
 import de.intarsys.tools.event.INotificationListener;
@@ -41,6 +36,10 @@ import de.intarsys.tools.event.INotificationObserver;
 import de.intarsys.tools.event.INotificationSupport;
 import de.intarsys.tools.functor.IArgs;
 import de.intarsys.tools.functor.IArgsConfigurable;
+
+import javax.swing.SwingUtilities;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Abstraction of an user interface component.
@@ -51,164 +50,153 @@ import de.intarsys.tools.functor.IArgsConfigurable;
  * <p>
  * A {@link UIComponent} is associated with a model object via the
  * {@link INotificationObserver} interface.
- * 
- * @param <M>
- *            The model object
- * @param <C>
- *            The toolkit container class
- * @param <T>
- *            The toolkit component class
+ *
+ * @param <M> The model object
+ * @param <C> The toolkit container class
+ * @param <T> The toolkit component class
  */
 abstract public class UIComponent<M extends INotificationSupport, C, T>
-		implements IUIComponent<M, C, T>, IArgsConfigurable {
+    implements IUIComponent<M, C, T>, IArgsConfigurable {
 
-	private C container;
+  private static final Logger Log = PACKAGE.Log;
+  final private IUIComponent parent;
+  private C container;
+  private T component;
+  private M model;
+  private IArgs configuration;
+  private boolean disposed = false;
+  private boolean componentCreated = false;
+  private INotificationListener listenModelChange = new INotificationListener() {
+    @Override
+    public void handleEvent(final Event event) {
+      modelChanged(event);
+    }
+  };
 
-	final private IUIComponent parent;
+  public UIComponent() {
+    this(null);
+  }
 
-	private T component;
+  public UIComponent(IUIComponent<? extends INotificationSupport, C, T> parent) {
+    super();
+    this.parent = parent;
+  }
 
-	private M model;
+  abstract protected T basicCreateComponent(C parent);
 
-	private static final Logger Log = PACKAGE.Log;
+  public void configure(de.intarsys.tools.functor.IArgs args)
+      throws de.intarsys.tools.functor.ArgsConfigurationException {
+    configuration = args;
+  }
 
-	private INotificationListener listenModelChange = new INotificationListener() {
-		@Override
-		public void handleEvent(final Event event) {
-			modelChanged(event);
-		}
-	};
+  @Override
+  final public void createComponent(C parent) {
+    setContainer(parent);
+    T tempComponent = basicCreateComponent(parent);
+    setComponent(tempComponent);
+    componentCreated = true;
+    updateView(null);
+  }
 
-	private IArgs configuration;
+  public void dispose() {
+    if (disposed) {
+      return;
+    }
+    disposed = true;
+    componentCreated = false;
+    setObservable(null);
+  }
 
-	private boolean disposed = false;
+  final public T getComponent() {
+    return component;
+  }
 
-	private boolean componentCreated = false;
+  protected void setComponent(T component) {
+    this.component = component;
+  }
 
-	public UIComponent() {
-		this(null);
-	}
+  public IArgs getConfiguration() {
+    return configuration;
+  }
 
-	public UIComponent(IUIComponent<? extends INotificationSupport, C, T> parent) {
-		super();
-		this.parent = parent;
-	}
+  protected C getContainer() {
+    return container;
+  }
 
-	abstract protected T basicCreateComponent(C parent);
+  protected void setContainer(C parent) {
+    this.container = parent;
+  }
 
-	public void configure(de.intarsys.tools.functor.IArgs args)
-			throws de.intarsys.tools.functor.ArgsConfigurationException {
-		configuration = args;
-	}
+  @Override
+  synchronized public M getObservable() {
+    return model;
+  }
 
-	@Override
-	final public void createComponent(C parent) {
-		setContainer(parent);
-		T tempComponent = basicCreateComponent(parent);
-		setComponent(tempComponent);
-		componentCreated = true;
-		updateView(null);
-	}
+  @Override
+  synchronized public void setObservable(M observable) {
+    if (model == observable) {
+      return;
+    }
+    basicSetModel(observable);
+    if (model != null) {
+      modelChanged(new AttributeChangedEvent(model, null, null, null));
+    }
+  }
 
-	public void dispose() {
-		if (disposed) {
-			return;
-		}
-		disposed = true;
-		componentCreated = false;
-		setObservable(null);
-	}
+  public IUIComponent getParent() {
+    return parent;
+  }
 
-	final public T getComponent() {
-		return component;
-	}
+  protected boolean isComponentCreated() {
+    return componentCreated;
+  }
 
-	public IArgs getConfiguration() {
-		return configuration;
-	}
+  protected void setComponentCreated(boolean componentAvailable) {
+    this.componentCreated = componentAvailable;
+  }
 
-	protected C getContainer() {
-		return container;
-	}
+  public boolean isDisposed() {
+    return disposed;
+  }
 
-	@Override
-	synchronized public M getObservable() {
-		return model;
-	}
+  protected void modelChanged(final Event event) {
+    if (getObservable() == null) {
+      // out of date....
+      return;
+    }
+    // try to prevent deadlock situations by queuing invocation
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        try {
+          if (getObservable() == null) {
+            // at least now - out of date....
+            return;
+          }
+          if (!isComponentCreated()) {
+            return;
+          }
+          updateView(event);
+        } catch (Exception e) {
+          Log.log(Level.WARNING, "unexpeced error in updateView", e);
+        }
+      }
 
-	public IUIComponent getParent() {
-		return parent;
-	}
+    });
+  }
 
-	protected boolean isComponentCreated() {
-		return componentCreated;
-	}
+  protected void basicSetModel(M observable) {
+    if (model != null) {
+      model.removeNotificationListener(AttributeChangedEvent.ID,
+          listenModelChange);
+    }
+    model = observable;
+    if (model != null) {
+      model.addNotificationListener(AttributeChangedEvent.ID,
+          listenModelChange);
+    }
+  }
 
-	public boolean isDisposed() {
-		return disposed;
-	}
-
-	protected void modelChanged(final Event event) {
-		if (getObservable() == null) {
-			// out of date....
-			return;
-		}
-		// try to prevent deadlock situations by queuing invocation
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					if (getObservable() == null) {
-						// at least now - out of date....
-						return;
-					}
-					if (!isComponentCreated()) {
-						return;
-					}
-					updateView(event);
-				} catch (Exception e) {
-					Log.log(Level.WARNING, "unexpeced error in updateView", e);
-				}
-			}
-
-		});
-	}
-
-	protected void setComponent(T component) {
-		this.component = component;
-	}
-
-	protected void setComponentCreated(boolean componentAvailable) {
-		this.componentCreated = componentAvailable;
-	}
-
-	protected void setContainer(C parent) {
-		this.container = parent;
-	}
-
-	@Override
-	synchronized public void setObservable(M observable) {
-		if (model == observable) {
-			return;
-		}
-		basicSetModel(observable);
-		if (model != null) {
-			modelChanged(new AttributeChangedEvent(model, null, null, null));
-		}
-	}
-
-	protected void basicSetModel(M observable) {
-		if (model != null) {
-			model.removeNotificationListener(AttributeChangedEvent.ID,
-					listenModelChange);
-		}
-		model = observable;
-		if (model != null) {
-			model.addNotificationListener(AttributeChangedEvent.ID,
-					listenModelChange);
-		}
-	}
-
-	protected void updateView(Event e) {
-	}
+  protected void updateView(Event e) {
+  }
 
 }

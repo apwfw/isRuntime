@@ -33,147 +33,146 @@ import java.io.IOException;
 
 /**
  * Filter implementation for random access.
- * 
  */
 public class RandomAccessFilter extends AbstractRandomAccess {
-	protected IRandomAccess random;
+  protected IRandomAccess random;
 
-	/**
-	 * 
-	 */
-	public RandomAccessFilter(IRandomAccess random) {
-		super();
-		this.random = random;
-	}
+  /**
+   *
+   */
+  public RandomAccessFilter(IRandomAccess random) {
+    super();
+    this.random = random;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.randomaccess.IRandomAccess#seek(long)
-	 */
-	public void seek(long offset) throws IOException {
-		random.seek(offset);
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.randomaccess.IRandomAccess#seek(long)
+   */
+  public void seek(long offset) throws IOException {
+    random.seek(offset);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.randomaccess.IRandomAccess#seekBy(long)
-	 */
-	public void seekBy(long delta) throws IOException {
-		random.seekBy(delta);
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.randomaccess.IRandomAccess#seekBy(long)
+   */
+  public void seekBy(long delta) throws IOException {
+    random.seekBy(delta);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.randomaccess.IRandomAccess#read()
-	 */
-	public int read() throws IOException {
-		return random.read();
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.randomaccess.IRandomAccess#read()
+   */
+  public int read() throws IOException {
+    return random.read();
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.randomaccess.IRandomAccess#getOffset()
-	 */
-	public long getOffset() throws IOException {
-		return random.getOffset();
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.randomaccess.IRandomAccess#getOffset()
+   */
+  public long getOffset() throws IOException {
+    return random.getOffset();
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.randomaccess.IRandomAccess#getLength()
-	 */
-	public long getLength() throws IOException {
-		return random.getLength();
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.randomaccess.IRandomAccess#getLength()
+   */
+  public long getLength() throws IOException {
+    return random.getLength();
+  }
 
-	protected IRandomAccess getRandom() {
-		return random;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.randomaccess.IRandomAccess#setLength(long)
+   */
+  public void setLength(long newLength) throws IOException {
+    random.setLength(newLength);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.randomaccess.IRandomAccess#setLength(long)
-	 */
-	public void setLength(long newLength) throws IOException {
-		random.setLength(newLength);
-	}
+  protected IRandomAccess getRandom() {
+    return random;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.randomaccess.IRandomAccess#read(byte[])
-	 */
-	public int read(byte[] buffer) throws IOException {
-		return random.read(buffer);
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.randomaccess.IRandomAccess#read(byte[])
+   */
+  public int read(byte[] buffer) throws IOException {
+    return random.read(buffer);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.randomaccess.IRandomAccess#read(byte[], int, int)
-	 */
-	public int read(byte[] buffer, int start, int numBytes) throws IOException {
-		return random.read(buffer, start, numBytes);
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.randomaccess.IRandomAccess#read(byte[], int, int)
+   */
+  public int read(byte[] buffer, int start, int numBytes) throws IOException {
+    return random.read(buffer, start, numBytes);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.randomaccess.IRandomAccess#close()
-	 */
-	public void close() throws IOException {
-		random.close();
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.randomaccess.IRandomAccess#close()
+   */
+  public void close() throws IOException {
+    random.close();
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.randomaccess.IRandomAccess#flush()
-	 */
-	public void flush() throws IOException {
-		random.flush();
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.randomaccess.IRandomAccess#flush()
+   */
+  public void flush() throws IOException {
+    random.flush();
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.randomaccess.IRandomAccess#isReadOnly()
-	 */
-	public boolean isReadOnly() {
-		return random.isReadOnly();
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.randomaccess.IRandomAccess#isReadOnly()
+   */
+  public boolean isReadOnly() {
+    return random.isReadOnly();
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.randomaccess.IRandomAccess#write(int)
-	 */
-	public void write(int b) throws IOException {
-		random.write(b);
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.randomaccess.IRandomAccess#write(int)
+   */
+  public void write(int b) throws IOException {
+    random.write(b);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.randomaccess.IRandomAccess#write(byte[])
-	 */
-	public void write(byte[] buffer) throws IOException {
-		random.write(buffer);
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.randomaccess.IRandomAccess#write(byte[])
+   */
+  public void write(byte[] buffer) throws IOException {
+    random.write(buffer);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.randomaccess.IRandomAccess#write(byte[], int, int)
-	 */
-	public void write(byte[] buffer, int start, int numBytes)
-			throws IOException {
-		random.write(buffer, start, numBytes);
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.randomaccess.IRandomAccess#write(byte[], int, int)
+   */
+  public void write(byte[] buffer, int start, int numBytes)
+      throws IOException {
+    random.write(buffer, start, numBytes);
+  }
 }

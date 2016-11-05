@@ -37,31 +37,31 @@ import java.util.List;
  */
 public class StandardAdapterOutlet implements IAdapterOutlet {
 
-	private List<IAdapterFactory> factories = new ArrayList<IAdapterFactory>();
+  private List<IAdapterFactory> factories = new ArrayList<IAdapterFactory>();
 
-	public <T> T getAdapter(Object object, Class<T> clazz) {
-		T result = null;
-		for (IAdapterFactory<Object> factory : factories) {
-			if (factory.getBaseType().isInstance(object)) {
-				result = factory.getAdapter(object, clazz);
-				if (result != null) {
-					break;
-				}
-			}
-		}
-		return result;
-	}
+  public <T> T getAdapter(Object object, Class<T> clazz) {
+    T result = null;
+    for (IAdapterFactory<Object> factory : factories) {
+      if (factory.getBaseType().isInstance(object)) {
+        result = factory.getAdapter(object, clazz);
+        if (result != null) {
+          break;
+        }
+      }
+    }
+    return result;
+  }
 
-	public Class<Object> getBaseType() {
-		return Object.class;
-	}
+  public Class<Object> getBaseType() {
+    return Object.class;
+  }
 
-	synchronized public void registerAdapterFactory(IAdapterFactory factory) {
-		factories.add(factory);
-	}
+  synchronized public void registerAdapterFactory(IAdapterFactory factory) {
+    factories.add(factory);
+  }
 
-	synchronized public void unregisterAdapterFactory(IAdapterFactory factory) {
-		factories.remove(factory);
-	}
+  synchronized public void unregisterAdapterFactory(IAdapterFactory factory) {
+    factories.remove(factory);
+  }
 
 }

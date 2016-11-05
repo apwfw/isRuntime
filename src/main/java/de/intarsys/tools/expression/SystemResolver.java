@@ -30,98 +30,96 @@
  */
 package de.intarsys.tools.expression;
 
+import de.intarsys.tools.functor.IArgs;
+import de.intarsys.tools.system.SystemTools;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
-import de.intarsys.tools.functor.IArgs;
-import de.intarsys.tools.system.SystemTools;
 
 /**
  * An {@link IStringEvaluator} implementation giving access common system state.
  */
 public class SystemResolver implements IStringEvaluator {
 
-	private static int COUNTER = 0;
+  final private static Map<String, Integer> counters = new HashMap<String, Integer>();
+  private static int COUNTER = 0;
+  private static long UNIQUETIME = 0;
 
-	private static long UNIQUETIME = 0;
+  public SystemResolver() {
+  }
 
-	final private static Map<String, Integer> counters = new HashMap<String, Integer>();
+  /*
+   * (non-Javadoc)
+   *
+   * @see
+   * de.intarsys.tools.expression.IStringEvaluator#evaluate(java.lang.String,
+   * de.intarsys.tools.functor.IArgs)
+   */
+  public Object evaluate(String expression, IArgs args)
+      throws EvaluationException {
+    if (expression != null) {
+      if ("millis".equals(expression)) { //$NON-NLS-1$
+        return System.currentTimeMillis();
+      }
+      if ("time".equals(expression)) { //$NON-NLS-1$
+        return System.currentTimeMillis();
+      }
+      if ("uniquetime".equals(expression)) { //$NON-NLS-1$
+        synchronized (SystemResolver.class) {
+          long temp = System.currentTimeMillis();
+          if (temp <= UNIQUETIME) {
+            temp = UNIQUETIME + 1;
+          }
+          UNIQUETIME = temp;
+          return temp;
+        }
+      }
+      if ("uuid".equals(expression)) { //$NON-NLS-1$
+        return UUID.randomUUID().toString();
+      }
+      if ("counter".equals(expression)) { //$NON-NLS-1$
+        synchronized (SystemResolver.class) {
+          return COUNTER++;
+        }
+      }
+      if (expression.startsWith("counters.")) { //$NON-NLS-1$
+        String[] tempStrings = expression.split("\\.", 2); //$NON-NLS-1$
+        if (tempStrings.length == 2) {
+          synchronized (SystemResolver.class) {
+            Integer count = counters.get(tempStrings[1]);
+            if (count == null) {
+              count = 0;
+            }
+            counters.put(tempStrings[1], count + 1);
+            return count;
+          }
+        }
+      }
+      if (expression.startsWith("getenv.")) { //$NON-NLS-1$
+        String[] tempStrings = expression.split("\\.", 2); //$NON-NLS-1$
+        if (tempStrings.length == 2) {
+          return System.getenv(tempStrings[1]);
+        }
+      }
+      if (expression.startsWith("properties.")) { //$NON-NLS-1$
+        String[] tempStrings = expression.split("\\.", 2); //$NON-NLS-1$
+        if (tempStrings.length == 2) {
+          return System.getProperty(tempStrings[1]);
+        }
+      }
+      if ("architecture".equals(expression)) { //$NON-NLS-1$
+        return getArchitecture();
+      }
+    }
+    throw new EvaluationException("can't evaluate '" + expression + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+  }
 
-	public SystemResolver() {
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.intarsys.tools.expression.IStringEvaluator#evaluate(java.lang.String,
-	 * de.intarsys.tools.functor.IArgs)
-	 */
-	public Object evaluate(String expression, IArgs args)
-			throws EvaluationException {
-		if (expression != null) {
-			if ("millis".equals(expression)) { //$NON-NLS-1$
-				return System.currentTimeMillis();
-			}
-			if ("time".equals(expression)) { //$NON-NLS-1$
-				return System.currentTimeMillis();
-			}
-			if ("uniquetime".equals(expression)) { //$NON-NLS-1$
-				synchronized (SystemResolver.class) {
-					long temp = System.currentTimeMillis();
-					if (temp <= UNIQUETIME) {
-						temp = UNIQUETIME + 1;
-					}
-					UNIQUETIME = temp;
-					return temp;
-				}
-			}
-			if ("uuid".equals(expression)) { //$NON-NLS-1$
-				return UUID.randomUUID().toString();
-			}
-			if ("counter".equals(expression)) { //$NON-NLS-1$
-				synchronized (SystemResolver.class) {
-					return COUNTER++;
-				}
-			}
-			if (expression.startsWith("counters.")) { //$NON-NLS-1$
-				String[] tempStrings = expression.split("\\.", 2); //$NON-NLS-1$
-				if (tempStrings.length == 2) {
-					synchronized (SystemResolver.class) {
-						Integer count = counters.get(tempStrings[1]);
-						if (count == null) {
-							count = 0;
-						}
-						counters.put(tempStrings[1], count + 1);
-						return count;
-					}
-				}
-			}
-			if (expression.startsWith("getenv.")) { //$NON-NLS-1$
-				String[] tempStrings = expression.split("\\.", 2); //$NON-NLS-1$
-				if (tempStrings.length == 2) {
-					return System.getenv(tempStrings[1]);
-				}
-			}
-			if (expression.startsWith("properties.")) { //$NON-NLS-1$
-				String[] tempStrings = expression.split("\\.", 2); //$NON-NLS-1$
-				if (tempStrings.length == 2) {
-					return System.getProperty(tempStrings[1]);
-				}
-			}
-			if ("architecture".equals(expression)) { //$NON-NLS-1$
-				return getArchitecture();
-			}
-		}
-		throw new EvaluationException("can't evaluate '" + expression + "'"); //$NON-NLS-1$ //$NON-NLS-2$
-	}
-
-	protected String getArchitecture() {
-		String arch = SystemTools.getOSArch();
-		if (arch != null && arch.indexOf("64") > -1) {
-			return "64-bit";
-		}
-		return "32-bit";
-	}
+  protected String getArchitecture() {
+    String arch = SystemTools.getOSArch();
+    if (arch != null && arch.indexOf("64") > -1) {
+      return "64-bit";
+    }
+    return "32-bit";
+  }
 }

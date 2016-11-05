@@ -37,16 +37,16 @@ import de.intarsys.tools.locator.LocatorTools;
  */
 public class LocatorFromStringConverter implements IConverter<String, ILocator> {
 
-	public ILocator convert(String source) throws ConversionException {
-		return LocatorTools.createLocator(source, null, null);
-	}
+  public ILocator convert(String source) throws ConversionException {
+    return LocatorTools.createLocator(source, null, null);
+  }
 
-	public Class<?> getSourceType() {
-		return String.class;
-	}
+  public Class<?> getSourceType() {
+    return String.class;
+  }
 
-	public Class<?> getTargetType() {
-		return ILocator.class;
-	}
+  public Class<?> getTargetType() {
+    return ILocator.class;
+  }
 
 }

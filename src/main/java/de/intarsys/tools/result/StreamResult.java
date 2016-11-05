@@ -33,30 +33,30 @@ package de.intarsys.tools.result;
  * A common implementation for stream based results.
  */
 abstract public class StreamResult extends CommonResult implements
-		IStreamResult {
+    IStreamResult {
 
-	private String name;
+  private String name;
 
-	private String type;
+  private String type;
 
-	public StreamResult(String contentType) {
-		super(contentType);
-	}
+  public StreamResult(String contentType) {
+    super(contentType);
+  }
 
-	public String getName() {
-		return name;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public String getType() {
-		return type;
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public String getType() {
+    return type;
+  }
 
-	public void setType(String type) {
-		this.type = type;
-	}
+  public void setType(String type) {
+    this.type = type;
+  }
 
 }

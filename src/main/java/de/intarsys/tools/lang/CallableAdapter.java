@@ -4,34 +4,34 @@ import java.util.concurrent.Callable;
 
 abstract public class CallableAdapter<T> implements Runnable, Callable<T> {
 
-	private T result = null;
+  private T result = null;
 
-	private Exception exception;
+  private Exception exception;
 
-	public T getResult() throws Exception {
-		if (exception != null) {
-			throw exception;
-		}
-		return result;
-	}
+  public T getResult() throws Exception {
+    if (exception != null) {
+      throw exception;
+    }
+    return result;
+  }
 
-	public T getResultUnchecked() {
-		if (exception != null) {
-			return null;
-		}
-		return result;
-	}
+  protected void setResult(T result) {
+    this.result = result;
+  }
 
-	@Override
-	public void run() {
-		try {
-			setResult(call());
-		} catch (Exception e) {
-			exception = e;
-		}
-	}
+  public T getResultUnchecked() {
+    if (exception != null) {
+      return null;
+    }
+    return result;
+  }
 
-	protected void setResult(T result) {
-		this.result = result;
-	}
+  @Override
+  public void run() {
+    try {
+      setResult(call());
+    } catch (Exception e) {
+      exception = e;
+    }
+  }
 }

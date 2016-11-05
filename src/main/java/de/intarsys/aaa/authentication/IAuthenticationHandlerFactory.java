@@ -33,14 +33,13 @@ package de.intarsys.aaa.authentication;
  * A factory for an {@link IAuthenticationHandler}.
  * <p>
  * This is provided to support pluggable authentication handling.
- * 
  */
 public interface IAuthenticationHandlerFactory {
 
-	/**
-	 * Create a new {@link IAuthenticationHandler}.
-	 * 
-	 * @return The new {@link IAuthenticationHandler}
-	 */
-	public IAuthenticationHandler createAuthenticationHandler();
+  /**
+   * Create a new {@link IAuthenticationHandler}.
+   *
+   * @return The new {@link IAuthenticationHandler}
+   */
+  public IAuthenticationHandler createAuthenticationHandler();
 }

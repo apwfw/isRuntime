@@ -9,13 +9,12 @@ import java.io.IOException;
  */
 public interface IDeserializer {
 
-	/**
-	 * Deserialize and return the next object from the current state.
-	 * 
-	 * @return The next object deserialized from the current state.
-	 * 
-	 * @throws IOException
-	 */
-	public Object deserialize() throws IOException;
+  /**
+   * Deserialize and return the next object from the current state.
+   *
+   * @return The next object deserialized from the current state.
+   * @throws IOException
+   */
+  public Object deserialize() throws IOException;
 
 }

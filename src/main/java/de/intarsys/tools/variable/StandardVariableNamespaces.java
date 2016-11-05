@@ -34,18 +34,18 @@ import java.util.Map;
 
 public class StandardVariableNamespaces implements IVariableNamespaces {
 
-	private Map<String, IVariableNamespace> namespaces = new HashMap<String, IVariableNamespace>();
+  private Map<String, IVariableNamespace> namespaces = new HashMap<String, IVariableNamespace>();
 
-	synchronized public String[] getNames() {
-		return namespaces.keySet().toArray(new String[namespaces.size()]);
-	}
+  synchronized public String[] getNames() {
+    return namespaces.keySet().toArray(new String[namespaces.size()]);
+  }
 
-	synchronized public IVariableNamespace getNamespace(String id) {
-		return namespaces.get(id);
-	}
+  synchronized public IVariableNamespace getNamespace(String id) {
+    return namespaces.get(id);
+  }
 
-	synchronized public void setNamespace(String id,
-			IVariableNamespace namespace) {
-		namespaces.put(id, namespace);
-	}
+  synchronized public void setNamespace(String id,
+                                        IVariableNamespace namespace) {
+    namespaces.put(id, namespace);
+  }
 }

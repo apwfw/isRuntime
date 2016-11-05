@@ -31,63 +31,57 @@ package de.intarsys.tools.functor;
 
 /**
  * Generic implementation of {@link IFunctorCall}.
- * 
  */
 public class FunctorCall implements IFunctorCall {
 
-	/**
-	 * Create an {@link IFunctorCall} with <code>receiver</code> as the receiver
-	 * and the indexed arguments.
-	 * 
-	 * @param receiver
-	 *            The receiver for the call.
-	 * @param arguments
-	 *            The indexed arguments for the call.
-	 * @return The new {@link IFunctorCall}
-	 */
-	public static FunctorCall create(Object receiver, Object... arguments) {
-		Args args = new Args(arguments);
-		return new FunctorCall(receiver, args);
-	}
+  private IArgs args;
+  private IArgs currentArgs;
+  private Object receiver;
 
-	/**
-	 * Create an {@link IFunctorCall} with <code>receiver</code> as the receiver
-	 * and no arguments.
-	 * 
-	 * @param receiver
-	 *            The receiver for the call.
-	 * @return The new {@link IFunctorCall}
-	 */
-	public static FunctorCall noargs(Object receiver) {
-		return new FunctorCall(receiver, Args.create());
-	}
+  public FunctorCall(Object receiver, IArgs args) {
+    super();
+    this.args = args;
+    this.currentArgs = args;
+    this.receiver = receiver;
+  }
 
-	private IArgs args;
+  /**
+   * Create an {@link IFunctorCall} with <code>receiver</code> as the receiver
+   * and the indexed arguments.
+   *
+   * @param receiver  The receiver for the call.
+   * @param arguments The indexed arguments for the call.
+   * @return The new {@link IFunctorCall}
+   */
+  public static FunctorCall create(Object receiver, Object... arguments) {
+    Args args = new Args(arguments);
+    return new FunctorCall(receiver, args);
+  }
 
-	private IArgs currentArgs;
+  /**
+   * Create an {@link IFunctorCall} with <code>receiver</code> as the receiver
+   * and no arguments.
+   *
+   * @param receiver The receiver for the call.
+   * @return The new {@link IFunctorCall}
+   */
+  public static FunctorCall noargs(Object receiver) {
+    return new FunctorCall(receiver, Args.create());
+  }
 
-	private Object receiver;
+  public IArgs getArgs() {
+    return currentArgs;
+  }
 
-	public FunctorCall(Object receiver, IArgs args) {
-		super();
-		this.args = args;
-		this.currentArgs = args;
-		this.receiver = receiver;
-	}
+  public void setArgs(IArgs args) {
+    currentArgs = args;
+  }
 
-	public IArgs getArgs() {
-		return currentArgs;
-	}
+  public Object getReceiver() {
+    return receiver;
+  }
 
-	public Object getReceiver() {
-		return receiver;
-	}
-
-	public void setArgs(IArgs args) {
-		currentArgs = args;
-	}
-
-	public void setReceiver(Object receiver) {
-		this.receiver = receiver;
-	}
+  public void setReceiver(Object receiver) {
+    this.receiver = receiver;
+  }
 }

@@ -33,31 +33,31 @@ package de.intarsys.tools.reflect;
  * Failure while creating a new object via reflection.
  */
 public class ObjectCreationException extends ReflectionException {
-	/**
-	 * 
-	 */
-	public ObjectCreationException() {
-	}
+  /**
+   *
+   */
+  public ObjectCreationException() {
+  }
 
-	/**
-	 * @param message
-	 */
-	public ObjectCreationException(String message) {
-		super(message);
-	}
+  /**
+   * @param message
+   */
+  public ObjectCreationException(String message) {
+    super(message);
+  }
 
-	/**
-	 * @param message
-	 * @param cause
-	 */
-	public ObjectCreationException(String message, Throwable cause) {
-		super(message, cause);
-	}
+  /**
+   * @param message
+   * @param cause
+   */
+  public ObjectCreationException(String message, Throwable cause) {
+    super(message, cause);
+  }
 
-	/**
-	 * @param cause
-	 */
-	public ObjectCreationException(Throwable cause) {
-		super(cause.getLocalizedMessage(), cause);
-	}
+  /**
+   * @param cause
+   */
+  public ObjectCreationException(Throwable cause) {
+    super(cause.getLocalizedMessage(), cause);
+  }
 }

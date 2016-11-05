@@ -34,16 +34,16 @@ package de.intarsys.tools.converter;
  */
 public class FloatFromBooleanConverter implements IConverter<Boolean, Float> {
 
-	public Float convert(Boolean source) throws ConversionException {
-		return source ? 1f : 0f;
-	}
+  public Float convert(Boolean source) throws ConversionException {
+    return source ? 1f : 0f;
+  }
 
-	public Class<?> getSourceType() {
-		return Boolean.class;
-	}
+  public Class<?> getSourceType() {
+    return Boolean.class;
+  }
 
-	public Class<?> getTargetType() {
-		return Float.class;
-	}
+  public Class<?> getTargetType() {
+    return Float.class;
+  }
 
 }

@@ -34,26 +34,25 @@ import java.util.Map;
 
 /**
  * A default implementation for {@link IClassRegistry}.
- * 
  */
 public class StandardClassRegistry implements IClassRegistry {
-	private Map extensions = new HashMap();
+  private Map extensions = new HashMap();
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.objectmodel.IObjectExtensionRegistry#getObjectExtensions()
-	 */
-	public IClass[] getClasses() {
-		return (IClass[]) extensions.values().toArray(
-				new IClass[extensions.size()]);
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.objectmodel.IObjectExtensionRegistry#getObjectExtensions()
+   */
+  public IClass[] getClasses() {
+    return (IClass[]) extensions.values().toArray(
+        new IClass[extensions.size()]);
+  }
 
-	public IClass lookupClass(IClassSelector selector) {
-		return (Class) extensions.get(selector);
-	}
+  public IClass lookupClass(IClassSelector selector) {
+    return (Class) extensions.get(selector);
+  }
 
-	public void registerClass(IClass clazz) {
-		extensions.put(clazz.getSelector(), clazz);
-	}
+  public void registerClass(IClass clazz) {
+    extensions.put(clazz.getSelector(), clazz);
+  }
 }

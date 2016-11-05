@@ -30,17 +30,17 @@
 package de.intarsys.tools.authenticate;
 
 /**
- * 
+ *
  */
 public class CredentialProvider {
 
-	private static ICredentialProvider ACTIVE;
+  private static ICredentialProvider ACTIVE;
 
-	public static ICredentialProvider get() {
-		return ACTIVE;
-	}
+  public static ICredentialProvider get() {
+    return ACTIVE;
+  }
 
-	public static void set(ICredentialProvider active) {
-		ACTIVE = active;
-	}
+  public static void set(ICredentialProvider active) {
+    ACTIVE = active;
+  }
 }

@@ -33,13 +33,12 @@ import java.io.Serializable;
 
 /**
  * An {@link IResourceAccessHandler} that grants every access.
- * 
  */
 public class GrantResourceAccessHandler implements IResourceAccessHandler,
-		Serializable {
+    Serializable {
 
-	public boolean isAccessGranted(IResource resource) {
-		return true;
-	}
+  public boolean isAccessGranted(IResource resource) {
+    return true;
+  }
 
 }

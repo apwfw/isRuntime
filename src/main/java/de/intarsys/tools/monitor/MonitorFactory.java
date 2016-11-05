@@ -29,37 +29,36 @@
  */
 package de.intarsys.tools.monitor;
 
+import de.intarsys.tools.dom.ElementTools;
+import de.intarsys.tools.reflect.ObjectCreationException;
+import org.w3c.dom.Element;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.w3c.dom.Element;
-
-import de.intarsys.tools.dom.ElementTools;
-import de.intarsys.tools.reflect.ObjectCreationException;
-
 /**
- * 
+ *
  */
 public class MonitorFactory {
 
-	public static IMonitor[] createMonitors(Element element)
-			throws ObjectCreationException {
-		Element eMonitors = ElementTools.getFirstElement(element, "monitors");
-		Iterator<Element> it = ElementTools.getElementsIterator(eMonitors,
-				"monitor");
-		List<IMonitor> monitors = new ArrayList<IMonitor>();
-		while (it.hasNext()) {
-			Element eMonitor = it.next();
-			IMonitor monitor = ElementTools.createObject(eMonitor,
-					IMonitor.class, null);
-			monitors.add(monitor);
-			MonitorRegistry.get().registerMonitor(monitor);
-		}
-		return monitors.toArray(new IMonitor[monitors.size()]);
-	}
+  private MonitorFactory() {
+  }
 
-	private MonitorFactory() {
-	}
+  public static IMonitor[] createMonitors(Element element)
+      throws ObjectCreationException {
+    Element eMonitors = ElementTools.getFirstElement(element, "monitors");
+    Iterator<Element> it = ElementTools.getElementsIterator(eMonitors,
+        "monitor");
+    List<IMonitor> monitors = new ArrayList<IMonitor>();
+    while (it.hasNext()) {
+      Element eMonitor = it.next();
+      IMonitor monitor = ElementTools.createObject(eMonitor,
+          IMonitor.class, null);
+      monitors.add(monitor);
+      MonitorRegistry.get().registerMonitor(monitor);
+    }
+    return monitors.toArray(new IMonitor[monitors.size()]);
+  }
 
 }

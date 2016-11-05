@@ -33,32 +33,32 @@ import de.intarsys.tools.enumeration.EnumItem;
 import de.intarsys.tools.enumeration.EnumMeta;
 
 /**
- * 
+ *
  */
 public class EnumReturnMode extends EnumItem {
 
-	/**
-	 * The meta data for the enumeration.
-	 */
-	final public static EnumMeta META = getMeta(EnumReturnMode.class);
+  /**
+   * The meta data for the enumeration.
+   */
+  final public static EnumMeta META = getMeta(EnumReturnMode.class);
 
-	public static final EnumReturnMode VOID = new EnumReturnMode("void");
+  public static final EnumReturnMode VOID = new EnumReturnMode("void");
 
-	public static final EnumReturnMode PRIMITIVE = new EnumReturnMode(
-			"primitive");
+  public static final EnumReturnMode PRIMITIVE = new EnumReturnMode(
+      "primitive");
 
-	public static final EnumReturnMode COMPOSITE = new EnumReturnMode(
-			"composite");
+  public static final EnumReturnMode COMPOSITE = new EnumReturnMode(
+      "composite");
 
-	static {
-		COMPOSITE.setDefault();
-	}
+  static {
+    COMPOSITE.setDefault();
+  }
 
-	/**
-	 * 
-	 */
-	public EnumReturnMode(String id) {
-		super(id);
-	}
+  /**
+   *
+   */
+  public EnumReturnMode(String id) {
+    super(id);
+  }
 
 }

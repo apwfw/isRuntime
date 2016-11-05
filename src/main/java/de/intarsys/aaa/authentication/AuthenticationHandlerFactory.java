@@ -31,17 +31,16 @@ package de.intarsys.aaa.authentication;
 
 /**
  * A VM singleton to access the current {@link IAuthenticationHandlerFactory}.
- * 
  */
 public class AuthenticationHandlerFactory {
 
-	private static IAuthenticationHandlerFactory ACTIVE;
+  private static IAuthenticationHandlerFactory ACTIVE;
 
-	public static IAuthenticationHandlerFactory get() {
-		return ACTIVE;
-	}
+  public static IAuthenticationHandlerFactory get() {
+    return ACTIVE;
+  }
 
-	public static void set(IAuthenticationHandlerFactory factory) {
-		ACTIVE = factory;
-	}
+  public static void set(IAuthenticationHandlerFactory factory) {
+    ACTIVE = factory;
+  }
 }

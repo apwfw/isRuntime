@@ -34,21 +34,21 @@ package de.intarsys.tools.authenticate;
  */
 public class ConstantPasswordProvider implements IPasswordProvider {
 
-	private final char[] password;
+  private final char[] password;
 
-	public ConstantPasswordProvider(char[] password) {
-		super();
-		this.password = password;
-	}
+  public ConstantPasswordProvider(char[] password) {
+    super();
+    this.password = password;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.authenticate.IPasswordProvider#getPassword()
-	 */
-	public char[] getPassword() {
-		// return a copy - client might clear password!
-		return password == null ? null : password.clone();
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.authenticate.IPasswordProvider#getPassword()
+   */
+  public char[] getPassword() {
+    // return a copy - client might clear password!
+    return password == null ? null : password.clone();
+  }
 
 }

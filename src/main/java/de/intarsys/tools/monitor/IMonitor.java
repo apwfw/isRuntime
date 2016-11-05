@@ -35,80 +35,79 @@ import java.util.logging.Logger;
 
 /**
  * A monitor allows "monitoring" events along thread as a sequence of samples.
- * 
  */
 public interface IMonitor {
-	/**
-	 * Attach this {@link IMonitor} to the current {@link Thread}.
-	 * 
-	 * <p>
-	 * Calling this method indicates the beginning of a measuring period
-	 * represented by a {@link ITrace}. This method must always be paired with a
-	 * call to "detach()".
-	 * </p>
-	 * 
-	 * @return The new IMonitorTrace.
-	 */
-	public ITrace attach();
+  /**
+   * Attach this {@link IMonitor} to the current {@link Thread}.
+   * <p>
+   * <p>
+   * Calling this method indicates the beginning of a measuring period
+   * represented by a {@link ITrace}. This method must always be paired with a
+   * call to "detach()".
+   * </p>
+   *
+   * @return The new IMonitorTrace.
+   */
+  public ITrace attach();
 
-	/**
-	 * Detach this {@link IMonitor} from the current {@link Thread}. This call
-	 * terminates the current {@link ITrace} instance.
-	 */
-	public void detach();
+  /**
+   * Detach this {@link IMonitor} from the current {@link Thread}. This call
+   * terminates the current {@link ITrace} instance.
+   */
+  public void detach();
 
-	/**
-	 * Return an {@link ITrace} that is currently under construction.
-	 * 
-	 * @return The {@link ITrace} that is currently under construction.
-	 */
-	public ITrace getCurrentTrace();
+  /**
+   * Return an {@link ITrace} that is currently under construction.
+   *
+   * @return The {@link ITrace} that is currently under construction.
+   */
+  public ITrace getCurrentTrace();
 
-	/**
-	 * A map containing key/value pairs representing all statistical
-	 * informations derived from the samples.
-	 * 
-	 * @return A map containing key/value pairs representing all statistical
-	 *         informations derived from the samples.
-	 */
-	public Map getData();
+  /**
+   * A map containing key/value pairs representing all statistical
+   * informations derived from the samples.
+   *
+   * @return A map containing key/value pairs representing all statistical
+   * informations derived from the samples.
+   */
+  public Map getData();
 
-	/**
-	 * A map containing key/value pairs with string representations for the
-	 * statistical information from <code>getData</code>.
-	 * 
-	 * @return A map containing key/value pairs with string representations for
-	 *         the statistical information from <code>getData</code>.
-	 */
-	public Map getFormattedData();
+  /**
+   * A map containing key/value pairs with string representations for the
+   * statistical information from <code>getData</code>.
+   *
+   * @return A map containing key/value pairs with string representations for
+   * the statistical information from <code>getData</code>.
+   */
+  public Map getFormattedData();
 
-	/**
-	 * The associated {@link Logger} instance.
-	 * 
-	 * @return The associated {@link Logger} instance.
-	 */
-	public Logger getLogger();
+  /**
+   * The associated {@link Logger} instance.
+   *
+   * @return The associated {@link Logger} instance.
+   */
+  public Logger getLogger();
 
-	/**
-	 * The name of this monitor.
-	 * 
-	 * @return The name of this monitor.
-	 */
-	public String getName();
+  /**
+   * The name of this monitor.
+   *
+   * @return The name of this monitor.
+   */
+  public String getName();
 
-	/**
-	 * A list of {@link ITrace} instances.
-	 * 
-	 * <p>
-	 * This may be null if no traces are stored (see setCollectAll()).
-	 * </p>
-	 * 
-	 * @return A list of {@link ITrace} instances.
-	 */
-	public List<ITrace> getTraces();
+  /**
+   * A list of {@link ITrace} instances.
+   * <p>
+   * <p>
+   * This may be null if no traces are stored (see setCollectAll()).
+   * </p>
+   *
+   * @return A list of {@link ITrace} instances.
+   */
+  public List<ITrace> getTraces();
 
-	/**
-	 * Reset all information in this monitor.
-	 */
-	public void reset();
+  /**
+   * Reset all information in this monitor.
+   */
+  public void reset();
 }

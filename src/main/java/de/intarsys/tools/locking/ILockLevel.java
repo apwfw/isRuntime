@@ -31,10 +31,10 @@ package de.intarsys.tools.locking;
 
 public interface ILockLevel {
 
-	public static final ILockLevel EXCLUSIVE = new ILockLevel() {
-	};
+  public static final ILockLevel EXCLUSIVE = new ILockLevel() {
+  };
 
-	public static final ILockLevel SHARED = new ILockLevel() {
-	};
+  public static final ILockLevel SHARED = new ILockLevel() {
+  };
 
 }

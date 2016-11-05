@@ -29,48 +29,47 @@
  */
 package de.intarsys.tools.expression;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import de.intarsys.tools.functor.IArgs;
 import de.intarsys.tools.message.Message;
 import de.intarsys.tools.message.MessageBundle;
 import de.intarsys.tools.message.MessageBundleTools;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * An {@link IStringEvaluator} accessing {@link Message} instances in a
  * expression defined package
- * 
  */
 public class NLSMessageResolver extends ContainerResolver {
 
-	final private ClassLoader classLoader;
+  final private ClassLoader classLoader;
 
-	private Map<String, IStringEvaluator> resolvers = new HashMap<String, IStringEvaluator>();
+  private Map<String, IStringEvaluator> resolvers = new HashMap<String, IStringEvaluator>();
 
-	public NLSMessageResolver() {
-		this(NLSMessageResolver.class.getClassLoader());
-	}
+  public NLSMessageResolver() {
+    this(NLSMessageResolver.class.getClassLoader());
+  }
 
-	public NLSMessageResolver(ClassLoader classLoader) {
-		super('#');
-		this.classLoader = classLoader;
-	}
+  public NLSMessageResolver(ClassLoader classLoader) {
+    super('#');
+    this.classLoader = classLoader;
+  }
 
-	@Override
-	protected Object basicEvaluate(String expression, IArgs args)
-			throws EvaluationException {
-		IStringEvaluator evaluator = resolvers.get(expression);
-		if (evaluator == null) {
-			MessageBundle bundle = MessageBundleTools.getMessageBundle(
-					expression, getClassLoader());
-			evaluator = new MessageBundleMessageResolver(bundle);
-			resolvers.put(expression, evaluator);
-		}
-		return evaluator;
-	}
+  @Override
+  protected Object basicEvaluate(String expression, IArgs args)
+      throws EvaluationException {
+    IStringEvaluator evaluator = resolvers.get(expression);
+    if (evaluator == null) {
+      MessageBundle bundle = MessageBundleTools.getMessageBundle(
+          expression, getClassLoader());
+      evaluator = new MessageBundleMessageResolver(bundle);
+      resolvers.put(expression, evaluator);
+    }
+    return evaluator;
+  }
 
-	public ClassLoader getClassLoader() {
-		return classLoader;
-	}
+  public ClassLoader getClassLoader() {
+    return classLoader;
+  }
 }

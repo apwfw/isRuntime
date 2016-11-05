@@ -34,12 +34,12 @@ package de.intarsys.tools.reflect;
  */
 public interface IClassLoaderSupport {
 
-	/**
-	 * A {@link ClassLoader} instance suitable to load classes and resources in
-	 * the context of the receiver.
-	 * 
-	 * @return A {@link ClassLoader} instance suitable to load classes and
-	 *         resources in the context of the receiver.
-	 */
-	public ClassLoader getClassLoader();
+  /**
+   * A {@link ClassLoader} instance suitable to load classes and resources in
+   * the context of the receiver.
+   *
+   * @return A {@link ClassLoader} instance suitable to load classes and
+   * resources in the context of the receiver.
+   */
+  public ClassLoader getClassLoader();
 }

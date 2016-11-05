@@ -34,14 +34,14 @@ package de.intarsys.tools.converter;
  */
 public class ConverterRegistry {
 
-	private static IConverterRegistry ACTIVE = new StandardConverterRegistry();
+  private static IConverterRegistry ACTIVE = new StandardConverterRegistry();
 
-	public static IConverterRegistry get() {
-		return ACTIVE;
-	}
+  public static IConverterRegistry get() {
+    return ACTIVE;
+  }
 
-	public static void set(IConverterRegistry active) {
-		ACTIVE = active;
-	}
+  public static void set(IConverterRegistry active) {
+    ACTIVE = active;
+  }
 
 }

@@ -31,13 +31,13 @@ package de.intarsys.tools.variable;
 
 public class VariableNamespaces {
 
-	private static IVariableNamespaces ACTIVE = new StandardVariableNamespaces();
+  private static IVariableNamespaces ACTIVE = new StandardVariableNamespaces();
 
-	static public IVariableNamespaces get() {
-		return ACTIVE;
-	}
+  static public IVariableNamespaces get() {
+    return ACTIVE;
+  }
 
-	static public void set(IVariableNamespaces active) {
-		ACTIVE = active;
-	}
+  static public void set(IVariableNamespaces active) {
+    ACTIVE = active;
+  }
 }

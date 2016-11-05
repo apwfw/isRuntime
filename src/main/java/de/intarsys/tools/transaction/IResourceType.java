@@ -31,19 +31,18 @@ package de.intarsys.tools.transaction;
 
 /**
  * The type of an {@link IResource}.
- * 
- * @param <T>
- *            The {@link IResource} that will be created by this type.
+ *
+ * @param <T> The {@link IResource} that will be created by this type.
  */
 public interface IResourceType<T extends IResource> {
 
-	/**
-	 * Create a new {@link IResource} instance. The {@link IResource} may be
-	 * nested within a parent resource.
-	 * 
-	 * @param parent
-	 * @return The new {@link IResource}
-	 * @throws ResourceException
-	 */
-	public T createResource(T parent) throws ResourceException;
+  /**
+   * Create a new {@link IResource} instance. The {@link IResource} may be
+   * nested within a parent resource.
+   *
+   * @param parent
+   * @return The new {@link IResource}
+   * @throws ResourceException
+   */
+  public T createResource(T parent) throws ResourceException;
 }

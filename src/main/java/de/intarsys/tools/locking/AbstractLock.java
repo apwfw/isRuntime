@@ -31,45 +31,44 @@ package de.intarsys.tools.locking;
 
 /**
  * Abstract {@link ILock} implementation.
- * 
  */
 abstract public class AbstractLock implements ILock {
 
-	/**
-	 * The object that is guarded by this lock.
-	 */
-	final private Object object;
+  /**
+   * The object that is guarded by this lock.
+   */
+  final private Object object;
 
-	public AbstractLock(Object object) {
-		super();
-		this.object = object;
-	}
+  public AbstractLock(Object object) {
+    super();
+    this.object = object;
+  }
 
-	/**
-	 * The object that is guarded by this lock.
-	 * 
-	 * @return The object that is locked.
-	 */
-	protected Object getObject() {
-		return object;
-	}
+  /**
+   * The object that is guarded by this lock.
+   *
+   * @return The object that is locked.
+   */
+  protected Object getObject() {
+    return object;
+  }
 
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("["); //$NON-NLS-1$
-		toStringFlags(sb);
-		sb.append("]-"); //$NON-NLS-1$
-		sb.append(getObject());
-		return sb.toString();
-	}
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("["); //$NON-NLS-1$
+    toStringFlags(sb);
+    sb.append("]-"); //$NON-NLS-1$
+    sb.append(getObject());
+    return sb.toString();
+  }
 
-	/**
-	 * provide some detail information for this
-	 * 
-	 * @param sb
-	 */
-	protected void toStringFlags(StringBuilder sb) {
-		// do nothing
-	}
+  /**
+   * provide some detail information for this
+   *
+   * @param sb
+   */
+  protected void toStringFlags(StringBuilder sb) {
+    // do nothing
+  }
 }

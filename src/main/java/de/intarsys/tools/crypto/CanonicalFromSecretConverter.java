@@ -38,16 +38,16 @@ import de.intarsys.tools.converter.IConverter;
  */
 public class CanonicalFromSecretConverter implements IConverter<Secret, String> {
 
-	public String convert(Secret source) throws ConversionException {
-		return source.getValue();
-	}
+  public String convert(Secret source) throws ConversionException {
+    return source.getValue();
+  }
 
-	public Class<?> getSourceType() {
-		return Secret.class;
-	}
+  public Class<?> getSourceType() {
+    return Secret.class;
+  }
 
-	public Class<?> getTargetType() {
-		return String.class;
-	}
+  public Class<?> getTargetType() {
+    return String.class;
+  }
 
 }

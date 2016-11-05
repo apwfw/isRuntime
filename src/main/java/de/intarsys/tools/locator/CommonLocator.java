@@ -29,6 +29,9 @@
  */
 package de.intarsys.tools.locator;
 
+import de.intarsys.tools.file.TempTools;
+import de.intarsys.tools.stream.StreamTools;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -36,51 +39,48 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 
-import de.intarsys.tools.file.TempTools;
-import de.intarsys.tools.stream.StreamTools;
-
 abstract public class CommonLocator implements ILocator, Serializable {
 
-	static final long serialVersionUID = 1;
+  static final long serialVersionUID = 1;
 
-	private boolean readOnly = false;
+  private boolean readOnly = false;
 
-	protected ILocator createTempFileLocator() throws IOException {
-		File file = TempTools.createTempFile("locator", ".tmp");
-		file.deleteOnExit();
-		InputStream is = null;
-		OutputStream os = null;
-		try {
-			is = getInputStream();
-			os = new FileOutputStream(file);
-			// can't use auto close here
-			StreamTools.copyStream(is, false, os, false);
-		} finally {
-			StreamTools.close(is);
-			StreamTools.close(os);
-		}
-		ILocator tempFileLocator = new FileLocator(file);
-		tempFileLocator.setReadOnly();
-		return tempFileLocator;
-	}
+  protected ILocator createTempFileLocator() throws IOException {
+    File file = TempTools.createTempFile("locator", ".tmp");
+    file.deleteOnExit();
+    InputStream is = null;
+    OutputStream os = null;
+    try {
+      is = getInputStream();
+      os = new FileOutputStream(file);
+      // can't use auto close here
+      StreamTools.copyStream(is, false, os, false);
+    } finally {
+      StreamTools.close(is);
+      StreamTools.close(os);
+    }
+    ILocator tempFileLocator = new FileLocator(file);
+    tempFileLocator.setReadOnly();
+    return tempFileLocator;
+  }
 
-	public void delete() throws IOException {
-		throw new IOException("unsupported operation");
-	}
+  public void delete() throws IOException {
+    throw new IOException("unsupported operation");
+  }
 
-	public long getLength() throws IOException {
-		return -1;
-	}
+  public long getLength() throws IOException {
+    return -1;
+  }
 
-	public boolean isReadOnly() {
-		return readOnly;
-	}
+  public boolean isReadOnly() {
+    return readOnly;
+  }
 
-	public void rename(String newName) throws IOException {
-		throw new IOException("unsupported operation");
-	}
+  public void rename(String newName) throws IOException {
+    throw new IOException("unsupported operation");
+  }
 
-	public void setReadOnly() {
-		readOnly = true;
-	}
+  public void setReadOnly() {
+    readOnly = true;
+  }
 }

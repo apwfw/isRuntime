@@ -29,157 +29,156 @@
  */
 package de.intarsys.tools.dom;
 
+import de.intarsys.tools.functor.ArgTools;
+import de.intarsys.tools.functor.IArgs;
+import org.w3c.dom.Element;
+
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import org.w3c.dom.Element;
-
-import de.intarsys.tools.functor.ArgTools;
-import de.intarsys.tools.functor.IArgs;
-
 public class ElementChildrenArgsAdapter implements IArgs {
 
-	protected class Binding implements IBinding {
+  final private Element[] children;
 
-		private int index;
+  public ElementChildrenArgsAdapter(Element[] children) {
+    super();
+    this.children = children;
+  }
 
-		public Binding(int index) {
-			super();
-			this.index = index;
-		}
+  public IBinding add(Object object) {
+    throw new UnsupportedOperationException("can't write"); //$NON-NLS-1$
+  }
 
-		@Override
-		public String getName() {
-			return null;
-		}
+  @Override
+  public Iterator<IBinding> bindings() {
+    return new Iterator<IBinding>() {
+      private int index = 0;
 
-		@Override
-		public Object getValue() {
-			return ElementChildrenArgsAdapter.this.get(index);
-		}
+      @Override
+      public boolean hasNext() {
+        return index < children.length;
+      }
 
-		@Override
-		public boolean isDefined() {
-			return false;
-		}
+      @Override
+      public IBinding next() {
+        if (index < children.length) {
+          return new Binding(index++);
+        } else {
+          throw new NoSuchElementException();
+        }
+      }
 
-		@Override
-		public void setValue(Object value) {
-			ElementChildrenArgsAdapter.this.put(index, value);
-		}
+      @Override
+      public void remove() {
+        throw new UnsupportedOperationException();
+      }
+    };
+  }
 
-	}
+  public void clear() {
+    throw new UnsupportedOperationException("can't write"); //$NON-NLS-1$
+  }
 
-	final private Element[] children;
+  @Override
+  public IArgs copy() {
+    return new ElementChildrenArgsAdapter(children);
+  }
 
-	public ElementChildrenArgsAdapter(Element[] children) {
-		super();
-		this.children = children;
-	}
+  @Override
+  public IBinding declare(final String name) {
+    return new Binding(0);
+  }
 
-	public IBinding add(Object object) {
-		throw new UnsupportedOperationException("can't write"); //$NON-NLS-1$
-	}
+  public Object get(int index) {
+    if (index < 0 || index >= children.length) {
+      return null;
+    }
+    return new ElementArgsAdapter(children[index]);
+  }
 
-	@Override
-	public Iterator<IBinding> bindings() {
-		return new Iterator<IBinding>() {
-			private int index = 0;
+  public Object get(int index, Object defaultValue) {
+    if (index < 0 || index >= children.length) {
+      return defaultValue;
+    }
+    return new ElementArgsAdapter(children[index]);
+  }
 
-			@Override
-			public boolean hasNext() {
-				return index < children.length;
-			}
+  public Object get(String name) {
+    // not supported
+    return null;
+  }
 
-			@Override
-			public IBinding next() {
-				if (index < children.length) {
-					return new Binding(index++);
-				} else {
-					throw new NoSuchElementException();
-				}
-			}
+  public Object get(String name, Object defaultValue) {
+    // not supported
+    return defaultValue;
+  }
 
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException();
-			}
-		};
-	}
+  public boolean isDefined(String name) {
+    // not supported
+    return false;
+  }
 
-	public void clear() {
-		throw new UnsupportedOperationException("can't write"); //$NON-NLS-1$
-	}
+  public Set names() {
+    // not supported
+    return Collections.EMPTY_SET;
+  }
 
-	@Override
-	public IArgs copy() {
-		return new ElementChildrenArgsAdapter(children);
-	}
+  public IBinding put(int index, Object value) {
+    throw new UnsupportedOperationException("can't write to ArgsAdapter"); //$NON-NLS-1$
+  }
 
-	@Override
-	public IBinding declare(final String name) {
-		return new Binding(0);
-	}
+  public IBinding put(String name, Object value) {
+    throw new UnsupportedOperationException("can't write to ArgsAdapter"); //$NON-NLS-1$
+  }
 
-	public Object get(int index) {
-		if (index < 0 || index >= children.length) {
-			return null;
-		}
-		return new ElementArgsAdapter(children[index]);
-	}
+  public int size() {
+    return children.length;
+  }
 
-	public Object get(int index, Object defaultValue) {
-		if (index < 0 || index >= children.length) {
-			return defaultValue;
-		}
-		return new ElementArgsAdapter(children[index]);
-	}
+  @Override
+  public String toString() {
+    return ArgTools.toString(this, ""); //$NON-NLS-1$
+  }
 
-	public Object get(String name) {
-		// not supported
-		return null;
-	}
+  public void undefine(int index) {
+    throw new UnsupportedOperationException("can't write to ArgsAdapter"); //$NON-NLS-1$
+  }
 
-	public Object get(String name, Object defaultValue) {
-		// not supported
-		return defaultValue;
-	}
+  public void undefine(String name) {
+    throw new UnsupportedOperationException("can't write to ArgsAdapter"); //$NON-NLS-1$
+  }
 
-	public boolean isDefined(String name) {
-		// not supported
-		return false;
-	}
+  protected class Binding implements IBinding {
 
-	public Set names() {
-		// not supported
-		return Collections.EMPTY_SET;
-	}
+    private int index;
 
-	public IBinding put(int index, Object value) {
-		throw new UnsupportedOperationException("can't write to ArgsAdapter"); //$NON-NLS-1$
-	}
+    public Binding(int index) {
+      super();
+      this.index = index;
+    }
 
-	public IBinding put(String name, Object value) {
-		throw new UnsupportedOperationException("can't write to ArgsAdapter"); //$NON-NLS-1$
-	}
+    @Override
+    public String getName() {
+      return null;
+    }
 
-	public int size() {
-		return children.length;
-	}
+    @Override
+    public Object getValue() {
+      return ElementChildrenArgsAdapter.this.get(index);
+    }
 
-	@Override
-	public String toString() {
-		return ArgTools.toString(this, ""); //$NON-NLS-1$
-	}
+    @Override
+    public void setValue(Object value) {
+      ElementChildrenArgsAdapter.this.put(index, value);
+    }
 
-	public void undefine(int index) {
-		throw new UnsupportedOperationException("can't write to ArgsAdapter"); //$NON-NLS-1$
-	}
+    @Override
+    public boolean isDefined() {
+      return false;
+    }
 
-	public void undefine(String name) {
-		throw new UnsupportedOperationException("can't write to ArgsAdapter"); //$NON-NLS-1$
-	}
+  }
 
 }

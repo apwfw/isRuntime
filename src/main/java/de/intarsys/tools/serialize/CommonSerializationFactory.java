@@ -33,34 +33,34 @@ package de.intarsys.tools.serialize;
  * A common superclass for implementing an {@link ISerializationFactory}.
  */
 abstract public class CommonSerializationFactory implements
-		ISerializationFactory {
+    ISerializationFactory {
 
-	public CommonSerializationFactory() {
-		super();
-	}
+  public CommonSerializationFactory() {
+    super();
+  }
 
-	abstract protected IDeserializer basicCreateDeserializer(
-			SerializationContext context);
+  abstract protected IDeserializer basicCreateDeserializer(
+      SerializationContext context);
 
-	abstract protected ISerializer basicCreateSerializer(
-			SerializationContext context);
+  abstract protected ISerializer basicCreateSerializer(
+      SerializationContext context);
 
-	final public IDeserializer createDeserializer(SerializationContext context) {
-		if (!supportsContext(context)) {
-			return null;
-		}
-		return basicCreateDeserializer(context);
-	}
+  final public IDeserializer createDeserializer(SerializationContext context) {
+    if (!supportsContext(context)) {
+      return null;
+    }
+    return basicCreateDeserializer(context);
+  }
 
-	final public ISerializer createSerializer(SerializationContext context) {
-		if (!supportsContext(context)) {
-			return null;
-		}
-		return basicCreateSerializer(context);
-	}
+  final public ISerializer createSerializer(SerializationContext context) {
+    if (!supportsContext(context)) {
+      return null;
+    }
+    return basicCreateSerializer(context);
+  }
 
-	protected boolean supportsContext(SerializationContext context) {
-		return false;
-	}
+  protected boolean supportsContext(SerializationContext context) {
+    return false;
+  }
 
 }

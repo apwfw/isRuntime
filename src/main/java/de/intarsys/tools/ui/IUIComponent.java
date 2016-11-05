@@ -36,15 +36,12 @@ import de.intarsys.tools.event.INotificationSupport;
 /**
  * A user interface component abstraction, acting as a mediator to a concrete
  * window toolkit and a link between view and model layer.
- * 
- * @param <M>
- *            The model object
- * @param <C>
- *            The toolkit container class
- * @param <T>
- *            The toolkit component class
+ *
+ * @param <M> The model object
+ * @param <C> The toolkit container class
+ * @param <T> The toolkit component class
  */
 public interface IUIComponent<M extends INotificationSupport, C, T> extends
-		IComponentProvider<C, T>, INotificationObserver<M>, IDisposable {
+    IComponentProvider<C, T>, INotificationObserver<M>, IDisposable {
 
 }

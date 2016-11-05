@@ -34,18 +34,18 @@ package de.intarsys.tools.valueholder;
  */
 public interface IValueHolder<T> {
 
-	/**
-	 * Dereference the {@link IValueHolder}.
-	 * 
-	 * @return The referenced object.
-	 */
-	public T get();
+  /**
+   * Dereference the {@link IValueHolder}.
+   *
+   * @return The referenced object.
+   */
+  public T get();
 
-	/**
-	 * Assign a new value.
-	 * 
-	 * @param newValue
-	 * @return The previous value (optional)
-	 */
-	public T set(T newValue);
+  /**
+   * Assign a new value.
+   *
+   * @param newValue
+   * @return The previous value (optional)
+   */
+  public T set(T newValue);
 }

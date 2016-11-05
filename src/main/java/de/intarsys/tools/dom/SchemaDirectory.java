@@ -29,6 +29,14 @@
  */
 package de.intarsys.tools.dom;
 
+import de.intarsys.tools.file.Loader;
+import de.intarsys.tools.string.StringTools;
+import org.w3c.dom.ls.LSInput;
+import org.w3c.dom.ls.LSResourceResolver;
+
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -39,200 +47,187 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-
-import org.w3c.dom.ls.LSInput;
-import org.w3c.dom.ls.LSResourceResolver;
-
-import de.intarsys.tools.file.Loader;
-import de.intarsys.tools.string.StringTools;
-
 public class SchemaDirectory implements LSResourceResolver {
 
-	class SchemaFinder extends Loader {
-		private final ArrayList<Source> xsdSources;
+  private static final Logger Log = PACKAGE.Log;
+  private final File schemaDir;
+  private final String rootSchema;
+  private Schema schema;
+  public SchemaDirectory(File pSchemaDir) {
+    this(pSchemaDir, null);
+  }
 
-		public SchemaFinder() {
-			xsdSources = new ArrayList<Source>();
-		}
+  public SchemaDirectory(File pSchemaDir, String pRootSchema) {
+    schemaDir = pSchemaDir;
+    rootSchema = pRootSchema;
+  }
 
-		@Override
-		protected boolean basicLoadFile(File file, boolean readOnly, String path) {
-			if (file.getName().toLowerCase().endsWith(".xsd")) { //$NON-NLS-1$
-				xsdSources.add(new StreamSource(file));
-			}
-			return true;
-		}
+  public Schema getSchema() {
+    return schema;
+  }
 
-		public Source[] getSchemaSources() throws IOException {
-			xsdSources.clear();
-			if (StringTools.isEmpty(rootSchema)) {
-				load(schemaDir, true, true);
-			} else {
-				load(schemaDir, rootSchema, true, false);
-			}
-			return xsdSources.toArray(new Source[xsdSources.size()]);
-		}
-	}
+  public void setSchema(Schema schema) {
+    this.schema = schema;
+  }
 
-	static class SchemaLSInput implements LSInput {
-		private String publicId;
-		private String systemId;
-		private String baseURI;
-		private String encoding;
-		private String stringData;
-		private Reader characterStream;
-		private boolean certifiedText;
-		private InputStream byteStream;
+  public Source[] getSources() throws IOException {
+    return new SchemaFinder().getSchemaSources();
+  }
 
-		public SchemaLSInput(String publicId, String systemId, String baseURI) {
-			this.publicId = publicId;
-			this.systemId = systemId;
-			this.baseURI = baseURI;
-		}
+  private String resolveFileName(String baseURI, String systemId) {
+    String filename = StringTools.EMPTY;
+    if (baseURI.toLowerCase().startsWith("http://")) { //$NON-NLS-1$
+      String parent = new File(baseURI.substring(7)).getParent();
+      if (parent != null) {
+        filename = parent + File.separator;
+      }
+    }
+    return filename + systemIdToFileName(systemId);
+  }
 
-		public String getBaseURI() {
-			return baseURI;
-		}
+  public LSInput resolveResource(String type, String namespaceURI,
+                                 String publicId, String systemId, String baseURI) {
+    String filename = resolveFileName(baseURI, systemId);
+    File file = new File(schemaDir, filename);
+    if (file.canRead() && file.isFile()) {
+      SchemaLSInput lsInput = new SchemaLSInput(publicId, systemId,
+          baseURI);
+      try {
+        lsInput.setByteStream(new FileInputStream(file));
+        return lsInput;
+      } catch (FileNotFoundException e) {
+        Log.log(Level.WARNING, e.getLocalizedMessage(), e);
+      }
+    }
+    Log.log(Level.WARNING, "failed resolving schema type '" + type //$NON-NLS-1$
+        + "', namespaceURI '" + namespaceURI + "', baseURI '" + baseURI //$NON-NLS-1$ //$NON-NLS-2$
+        + "', systemId '" + systemId + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+    return null;
+  }
 
-		public InputStream getByteStream() {
-			return new InputStream() {
+  private String systemIdToFileName(String systemId) {
+    if (systemId.startsWith("http://")) { //$NON-NLS-1$
+      return systemId.substring(7);
+    } else {
+      return systemId;
+    }
+  }
 
-				@Override
-				public void close() throws IOException {
-					byteStream.close();
-				}
+  static class SchemaLSInput implements LSInput {
+    private String publicId;
+    private String systemId;
+    private String baseURI;
+    private String encoding;
+    private String stringData;
+    private Reader characterStream;
+    private boolean certifiedText;
+    private InputStream byteStream;
 
-				@Override
-				public int read() throws IOException {
-					return byteStream.read();
-				}
-			};
-		}
+    public SchemaLSInput(String publicId, String systemId, String baseURI) {
+      this.publicId = publicId;
+      this.systemId = systemId;
+      this.baseURI = baseURI;
+    }
 
-		public boolean getCertifiedText() {
-			return certifiedText;
-		}
+    public String getBaseURI() {
+      return baseURI;
+    }
 
-		public Reader getCharacterStream() {
-			return characterStream;
-		}
+    public void setBaseURI(String baseURI) {
+      this.baseURI = baseURI;
+    }
 
-		public String getEncoding() {
-			return encoding;
-		}
+    public InputStream getByteStream() {
+      return new InputStream() {
 
-		public String getPublicId() {
-			return publicId;
-		}
+        @Override
+        public void close() throws IOException {
+          byteStream.close();
+        }
 
-		public String getStringData() {
-			return stringData;
-		}
+        @Override
+        public int read() throws IOException {
+          return byteStream.read();
+        }
+      };
+    }
 
-		public String getSystemId() {
-			return systemId;
-		}
+    public void setByteStream(InputStream byteStream) {
+      this.byteStream = byteStream;
+    }
 
-		public void setBaseURI(String baseURI) {
-			this.baseURI = baseURI;
-		}
+    public boolean getCertifiedText() {
+      return certifiedText;
+    }
 
-		public void setByteStream(InputStream byteStream) {
-			this.byteStream = byteStream;
-		}
+    public void setCertifiedText(boolean certifiedText) {
+      this.certifiedText = certifiedText;
+    }
 
-		public void setCertifiedText(boolean certifiedText) {
-			this.certifiedText = certifiedText;
-		}
+    public Reader getCharacterStream() {
+      return characterStream;
+    }
 
-		public void setCharacterStream(Reader characterStream) {
-			this.characterStream = characterStream;
-		}
+    public void setCharacterStream(Reader characterStream) {
+      this.characterStream = characterStream;
+    }
 
-		public void setEncoding(String encoding) {
-			this.encoding = encoding;
-		}
+    public String getEncoding() {
+      return encoding;
+    }
 
-		public void setPublicId(String publicId) {
-			this.publicId = publicId;
-		}
+    public void setEncoding(String encoding) {
+      this.encoding = encoding;
+    }
 
-		public void setStringData(String stringData) {
-			this.stringData = stringData;
-		}
+    public String getPublicId() {
+      return publicId;
+    }
 
-		public void setSystemId(String systemId) {
-			this.systemId = systemId;
-		}
-	}
+    public void setPublicId(String publicId) {
+      this.publicId = publicId;
+    }
 
-	private static final Logger Log = PACKAGE.Log;
+    public String getStringData() {
+      return stringData;
+    }
 
-	private final File schemaDir;
-	private final String rootSchema;
+    public void setStringData(String stringData) {
+      this.stringData = stringData;
+    }
 
-	private Schema schema;
+    public String getSystemId() {
+      return systemId;
+    }
 
-	public SchemaDirectory(File pSchemaDir) {
-		this(pSchemaDir, null);
-	}
+    public void setSystemId(String systemId) {
+      this.systemId = systemId;
+    }
+  }
 
-	public SchemaDirectory(File pSchemaDir, String pRootSchema) {
-		schemaDir = pSchemaDir;
-		rootSchema = pRootSchema;
-	}
+  class SchemaFinder extends Loader {
+    private final ArrayList<Source> xsdSources;
 
-	public Schema getSchema() {
-		return schema;
-	}
+    public SchemaFinder() {
+      xsdSources = new ArrayList<Source>();
+    }
 
-	public Source[] getSources() throws IOException {
-		return new SchemaFinder().getSchemaSources();
-	}
+    @Override
+    protected boolean basicLoadFile(File file, boolean readOnly, String path) {
+      if (file.getName().toLowerCase().endsWith(".xsd")) { //$NON-NLS-1$
+        xsdSources.add(new StreamSource(file));
+      }
+      return true;
+    }
 
-	private String resolveFileName(String baseURI, String systemId) {
-		String filename = StringTools.EMPTY;
-		if (baseURI.toLowerCase().startsWith("http://")) { //$NON-NLS-1$
-			String parent = new File(baseURI.substring(7)).getParent();
-			if (parent != null) {
-				filename = parent + File.separator;
-			}
-		}
-		return filename + systemIdToFileName(systemId);
-	}
-
-	public LSInput resolveResource(String type, String namespaceURI,
-			String publicId, String systemId, String baseURI) {
-		String filename = resolveFileName(baseURI, systemId);
-		File file = new File(schemaDir, filename);
-		if (file.canRead() && file.isFile()) {
-			SchemaLSInput lsInput = new SchemaLSInput(publicId, systemId,
-					baseURI);
-			try {
-				lsInput.setByteStream(new FileInputStream(file));
-				return lsInput;
-			} catch (FileNotFoundException e) {
-				Log.log(Level.WARNING, e.getLocalizedMessage(), e);
-			}
-		}
-		Log.log(Level.WARNING, "failed resolving schema type '" + type //$NON-NLS-1$
-				+ "', namespaceURI '" + namespaceURI + "', baseURI '" + baseURI //$NON-NLS-1$ //$NON-NLS-2$
-				+ "', systemId '" + systemId + "'"); //$NON-NLS-1$ //$NON-NLS-2$
-		return null;
-	}
-
-	public void setSchema(Schema schema) {
-		this.schema = schema;
-	}
-
-	private String systemIdToFileName(String systemId) {
-		if (systemId.startsWith("http://")) { //$NON-NLS-1$
-			return systemId.substring(7);
-		} else {
-			return systemId;
-		}
-	}
+    public Source[] getSchemaSources() throws IOException {
+      xsdSources.clear();
+      if (StringTools.isEmpty(rootSchema)) {
+        load(schemaDir, true, true);
+      } else {
+        load(schemaDir, rootSchema, true, false);
+      }
+      return xsdSources.toArray(new Source[xsdSources.size()]);
+    }
+  }
 }

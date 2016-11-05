@@ -29,6 +29,8 @@
  */
 package de.intarsys.tools.locator;
 
+import de.intarsys.tools.file.FileTools;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -36,11 +38,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import de.intarsys.tools.file.FileTools;
-
 /**
  * The factory for {@link FileLocator} objects.
- * 
+ * <p>
  * <p>
  * {@link FileLocator} instances are created either using an absolute path name
  * or are looked up relative to the factorys search path. Multiple search paths
@@ -49,83 +49,91 @@ import de.intarsys.tools.file.FileTools;
  */
 public class FileLocatorFactory extends CommonLocatorFactory {
 
-	/** The separator character for the definition of multiple search paths */
-	public static final String PATH_SEPARATOR = ";";
+  /**
+   * The separator character for the definition of multiple search paths
+   */
+  public static final String PATH_SEPARATOR = ";";
 
-	/** The root path where we look up relative references */
-	private String searchPathDefinition;
+  /**
+   * The root path where we look up relative references
+   */
+  private String searchPathDefinition;
 
-	/** The collection of search paths to be looked up when creating a locator */
-	private List searchPaths;
+  /**
+   * The collection of search paths to be looked up when creating a locator
+   */
+  private List searchPaths;
 
-	/** flag if we synchronize synchronously with every check */
-	private boolean synchSynchronous = true;
+  /**
+   * flag if we synchronize synchronously with every check
+   */
+  private boolean synchSynchronous = true;
 
-	/**
-	 * Create a new factory.
-	 */
-	public FileLocatorFactory() {
-		super();
-		setSearchPathDefinition("./");
-	}
+  /**
+   * Create a new factory.
+   */
+  public FileLocatorFactory() {
+    super();
+    setSearchPathDefinition("./");
+  }
 
-	/**
-	 * The file locator factory supports looking up resources in multiple paths.
-	 * To preserve compatibility to ILocatorFactory, the last locator created is
-	 * returned if no match is found. This is a valid locator, even so no
-	 * existing physical resource is designated.
-	 * 
-	 * @see de.intarsys.tools.locator.ILocatorFactory#createLocator(java.lang.String)
-	 */
-	public ILocator createLocator(String path) {
-		FileLocator result = null;
-		for (Iterator it = getSearchPaths().iterator(); it.hasNext();) {
-			String searchPath = (String) it.next();
-			File parent = new File(searchPath.trim());
-			File absolutePath = FileTools.resolvePath(parent, path.trim());
-			result = new FileLocator(absolutePath);
-			// avoid exists check if possible
-			if (!it.hasNext() || result.exists()) {
-				break;
-			}
-		}
-		if (result != null) {
-			result.setSynchSynchronous(isSynchSynchronous());
-		}
-		return result;
-	}
+  /**
+   * The file locator factory supports looking up resources in multiple paths.
+   * To preserve compatibility to ILocatorFactory, the last locator created is
+   * returned if no match is found. This is a valid locator, even so no
+   * existing physical resource is designated.
+   *
+   * @see de.intarsys.tools.locator.ILocatorFactory#createLocator(java.lang.String)
+   */
+  public ILocator createLocator(String path) {
+    FileLocator result = null;
+    for (Iterator it = getSearchPaths().iterator(); it.hasNext(); ) {
+      String searchPath = (String) it.next();
+      File parent = new File(searchPath.trim());
+      File absolutePath = FileTools.resolvePath(parent, path.trim());
+      result = new FileLocator(absolutePath);
+      // avoid exists check if possible
+      if (!it.hasNext() || result.exists()) {
+        break;
+      }
+    }
+    if (result != null) {
+      result.setSynchSynchronous(isSynchSynchronous());
+    }
+    return result;
+  }
 
-	public String getSearchPathDefinition() {
-		return searchPathDefinition;
-	}
+  public String getSearchPathDefinition() {
+    return searchPathDefinition;
+  }
 
-	public List getSearchPaths() {
-		return searchPaths;
-	}
+  public void setSearchPathDefinition(String searchPath) {
+    this.searchPathDefinition = searchPath;
+    // set up search paths
+    searchPaths = new ArrayList();
+    for (Enumeration e = new StringTokenizer(searchPathDefinition,
+        PATH_SEPARATOR); e.hasMoreElements(); ) {
+      String path = (String) e.nextElement();
+      if ((path != null) && (path.trim().length() > 0)
+          && !searchPaths.contains(path)) {
+        searchPaths.add(path.trim());
+      }
+    }
+  }
 
-	public boolean isSynchSynchronous() {
-		return synchSynchronous;
-	}
+  public List getSearchPaths() {
+    return searchPaths;
+  }
 
-	public void setSearchPathDefinition(String searchPath) {
-		this.searchPathDefinition = searchPath;
-		// set up search paths
-		searchPaths = new ArrayList();
-		for (Enumeration e = new StringTokenizer(searchPathDefinition,
-				PATH_SEPARATOR); e.hasMoreElements();) {
-			String path = (String) e.nextElement();
-			if ((path != null) && (path.trim().length() > 0)
-					&& !searchPaths.contains(path)) {
-				searchPaths.add(path.trim());
-			}
-		}
-	}
+  public void setSearchPaths(List searchPaths) {
+    this.searchPaths = searchPaths;
+  }
 
-	public void setSearchPaths(List searchPaths) {
-		this.searchPaths = searchPaths;
-	}
+  public boolean isSynchSynchronous() {
+    return synchSynchronous;
+  }
 
-	public void setSynchSynchronous(boolean synchSynchronous) {
-		this.synchSynchronous = synchSynchronous;
-	}
+  public void setSynchSynchronous(boolean synchSynchronous) {
+    this.synchSynchronous = synchSynchronous;
+  }
 }

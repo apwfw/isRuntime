@@ -31,17 +31,16 @@ package de.intarsys.tools.objectmodel;
 
 /**
  * A VM singleton for the {@link IClassRegistry}.
- * 
  */
 public class ClassRegistry {
-	private static IClassRegistry ACTIVE;
+  private static IClassRegistry ACTIVE;
 
-	static public IClassRegistry get() {
-		return ACTIVE;
-	}
+  static public IClassRegistry get() {
+    return ACTIVE;
+  }
 
-	static public void set(
-			IClassRegistry registry) {
-		ACTIVE = registry;
-	}
+  static public void set(
+      IClassRegistry registry) {
+    ACTIVE = registry;
+  }
 }

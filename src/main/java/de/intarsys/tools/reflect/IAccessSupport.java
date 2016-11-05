@@ -33,25 +33,22 @@ package de.intarsys.tools.reflect;
  * An object supporting reflective calls to its fields.
  */
 public interface IAccessSupport {
-	/**
-	 * Make a reflective get access to the field <code>name</code>.
-	 * 
-	 * @param name
-	 *            The name of the field to get.
-	 * @return The field value
-	 * @throws FieldException
-	 */
-	public Object getValue(String name) throws FieldException;
+  /**
+   * Make a reflective get access to the field <code>name</code>.
+   *
+   * @param name The name of the field to get.
+   * @return The field value
+   * @throws FieldException
+   */
+  public Object getValue(String name) throws FieldException;
 
-	/**
-	 * Make a reflective set access to the field <code>name</code>.
-	 * 
-	 * @param name
-	 *            The name of the field to get.
-	 * @param value
-	 *            The new value for the field
-	 * @return The previous field value. This is an optional feature.
-	 * @throws FieldException
-	 */
-	public Object setValue(String name, Object value) throws FieldException;
+  /**
+   * Make a reflective set access to the field <code>name</code>.
+   *
+   * @param name  The name of the field to get.
+   * @param value The new value for the field
+   * @return The previous field value. This is an optional feature.
+   * @throws FieldException
+   */
+  public Object setValue(String name, Object value) throws FieldException;
 }

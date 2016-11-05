@@ -16,42 +16,43 @@ import java.util.logging.LogRecord;
  * Another scenario is where a thread has a dedicated task and all its
  * activities have to be logged. Here the thread is associated at startup and
  * remains the same.
- * 
  */
 public class ThreadFilter implements Filter {
 
-	private ThreadLocal<Integer> threadActivation = new ThreadLocal<Integer>() {
-		@Override
-		protected Integer initialValue() {
-			return 0;
-		};
-	};
+  private ThreadLocal<Integer> threadActivation = new ThreadLocal<Integer>() {
+    @Override
+    protected Integer initialValue() {
+      return 0;
+    }
 
-	public ThreadFilter(boolean activate) {
-		super();
-		if (activate) {
-			activate();
-		}
-	}
+    ;
+  };
 
-	public boolean activate() {
-		int tempActivation = threadActivation.get();
-		threadActivation.set(tempActivation + 1);
-		return tempActivation == 0;
-	}
+  public ThreadFilter(boolean activate) {
+    super();
+    if (activate) {
+      activate();
+    }
+  }
 
-	public boolean deactivate() {
-		int tempActivation = threadActivation.get();
-		threadActivation.set(tempActivation - 1);
-		return tempActivation == 1;
-	}
+  public boolean activate() {
+    int tempActivation = threadActivation.get();
+    threadActivation.set(tempActivation + 1);
+    return tempActivation == 0;
+  }
 
-	public boolean isActive() {
-		return threadActivation.get() > 0;
-	}
+  public boolean deactivate() {
+    int tempActivation = threadActivation.get();
+    threadActivation.set(tempActivation - 1);
+    return tempActivation == 1;
+  }
 
-	public boolean isLoggable(LogRecord record) {
-		return threadActivation.get() > 0;
-	}
+  public boolean isActive() {
+    return threadActivation.get() > 0;
+  }
+
+  public boolean isLoggable(LogRecord record) {
+    return threadActivation.get() > 0;
+  }
 
 }

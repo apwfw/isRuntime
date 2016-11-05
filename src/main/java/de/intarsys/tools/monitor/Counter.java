@@ -36,42 +36,40 @@ import java.util.Map;
  * An implementation of a counter object that can be accessed by name.
  */
 public class Counter {
-	private static Map counters = new HashMap();
+  private static Map counters = new HashMap();
+  private String name;
+  volatile private int value = 0;
 
-	synchronized static public Counter get(String name) {
-		Counter result = (Counter) counters.get(name);
-		if (result == null) {
-			result = new Counter(name);
-			counters.put(name, result);
-		}
-		return result;
-	}
+  protected Counter(String name) {
+    super();
+    this.name = name;
+  }
 
-	private String name;
+  synchronized static public Counter get(String name) {
+    Counter result = (Counter) counters.get(name);
+    if (result == null) {
+      result = new Counter(name);
+      counters.put(name, result);
+    }
+    return result;
+  }
 
-	volatile private int value = 0;
+  public void decrement() {
+    value--;
+  }
 
-	protected Counter(String name) {
-		super();
-		this.name = name;
-	}
+  /**
+   * @return Returns the name.
+   */
+  public String getName() {
+    return name;
+  }
 
-	public void decrement() {
-		value--;
-	}
+  public int getValue() {
+    return value;
+  }
 
-	/**
-	 * @return Returns the name.
-	 */
-	public String getName() {
-		return name;
-	}
-
-	public int getValue() {
-		return value;
-	}
-
-	public void increment() {
-		value++;
-	}
+  public void increment() {
+    value++;
+  }
 }

@@ -31,7 +31,7 @@ package de.intarsys.tools.attribute;
 
 /**
  * This interface declares support for "generic attributes".
- * 
+ * <p>
  * <p>
  * This means the object implementing this interface may be extended
  * transparently by its clients with name/value pairs. These attributes and
@@ -40,35 +40,28 @@ package de.intarsys.tools.attribute;
  * </p>
  */
 public interface IAttributeSupport {
-	/**
-	 * Get an attribute value from the context
-	 * 
-	 * @param key
-	 *            the name of the attribute to get
-	 * 
-	 * @return The value of the attribute <code>key</code>
-	 */
-	public Object getAttribute(Object key);
+  /**
+   * Get an attribute value from the context
+   *
+   * @param key the name of the attribute to get
+   * @return The value of the attribute <code>key</code>
+   */
+  public Object getAttribute(Object key);
 
-	/**
-	 * Remove an attribute binding in the context
-	 * 
-	 * @param key
-	 *            the name of the attribute to remove
-	 * 
-	 * @return The previously associated value for <code>key</code>
-	 */
-	public Object removeAttribute(Object key);
+  /**
+   * Remove an attribute binding in the context
+   *
+   * @param key the name of the attribute to remove
+   * @return The previously associated value for <code>key</code>
+   */
+  public Object removeAttribute(Object key);
 
-	/**
-	 * Set the value of an attribute in the context
-	 * 
-	 * @param key
-	 *            the name of the attribute to set
-	 * @param value
-	 *            the new value the attribute
-	 * 
-	 * @return The previously associated value for <code>key</code>
-	 */
-	public Object setAttribute(Object key, Object value);
+  /**
+   * Set the value of an attribute in the context
+   *
+   * @param key   the name of the attribute to set
+   * @param value the new value the attribute
+   * @return The previously associated value for <code>key</code>
+   */
+  public Object setAttribute(Object key, Object value);
 }

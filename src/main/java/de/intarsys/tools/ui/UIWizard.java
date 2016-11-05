@@ -29,138 +29,138 @@
  */
 package de.intarsys.tools.ui;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import de.intarsys.tools.event.Event;
 import de.intarsys.tools.event.INotificationSupport;
 import de.intarsys.tools.functor.ArgsConfigurationException;
 import de.intarsys.tools.functor.IArgs;
 import de.intarsys.tools.functor.IArgsConfigurable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A simple wizard like user interface implementation.
- * 
+ *
  * @param <M>
  * @param <C>
  * @param <T>
  */
 abstract public class UIWizard<M extends INotificationSupport, C, T> extends
-		UIComponent<M, C, T> {
+    UIComponent<M, C, T> {
 
-	private List<IUIComponent<M, C, T>> pages = new ArrayList<IUIComponent<M, C, T>>();
+  private List<IUIComponent<M, C, T>> pages = new ArrayList<IUIComponent<M, C, T>>();
 
-	private IUIComponent<M, C, T> currentPage;
+  private IUIComponent<M, C, T> currentPage;
 
-	public UIWizard(IUIComponent parent) {
-		super(parent);
-		initPages();
-	}
+  public UIWizard(IUIComponent parent) {
+    super(parent);
+    initPages();
+  }
 
-	protected void activatePage(IUIComponent<M, C, T> page) {
-		if (page == currentPage) {
-			return;
-		}
-		if (currentPage != null) {
-			currentPage.dispose();
-		}
-		currentPage = page;
-		currentPage.setObservable(getObservable());
-		currentPage.createComponent((C) getComponent());
-	}
+  protected void activatePage(IUIComponent<M, C, T> page) {
+    if (page == currentPage) {
+      return;
+    }
+    if (currentPage != null) {
+      currentPage.dispose();
+    }
+    currentPage = page;
+    currentPage.setObservable(getObservable());
+    currentPage.createComponent((C) getComponent());
+  }
 
-	protected void addPage(IUIComponent<M, C, T> page) {
-		pages.add(page);
-	}
+  protected void addPage(IUIComponent<M, C, T> page) {
+    pages.add(page);
+  }
 
-	@Override
-	public void configure(IArgs args) throws ArgsConfigurationException {
-		super.configure(args);
-		for (IUIComponent page : pages) {
-			if (page instanceof IArgsConfigurable) {
-				((IArgsConfigurable) page).configure(args);
-			}
-		}
-	}
+  @Override
+  public void configure(IArgs args) throws ArgsConfigurationException {
+    super.configure(args);
+    for (IUIComponent page : pages) {
+      if (page instanceof IArgsConfigurable) {
+        ((IArgsConfigurable) page).configure(args);
+      }
+    }
+  }
 
-	@Override
-	public void dispose() {
-		if (currentPage != null) {
-			currentPage.dispose();
-		}
-		super.dispose();
-	}
+  @Override
+  public void dispose() {
+    if (currentPage != null) {
+      currentPage.dispose();
+    }
+    super.dispose();
+  }
 
-	public IUIComponent<M, C, T> getCurrentPage() {
-		return currentPage;
-	}
+  public IUIComponent<M, C, T> getCurrentPage() {
+    return currentPage;
+  }
 
-	protected void initPages() {
-	}
+  protected void setCurrentPage(IUIComponent<M, C, T> currentPage) {
+    this.currentPage = currentPage;
+  }
 
-	public boolean isNextEnabled() {
-		return selectNextPage() != currentPage;
-	}
+  protected void initPages() {
+  }
 
-	public boolean isPreviousEnabled() {
-		return selectPreviousPage() != currentPage;
-	}
+  public boolean isNextEnabled() {
+    return selectNextPage() != currentPage;
+  }
 
-	public void onNextPressed() {
-		activatePage(selectNextPage());
-	}
+  public boolean isPreviousEnabled() {
+    return selectPreviousPage() != currentPage;
+  }
 
-	public void onPreviousPressed() {
-		activatePage(selectPreviousPage());
-	}
+  public void onNextPressed() {
+    activatePage(selectNextPage());
+  }
 
-	protected IUIComponent<M, C, T> selectInitialPage() {
-		if (currentPage == null) {
-			return pages.get(0);
-		}
-		return currentPage;
-	}
+  public void onPreviousPressed() {
+    activatePage(selectPreviousPage());
+  }
 
-	protected IUIComponent<M, C, T> selectNextPage() {
-		int index = pages.indexOf(currentPage);
-		if (index == -1) {
-			return currentPage;
-		}
-		if (index + 1 == pages.size()) {
-			return currentPage;
-		}
-		return pages.get(index + 1);
-	}
+  protected IUIComponent<M, C, T> selectInitialPage() {
+    if (currentPage == null) {
+      return pages.get(0);
+    }
+    return currentPage;
+  }
 
-	protected IUIComponent<M, C, T> selectPreviousPage() {
-		int index = pages.indexOf(currentPage);
-		if (index == -1) {
-			return currentPage;
-		}
-		if (index == 0) {
-			return currentPage;
-		}
-		return pages.get(index - 1);
-	}
+  protected IUIComponent<M, C, T> selectNextPage() {
+    int index = pages.indexOf(currentPage);
+    if (index == -1) {
+      return currentPage;
+    }
+    if (index + 1 == pages.size()) {
+      return currentPage;
+    }
+    return pages.get(index + 1);
+  }
 
-	protected void setCurrentPage(IUIComponent<M, C, T> currentPage) {
-		this.currentPage = currentPage;
-	}
+  protected IUIComponent<M, C, T> selectPreviousPage() {
+    int index = pages.indexOf(currentPage);
+    if (index == -1) {
+      return currentPage;
+    }
+    if (index == 0) {
+      return currentPage;
+    }
+    return pages.get(index - 1);
+  }
 
-	@Override
-	public void setObservable(M observable) {
-		if (currentPage != null) {
-			currentPage.setObservable(observable);
-		}
-		super.setObservable(observable);
-	}
+  @Override
+  public void setObservable(M observable) {
+    if (currentPage != null) {
+      currentPage.setObservable(observable);
+    }
+    super.setObservable(observable);
+  }
 
-	@Override
-	protected void updateView(Event e) {
-		super.updateView(e);
-		if (currentPage == null) {
-			IUIComponent<M, C, T> nextPage = selectInitialPage();
-			activatePage(nextPage);
-		}
-	}
+  @Override
+  protected void updateView(Event e) {
+    super.updateView(e);
+    if (currentPage == null) {
+      IUIComponent<M, C, T> nextPage = selectInitialPage();
+      activatePage(nextPage);
+    }
+  }
 }

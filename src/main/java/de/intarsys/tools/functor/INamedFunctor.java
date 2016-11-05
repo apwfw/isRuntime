@@ -34,15 +34,15 @@ package de.intarsys.tools.functor;
  */
 public interface INamedFunctor extends IFunctor {
 
-	/**
-	 * 
-	 */
-	public static final String ATTR_ID = "id";
+  /**
+   *
+   */
+  public static final String ATTR_ID = "id";
 
-	/**
-	 * A unique id for the {@link IFunctor}.
-	 * 
-	 * @return A unique id for the {@link IFunctor}.
-	 */
-	public String getId();
+  /**
+   * A unique id for the {@link IFunctor}.
+   *
+   * @return A unique id for the {@link IFunctor}.
+   */
+  public String getId();
 }

@@ -34,30 +34,29 @@ import java.util.List;
 
 /**
  * A simple implementation for an {@link IResourceRegistry}
- * 
  */
 public class StandardResourceRegistry implements IResourceRegistry {
 
-	private List<IResource> resources = new ArrayList<IResource>();
+  private List<IResource> resources = new ArrayList<IResource>();
 
-	public List<IResource> getResources() {
-		return resources;
-	}
+  public List<IResource> getResources() {
+    return resources;
+  }
 
-	public IResource lookupResource(String id) {
-		for (IResource resource : resources) {
-			if (resource.getId().equals(id)) {
-				return resource;
-			}
-		}
-		return null;
-	}
+  public IResource lookupResource(String id) {
+    for (IResource resource : resources) {
+      if (resource.getId().equals(id)) {
+        return resource;
+      }
+    }
+    return null;
+  }
 
-	public void registerResource(IResource resource) {
-		resources.add(resource);
-	}
+  public void registerResource(IResource resource) {
+    resources.add(resource);
+  }
 
-	public void unregisterResource(IResource resource) {
-		resources.remove(resource);
-	}
+  public void unregisterResource(IResource resource) {
+    resources.remove(resource);
+  }
 }

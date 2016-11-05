@@ -5,10 +5,10 @@ import de.intarsys.tools.reflect.ObjectCreationException;
 
 public interface IFactory<T> {
 
-	public T createInstance(IArgs args) throws ObjectCreationException;
+  public T createInstance(IArgs args) throws ObjectCreationException;
 
-	public String getId();
+  public String getId();
 
-	public Class<T> getResultType();
+  public Class<T> getResultType();
 
 }

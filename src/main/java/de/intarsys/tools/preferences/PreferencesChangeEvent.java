@@ -33,35 +33,35 @@ import de.intarsys.tools.event.Event;
 import de.intarsys.tools.event.EventType;
 
 public class PreferencesChangeEvent extends Event {
-	public static final EventType ID = new EventType(
-			PreferencesChangeEvent.class.getName());
+  public static final EventType ID = new EventType(
+      PreferencesChangeEvent.class.getName());
 
-	private String key;
+  private String key;
 
-	private String newValue;
+  private String newValue;
 
-	public PreferencesChangeEvent(Object source) {
-		super(source);
-	}
+  public PreferencesChangeEvent(Object source) {
+    super(source);
+  }
 
-	public String getKey() {
-		return key;
-	}
+  public String getKey() {
+    return key;
+  }
 
-	public String getNewValue() {
-		return newValue;
-	}
+  public void setKey(String key) {
+    this.key = key;
+  }
 
-	@Override
-	public EventType getEventType() {
-		return ID;
-	}
+  public String getNewValue() {
+    return newValue;
+  }
 
-	public void setKey(String key) {
-		this.key = key;
-	}
+  public void setNewValue(String newValue) {
+    this.newValue = newValue;
+  }
 
-	public void setNewValue(String newValue) {
-		this.newValue = newValue;
-	}
+  @Override
+  public EventType getEventType() {
+    return ID;
+  }
 }

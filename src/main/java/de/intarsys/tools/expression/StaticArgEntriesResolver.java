@@ -29,48 +29,47 @@
  */
 package de.intarsys.tools.expression;
 
-import java.util.Iterator;
-
 import de.intarsys.tools.functor.IArgs;
 import de.intarsys.tools.functor.IArgs.IBinding;
 
+import java.util.Iterator;
+
 /**
  * An {@link IStringEvaluator} accessing statically provided argument values.
- * 
  */
 public class StaticArgEntriesResolver extends ContainerResolver {
 
-	private static final Object NA = new Object();
+  private static final Object NA = new Object();
 
-	private IArgs args;
+  private IArgs args;
 
-	public StaticArgEntriesResolver(IArgs args) {
-		super();
-		this.args = args;
-	}
+  public StaticArgEntriesResolver(IArgs args) {
+    super();
+    this.args = args;
+  }
 
-	@Override
-	protected Object basicEvaluate(String expression, IArgs pArgs)
-			throws EvaluationException {
-		try {
-			int index = Integer.parseInt(expression);
-			if (index >= 0 && index < args.size()) {
-				Iterator<IBinding> bindings = args.bindings();
-				IBinding binding = null;
-				for (int i = 0; i <= index; i++) {
-					binding = bindings.next();
-				}
-				String result = null;
-				if (binding.getName() == null) {
-					result = String.valueOf(binding.getValue());
-				} else {
-					result = binding.getName() + "=" + binding.getValue();
-				}
-				return result;
-			}
-		} catch (NumberFormatException e) {
-			//
-		}
-		throw new EvaluationException("can't evaluate '" + expression + "'"); //$NON-NLS-1$ //$NON-NLS-2$
-	}
+  @Override
+  protected Object basicEvaluate(String expression, IArgs pArgs)
+      throws EvaluationException {
+    try {
+      int index = Integer.parseInt(expression);
+      if (index >= 0 && index < args.size()) {
+        Iterator<IBinding> bindings = args.bindings();
+        IBinding binding = null;
+        for (int i = 0; i <= index; i++) {
+          binding = bindings.next();
+        }
+        String result = null;
+        if (binding.getName() == null) {
+          result = String.valueOf(binding.getValue());
+        } else {
+          result = binding.getName() + "=" + binding.getValue();
+        }
+        return result;
+      }
+    } catch (NumberFormatException e) {
+      //
+    }
+    throw new EvaluationException("can't evaluate '" + expression + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+  }
 }

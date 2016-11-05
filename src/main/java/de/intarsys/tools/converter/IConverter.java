@@ -34,27 +34,27 @@ package de.intarsys.tools.converter;
  */
 public interface IConverter<S, T> {
 
-	/**
-	 * Convert the actual source object.
-	 * 
-	 * @param source
-	 * @return The converted object.
-	 * @throws ConversionException
-	 */
-	public T convert(S source) throws ConversionException;
+  /**
+   * Convert the actual source object.
+   *
+   * @param source
+   * @return The converted object.
+   * @throws ConversionException
+   */
+  public T convert(S source) throws ConversionException;
 
-	/**
-	 * The source type the converter supports.
-	 * 
-	 * @return The source type the converter supports.
-	 */
-	public Class<?> getSourceType();
+  /**
+   * The source type the converter supports.
+   *
+   * @return The source type the converter supports.
+   */
+  public Class<?> getSourceType();
 
-	/**
-	 * The target type the converter supports.
-	 * 
-	 * @return The target type the converter supports.
-	 */
-	public Class<?> getTargetType();
+  /**
+   * The target type the converter supports.
+   *
+   * @return The target type the converter supports.
+   */
+  public Class<?> getTargetType();
 
 }

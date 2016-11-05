@@ -35,34 +35,32 @@ import de.intarsys.tools.functor.IArgs;
  * A VM singleton for an expression evaluating {@link IStringEvaluator}
  * instance. The expression evaluator may be for example used in the
  * {@link TemplateEvaluator} building a template engine.
- * 
  */
 public class ExpressionEvaluator {
 
-	/**
-	 * A simple trick to support lazy access to this singleton. If someone reads
-	 * the singleton before the context is set up properly, he will be forwarded
-	 * to the correct context upon execution.
-	 * 
-	 */
-	protected static class LazyEvaluator implements IStringEvaluator {
-		public Object evaluate(String expression, IArgs args)
-				throws EvaluationException {
-			IStringEvaluator current = ExpressionEvaluator.get();
-			if (current == this) {
-				throw new EvaluationException("singleton not available"); //$NON-NLS-1$
-			}
-			return current.evaluate(expression, args);
-		}
-	}
+  private static IStringEvaluator ACTIVE = new LazyEvaluator();
 
-	private static IStringEvaluator ACTIVE = new LazyEvaluator();
+  static public IStringEvaluator get() {
+    return ACTIVE;
+  }
 
-	static public IStringEvaluator get() {
-		return ACTIVE;
-	}
+  static public void set(IStringEvaluator active) {
+    ACTIVE = active;
+  }
 
-	static public void set(IStringEvaluator active) {
-		ACTIVE = active;
-	}
+  /**
+   * A simple trick to support lazy access to this singleton. If someone reads
+   * the singleton before the context is set up properly, he will be forwarded
+   * to the correct context upon execution.
+   */
+  protected static class LazyEvaluator implements IStringEvaluator {
+    public Object evaluate(String expression, IArgs args)
+        throws EvaluationException {
+      IStringEvaluator current = ExpressionEvaluator.get();
+      if (current == this) {
+        throw new EvaluationException("singleton not available"); //$NON-NLS-1$
+      }
+      return current.evaluate(expression, args);
+    }
+  }
 }

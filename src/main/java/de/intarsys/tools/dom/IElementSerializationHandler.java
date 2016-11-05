@@ -37,17 +37,17 @@ import org.w3c.dom.Element;
  */
 public interface IElementSerializationHandler {
 
-	/**
-	 * Serialize the state of <code>target</code> in <code>element</code>.
-	 * <code>element</code> represents the receiver immediately, it contains the
-	 * state information directly, not as a child element. This means most of
-	 * the time you have to change the element name itself and add child
-	 * elements.
-	 * 
-	 * @param element
-	 * @throws ElementSerializationException
-	 */
-	public void serialize(Object target, Element element)
-			throws ElementSerializationException;
+  /**
+   * Serialize the state of <code>target</code> in <code>element</code>.
+   * <code>element</code> represents the receiver immediately, it contains the
+   * state information directly, not as a child element. This means most of
+   * the time you have to change the element name itself and add child
+   * elements.
+   *
+   * @param element
+   * @throws ElementSerializationException
+   */
+  public void serialize(Object target, Element element)
+      throws ElementSerializationException;
 
 }

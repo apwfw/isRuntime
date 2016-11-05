@@ -33,34 +33,33 @@ import java.io.IOException;
 
 /**
  * En/Decrypt data.
- * 
  */
 public interface ICryptdec {
 
-	// todo 1 @mit review interface, streaming
+  // todo 1 @mit review interface, streaming
 
-	/**
-	 * Decrypt a byte array.
-	 * 
-	 * @param bytes
-	 * @return The decrypted representation of <code>bytes</code>
-	 * @throws IOException
-	 */
-	public byte[] decrypt(byte[] bytes) throws IOException;
+  /**
+   * Decrypt a byte array.
+   *
+   * @param bytes
+   * @return The decrypted representation of <code>bytes</code>
+   * @throws IOException
+   */
+  public byte[] decrypt(byte[] bytes) throws IOException;
 
-	/**
-	 * Encrypt a byte array.
-	 * 
-	 * @param bytes
-	 * @return The encrypted representation of <code>bytes</code>
-	 * @throws IOException
-	 */
-	public byte[] encrypt(byte[] bytes) throws IOException;
+  /**
+   * Encrypt a byte array.
+   *
+   * @param bytes
+   * @return The encrypted representation of <code>bytes</code>
+   * @throws IOException
+   */
+  public byte[] encrypt(byte[] bytes) throws IOException;
 
-	/**
-	 * A unique id for the {@link ICryptdec}
-	 * 
-	 * @return A unique id for the {@link ICryptdec}
-	 */
-	public String getId();
+  /**
+   * A unique id for the {@link ICryptdec}
+   *
+   * @return A unique id for the {@link ICryptdec}
+   */
+  public String getId();
 }

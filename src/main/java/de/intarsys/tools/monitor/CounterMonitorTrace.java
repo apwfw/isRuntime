@@ -31,30 +31,28 @@ package de.intarsys.tools.monitor;
 
 /**
  * Access a counter object to take the sample.
- * 
  */
 public class CounterMonitorTrace extends MonitorTrace {
-	/**
-	 * Create instance
-	 * 
-	 * @param owner
-	 *            monitor owning the trace
-	 */
-	public CounterMonitorTrace(Monitor owner) {
-		super(owner);
-	}
+  /**
+   * Create instance
+   *
+   * @param owner monitor owning the trace
+   */
+  public CounterMonitorTrace(Monitor owner) {
+    super(owner);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.monitor.MonitorEvent#createSample()
-	 */
-	@Override
-	protected long createSampleValue() {
-		return getCounter().getValue();
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.monitor.MonitorEvent#createSample()
+   */
+  @Override
+  protected long createSampleValue() {
+    return getCounter().getValue();
+  }
 
-	protected Counter getCounter() {
-		return ((CounterMonitor) getOwner()).getCounter();
-	}
+  protected Counter getCounter() {
+    return ((CounterMonitor) getOwner()).getCounter();
+  }
 }

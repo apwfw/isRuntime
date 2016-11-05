@@ -30,31 +30,31 @@
 package de.intarsys.tools.reporter;
 
 /**
- * 
+ *
  */
 abstract public class Reporter {
-	private static IReporter ACTIVE = new DefaultReporter();
+  private static IReporter ACTIVE = new DefaultReporter();
 
-	public static IReporter get() {
-		return ACTIVE;
-	}
+  /**
+   *
+   */
+  private Reporter() {
+    // singleton
+  }
 
-	/**
-	 * returns the old active reporter
-	 */
-	public static IReporter set(IReporter newReporter) {
-		if (newReporter == null) {
-			throw new NullPointerException("reporter can't be null"); //$NON-NLS-1$
-		}
-		IReporter old = ACTIVE;
-		ACTIVE = newReporter;
-		return old;
-	}
+  public static IReporter get() {
+    return ACTIVE;
+  }
 
-	/**
-	 * 
-	 */
-	private Reporter() {
-		// singleton
-	}
+  /**
+   * returns the old active reporter
+   */
+  public static IReporter set(IReporter newReporter) {
+    if (newReporter == null) {
+      throw new NullPointerException("reporter can't be null"); //$NON-NLS-1$
+    }
+    IReporter old = ACTIVE;
+    ACTIVE = newReporter;
+    return old;
+  }
 }

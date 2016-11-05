@@ -35,53 +35,52 @@ import java.util.NoSuchElementException;
 /**
  * Abstract iterator implementation delivering filtered output from a base
  * iterator.
- * 
- * @param <T>
- *            The object type.
+ *
+ * @param <T> The object type.
  */
 public abstract class FilterIterator<T> implements Iterator<T> {
 
-	private static final Object UNDEFINED = new Object();
+  private static final Object UNDEFINED = new Object();
 
-	private Iterator<T> baseIterator;
+  private Iterator<T> baseIterator;
 
-	private Object nextElement = UNDEFINED;
+  private Object nextElement = UNDEFINED;
 
-	protected FilterIterator(Iterator<T> baseIterator) {
-		super();
-		this.baseIterator = baseIterator;
-	}
+  protected FilterIterator(Iterator<T> baseIterator) {
+    super();
+    this.baseIterator = baseIterator;
+  }
 
-	protected abstract boolean accept(T object);
+  protected abstract boolean accept(T object);
 
-	public Iterator<T> getBaseIterator() {
-		return baseIterator;
-	}
+  public Iterator<T> getBaseIterator() {
+    return baseIterator;
+  }
 
-	@Override
-	public boolean hasNext() {
-		while (nextElement == UNDEFINED && baseIterator.hasNext()) {
-			T nextCandidate = baseIterator.next();
-			if (accept(nextCandidate)) {
-				nextElement = nextCandidate;
-			}
-		}
-		return nextElement != UNDEFINED;
-	}
+  @Override
+  public boolean hasNext() {
+    while (nextElement == UNDEFINED && baseIterator.hasNext()) {
+      T nextCandidate = baseIterator.next();
+      if (accept(nextCandidate)) {
+        nextElement = nextCandidate;
+      }
+    }
+    return nextElement != UNDEFINED;
+  }
 
-	@Override
-	public T next() {
-		if (!hasNext()) {
-			throw new NoSuchElementException();
-		}
-		T result = (T) nextElement;
-		nextElement = UNDEFINED;
-		return result;
-	}
+  @Override
+  public T next() {
+    if (!hasNext()) {
+      throw new NoSuchElementException();
+    }
+    T result = (T) nextElement;
+    nextElement = UNDEFINED;
+    return result;
+  }
 
-	@Override
-	public void remove() {
-		throw new UnsupportedOperationException("remove");
-	}
+  @Override
+  public void remove() {
+    throw new UnsupportedOperationException("remove");
+  }
 
 }

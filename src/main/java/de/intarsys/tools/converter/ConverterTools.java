@@ -34,27 +34,26 @@ import java.util.List;
 
 /**
  * Tool class to deal with conversion.
- * 
  */
 public class ConverterTools {
 
-	public static <T> List<T> convertAll(Object source, Class<T> clazz)
-			throws ConversionException {
-		List<T> result = new ArrayList<T>();
-		if (source != null) {
-			if (source instanceof Iterable) {
-				for (Object element : (Iterable) source) {
-					result.add(ConverterRegistry.get().convert(element, clazz));
-				}
-			} else if (source instanceof Object[]) {
-				for (Object element : (Object[]) source) {
-					result.add(ConverterRegistry.get().convert(element, clazz));
-				}
-			} else {
-				throw new ConversionException("source is not a collection");
-			}
-		}
-		return result;
-	}
+  public static <T> List<T> convertAll(Object source, Class<T> clazz)
+      throws ConversionException {
+    List<T> result = new ArrayList<T>();
+    if (source != null) {
+      if (source instanceof Iterable) {
+        for (Object element : (Iterable) source) {
+          result.add(ConverterRegistry.get().convert(element, clazz));
+        }
+      } else if (source instanceof Object[]) {
+        for (Object element : (Object[]) source) {
+          result.add(ConverterRegistry.get().convert(element, clazz));
+        }
+      } else {
+        throw new ConversionException("source is not a collection");
+      }
+    }
+    return result;
+  }
 
 }

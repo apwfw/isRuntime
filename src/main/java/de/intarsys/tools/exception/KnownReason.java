@@ -41,16 +41,16 @@ package de.intarsys.tools.exception;
  */
 public class KnownReason extends RuntimeException {
 
-	public KnownReason() {
-		super();
-	}
+  public KnownReason() {
+    super();
+  }
 
-	public KnownReason(String message) {
-		super(message);
-	}
+  public KnownReason(String message) {
+    super(message);
+  }
 
-	public KnownReason(String message, Throwable cause) {
-		super(message, cause);
-	}
+  public KnownReason(String message, Throwable cause) {
+    super(message, cause);
+  }
 
 }

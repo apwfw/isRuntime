@@ -31,23 +31,22 @@ package de.intarsys.tools.functor;
 
 /**
  * A common superclass for implementing {@link IDeclaration}.
- * 
  */
 public abstract class Declaration implements IDeclaration {
 
-	final private Object declarationContext;
+  final private Object declarationContext;
 
-	public Declaration(Object declarationContext) {
-		super();
-		this.declarationContext = declarationContext;
-	}
+  public Declaration(Object declarationContext) {
+    super();
+    this.declarationContext = declarationContext;
+  }
 
-	public Object getDeclarationContext() {
-		return declarationContext;
-	}
+  public Object getDeclarationContext() {
+    return declarationContext;
+  }
 
-	public boolean isBlock() {
-		return false;
-	}
+  public boolean isBlock() {
+    return false;
+  }
 
 }

@@ -2,13 +2,13 @@ package de.intarsys.tools.locator;
 
 public class LocatorOutlet {
 
-	private static ILocatorOutlet ACTIVE = new StandardLocatorOutlet();
+  private static ILocatorOutlet ACTIVE = new StandardLocatorOutlet();
 
-	public static ILocatorOutlet get() {
-		return ACTIVE;
-	}
+  public static ILocatorOutlet get() {
+    return ACTIVE;
+  }
 
-	public static void set(ILocatorOutlet active) {
-		ACTIVE = active;
-	}
+  public static void set(ILocatorOutlet active) {
+    ACTIVE = active;
+  }
 }

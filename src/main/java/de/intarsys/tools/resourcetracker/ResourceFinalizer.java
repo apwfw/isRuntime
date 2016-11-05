@@ -36,71 +36,68 @@ import java.lang.ref.ReferenceQueue;
  * <p>
  * This monitor is decoupled from the {@link ResourceTracker} instance to allow
  * for heterogenous resources to be tracked in a single thread.
- * 
  */
 public class ResourceFinalizer extends Thread {
 
-	private static ResourceFinalizer DEFAULT;
+  private static ResourceFinalizer DEFAULT;
+  final private ReferenceQueue queue = new ReferenceQueue();
+  private boolean started = false;
 
-	synchronized public static ResourceFinalizer get() {
-		if (DEFAULT == null) {
-			DEFAULT = new ResourceFinalizer();
-		}
-		return DEFAULT;
-	}
+  public ResourceFinalizer() {
+    super("resource finalizer");
+    // todo some resources must really be finalized
+    // todo invent more intelligent shutdown
+    setDaemon(true);
+  }
 
-	final private ReferenceQueue queue = new ReferenceQueue();
+  synchronized public static ResourceFinalizer get() {
+    if (DEFAULT == null) {
+      DEFAULT = new ResourceFinalizer();
+    }
+    return DEFAULT;
+  }
 
-	private boolean started = false;
+  protected void drainQueue() {
+    while (true) {
+      IResourceReference ref = (IResourceReference) queue.poll();
+      if (ref == null) {
+        return;
+      } else {
+        ref.dispose();
+      }
+    }
+  }
 
-	public ResourceFinalizer() {
-		super("resource finalizer");
-		// todo some resources must really be finalized
-		// todo invent more intelligent shutdown
-		setDaemon(true);
-	}
+  synchronized protected void ensureStarted() {
+    if (started) {
+      return;
+    }
+    start();
+  }
 
-	protected void drainQueue() {
-		while (true) {
-			IResourceReference ref = (IResourceReference) queue.poll();
-			if (ref == null) {
-				return;
-			} else {
-				ref.dispose();
-			}
-		}
-	}
+  public ReferenceQueue getQueue() {
+    return queue;
+  }
 
-	synchronized protected void ensureStarted() {
-		if (started) {
-			return;
-		}
-		start();
-	}
+  @Override
+  public void run() {
+    while (true) {
+      try {
+        PhantomResourceReference ref = (PhantomResourceReference) queue
+            .remove();
+        if (ref != null) {
+          ref.dispose();
+        }
+      } catch (Exception e) {
+        return;
+      }
+    }
+  }
 
-	public ReferenceQueue getQueue() {
-		return queue;
-	}
-
-	@Override
-	public void run() {
-		while (true) {
-			try {
-				PhantomResourceReference ref = (PhantomResourceReference) queue
-						.remove();
-				if (ref != null) {
-					ref.dispose();
-				}
-			} catch (Exception e) {
-				return;
-			}
-		}
-	}
-
-	@Override
-	public synchronized void start() {
-		started = true;
-		super.start();
-	}
+  @Override
+  public synchronized void start() {
+    started = true;
+    super.start();
+  }
 
 }

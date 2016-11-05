@@ -29,97 +29,95 @@
  */
 package de.intarsys.tools.monitor;
 
-import org.w3c.dom.Element;
-
 import de.intarsys.tools.dom.ElementConfigurationException;
 import de.intarsys.tools.dom.ElementTools;
+import org.w3c.dom.Element;
 
 /**
  * A monitor for taking time samples in the application.
  */
 public class CounterMonitor extends Monitor {
-	/**
-	 * The name of the counter
-	 */
-	private String counterName;
+  /**
+   * The name of the counter
+   */
+  private String counterName;
 
-	private Counter counter;
+  private Counter counter;
 
-	public CounterMonitor() {
-		super();
-	}
+  public CounterMonitor() {
+    super();
+  }
 
-	/**
-	 * Create instance
-	 * 
-	 * @param name
-	 *            monitor name
-	 */
-	public CounterMonitor(String name) {
-		super(name);
-	}
+  /**
+   * Create instance
+   *
+   * @param name monitor name
+   */
+  public CounterMonitor(String name) {
+    super(name);
+  }
 
-	public CounterMonitor(String name, Counter counter) {
-		super(name);
-		this.counter = counter;
-	}
+  public CounterMonitor(String name, Counter counter) {
+    super(name);
+    this.counter = counter;
+  }
 
-	@Override
-	public void configure(Element element) throws ElementConfigurationException {
-		super.configure(element);
-		counterName = ElementTools.getPathString(element, "countername", null);
-		if (counterName == null) {
-			throw new ElementConfigurationException(
-					"<countername> may not be null");
-		}
-		counter = Counter.get(counterName);
-	}
+  @Override
+  public void configure(Element element) throws ElementConfigurationException {
+    super.configure(element);
+    counterName = ElementTools.getPathString(element, "countername", null);
+    if (counterName == null) {
+      throw new ElementConfigurationException(
+          "<countername> may not be null");
+    }
+    counter = Counter.get(counterName);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.monitor.Monitor#createMonitorTrace()
-	 */
-	@Override
-	protected CounterMonitorTrace createMonitorTrace() {
-		return new CounterMonitorTrace(this);
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.monitor.Monitor#createMonitorTrace()
+   */
+  @Override
+  protected CounterMonitorTrace createMonitorTrace() {
+    return new CounterMonitorTrace(this);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.intarsys.tools.monitor.Monitor#doCalculation(de.intarsys.tools.monitor
-	 * .IMonitorTrace)
-	 */
-	@Override
-	protected void doCalculation(MonitorTrace trace) {
-		if (trace.getStart() < statistic.min) {
-			statistic.min = trace.getStart();
-		}
-		if (trace.getStop() < statistic.min) {
-			statistic.min = trace.getStop();
-		}
+  /*
+   * (non-Javadoc)
+   *
+   * @see
+   * de.intarsys.tools.monitor.Monitor#doCalculation(de.intarsys.tools.monitor
+   * .IMonitorTrace)
+   */
+  @Override
+  protected void doCalculation(MonitorTrace trace) {
+    if (trace.getStart() < statistic.min) {
+      statistic.min = trace.getStart();
+    }
+    if (trace.getStop() < statistic.min) {
+      statistic.min = trace.getStop();
+    }
 
-		if (trace.getStart() > statistic.max) {
-			statistic.max = trace.getStart();
-		}
-		if (trace.getStop() > statistic.max) {
-			statistic.max = trace.getStop();
-		}
+    if (trace.getStart() > statistic.max) {
+      statistic.max = trace.getStart();
+    }
+    if (trace.getStop() > statistic.max) {
+      statistic.max = trace.getStop();
+    }
 
-		statistic.total = last - first;
+    statistic.total = last - first;
 
-		statistic.avg = ((statistic.avg * statistic.count) + trace.getStop())
-				/ (statistic.count + 1);
+    statistic.avg = ((statistic.avg * statistic.count) + trace.getStop())
+        / (statistic.count + 1);
 
-		statistic.count++;
-	}
+    statistic.count++;
+  }
 
-	/**
-	 * @return Returns the counter.
-	 */
-	public Counter getCounter() {
-		return counter;
-	}
+  /**
+   * @return Returns the counter.
+   */
+  public Counter getCounter() {
+    return counter;
+  }
 }

@@ -41,343 +41,334 @@ import java.util.logging.Logger;
 /**
  * This is an alternate implementation for {@link FutureTask}, which is in some
  * cases not flexible enough.
- * 
+ *
  * @param <R>
  */
 abstract public class AbstractFutureTask<R> implements Runnable, Future {
 
-	protected final static Logger Log = PACKAGE.Log;
+  protected final static Logger Log = PACKAGE.Log;
+  static private int COUNTER = 0;
+  final private Object lockTask = new Object();
+  final private int id = COUNTER++;
+  private ITaskListener taskListener;
+  private Throwable exception;
+  private R result;
+  private boolean cancelled = false;
+  private boolean computed = false;
+  private boolean active = false;
 
-	private ITaskListener taskListener;
+  private boolean asynch = false;
 
-	static private int COUNTER = 0;
+  protected AbstractFutureTask() {
+    super();
+  }
 
-	final private Object lockTask = new Object();
+  protected AbstractFutureTask(ITaskListener callback) {
+    super();
+    this.taskListener = callback;
+  }
 
-	private Throwable exception;
+  protected Throwable basicGetException() {
+    synchronized (lockTask) {
+      return exception;
+    }
+  }
 
-	private R result;
+  protected R basicGetResult() {
+    return result;
+  }
 
-	private boolean cancelled = false;
+  protected void basicRun() {
+    R tempResult;
+    try {
+      tempResult = compute();
+    } catch (Throwable e) {
+      setException(e);
+      return;
+    }
+    if (!isAsynch()) {
+      setResult(tempResult);
+    }
+  }
 
-	private boolean computed = false;
+  public boolean cancel(boolean interrupt) {
+    synchronized (lockTask) {
+      if (cancelled) {
+        if (Log.isLoggable(Level.FINEST)) {
+          Log.finest("" + this + " can't cancel, already canceled"); //$NON-NLS-1$
+        }
+        return false;
+      }
+      if (computed) {
+        if (Log.isLoggable(Level.FINEST)) {
+          Log.finest("" + this + " can't cancel, already computed"); //$NON-NLS-1$
+        }
+        return false;
+      }
+      if (Log.isLoggable(Level.FINEST)) {
+        Log.finest("" + this + " cancel " + (active ? "active" : "inactive") + " task"); //$NON-NLS-1$
+      }
+      cancelled = true;
+      active = false;
+      lockTask.notifyAll();
+    }
+    taskCancelled();
+    return true;
+  }
 
-	final private int id = COUNTER++;
+  protected abstract R compute() throws Exception;
 
-	private boolean active = false;
+  public R get() throws InterruptedException, ExecutionException {
+    try {
+      return get(0, TimeUnit.MILLISECONDS);
+    } catch (TimeoutException e) {
+      throw new InterruptedException();
+    }
+  }
 
-	private boolean asynch = false;
+  /**
+   * Wait for the result. The "timeout" parameter allows to
+   * <ul>
+   * <li>wait indefinite</li> when timeout == 0;
+   * <li>wait specified duration</li> when timeout > 0;
+   * <li>don't wait (peek)</li> when timeout < 0;
+   * </ul>
+   *
+   * @see java.util.concurrent.Future#get(long, java.util.concurrent.TimeUnit)
+   */
+  public R get(final long timeout, TimeUnit unit)
+      throws InterruptedException, ExecutionException, TimeoutException {
+    long remainNanos = TimeUnit.NANOSECONDS.convert(timeout, unit);
+    long lastNanos = System.nanoTime();
+    synchronized (lockTask) {
+      while (true) {
+        if (cancelled) {
+          throw new CancellationException();
+        }
+        if (computed) {
+          if (exception != null) {
+            throw new ExecutionException(exception);
+          }
+          // may be null!
+          return result;
+        }
+        if (timeout >= 0) {
+          if (timeout != 0) {
+            long nowNanos = System.nanoTime();
+            remainNanos -= nowNanos - lastNanos;
+            lastNanos = nowNanos;
+          }
+          long tempMillis = TimeUnit.MILLISECONDS.convert(
+              remainNanos, TimeUnit.NANOSECONDS);
+          if (tempMillis <= 0 && timeout != 0) {
+            throw new TimeoutException();
+          }
+          lockTask.wait(tempMillis);
+        } else {
+          // support a unblocked "get current value"
+          return null;
+        }
+      }
+    }
+  }
 
-	protected AbstractFutureTask() {
-		super();
-	}
+  public Throwable getException() {
+    synchronized (lockTask) {
+      return exception;
+    }
+  }
 
-	protected AbstractFutureTask(ITaskListener callback) {
-		super();
-		this.taskListener = callback;
-	}
+  protected void setException(Throwable e) {
+    synchronized (lockTask) {
+      computed = true;
+      active = false;
+      exception = e;
+      lockTask.notifyAll();
+    }
+    if (Log.isLoggable(Level.FINEST)) {
+      Log.finest("" + this + " computation failed"); //$NON-NLS-1$
+    }
+    handleException();
+  }
 
-	protected Throwable basicGetException() {
-		synchronized (lockTask) {
-			return exception;
-		}
-	}
+  public ITaskListener getTaskListener() {
+    synchronized (lockTask) {
+      return taskListener;
+    }
+  }
 
-	protected R basicGetResult() {
-		return result;
-	}
+  public void setTaskListener(ITaskListener taskListener) {
+    synchronized (lockTask) {
+      if (active || cancelled || computed) {
+        throw new IllegalStateException("already started");
+      }
+      this.taskListener = taskListener;
+    }
+  }
 
-	protected void basicRun() {
-		R tempResult;
-		try {
-			tempResult = compute();
-		} catch (Throwable e) {
-			setException(e);
-			return;
-		}
-		if (!isAsynch()) {
-			setResult(tempResult);
-		}
-	}
+  final protected void handleException() {
+    try {
+      if (cancelled) {
+        if (Log.isLoggable(Level.FINEST)) {
+          Log.finest("" + this + " exception after cancel"); //$NON-NLS-1$
+        }
+        undo();
+      } else {
+        if (Log.isLoggable(Level.FINEST)) {
+          Log.finest("" + this + " exception, propagate"); //$NON-NLS-1$
+        }
+        taskFailed();
+      }
+    } catch (Exception e) {
+      Log.log(Level.SEVERE,
+          "" + this + " exception in exception handling", e); //$NON-NLS-1$
+    } finally {
+      handleFinally();
+    }
+  }
 
-	public boolean cancel(boolean interrupt) {
-		synchronized (lockTask) {
-			if (cancelled) {
-				if (Log.isLoggable(Level.FINEST)) {
-					Log.finest("" + this + " can't cancel, already canceled"); //$NON-NLS-1$
-				}
-				return false;
-			}
-			if (computed) {
-				if (Log.isLoggable(Level.FINEST)) {
-					Log.finest("" + this + " can't cancel, already computed"); //$NON-NLS-1$
-				}
-				return false;
-			}
-			if (Log.isLoggable(Level.FINEST)) {
-				Log.finest("" + this + " cancel " + (active ? "active" : "inactive") + " task"); //$NON-NLS-1$
-			}
-			cancelled = true;
-			active = false;
-			lockTask.notifyAll();
-		}
-		taskCancelled();
-		return true;
-	}
+  final protected void handleFinally() {
+    try {
+      if (Log.isLoggable(Level.FINEST)) {
+        Log.finest("" + this + " finally, propagate"); //$NON-NLS-1$
+      }
+      taskFinally();
+    } catch (Exception e) {
+      Log.log(Level.SEVERE,
+          "" + this + " exception in finally handling", e); //$NON-NLS-1$
+    }
+  }
 
-	protected abstract R compute() throws Exception;
+  final protected void handleResult() {
+    try {
+      if (cancelled) {
+        if (Log.isLoggable(Level.FINEST)) {
+          Log.finest("" + this + " computed after cancel, undo"); //$NON-NLS-1$
+        }
+        undo();
+      } else {
+        if (Log.isLoggable(Level.FINEST)) {
+          Log.finest("" + this + " computed, propagate"); //$NON-NLS-1$
+        }
+        taskFinished();
+      }
+    } catch (Exception e) {
+      Log.log(Level.SEVERE,
+          "" + this + " exception in result handling", e); //$NON-NLS-1$
+    } finally {
+      handleFinally();
+    }
+  }
 
-	public R get() throws InterruptedException, ExecutionException {
-		try {
-			return get(0, TimeUnit.MILLISECONDS);
-		} catch (TimeoutException e) {
-			throw new InterruptedException();
-		}
-	}
+  public boolean isActive() {
+    synchronized (lockTask) {
+      return active;
+    }
+  }
 
-	/**
-	 * Wait for the result. The "timeout" parameter allows to
-	 * <ul>
-	 * <li>wait indefinite</li> when timeout == 0;
-	 * <li>wait specified duration</li> when timeout > 0;
-	 * <li>don't wait (peek)</li> when timeout < 0;
-	 * </ul>
-	 * 
-	 * @see java.util.concurrent.Future#get(long, java.util.concurrent.TimeUnit)
-	 */
-	public R get(final long timeout, TimeUnit unit)
-			throws InterruptedException, ExecutionException, TimeoutException {
-		long remainNanos = TimeUnit.NANOSECONDS.convert(timeout, unit);
-		long lastNanos = System.nanoTime();
-		synchronized (lockTask) {
-			while (true) {
-				if (cancelled) {
-					throw new CancellationException();
-				}
-				if (computed) {
-					if (exception != null) {
-						throw new ExecutionException(exception);
-					}
-					// may be null!
-					return result;
-				}
-				if (timeout >= 0) {
-					if (timeout != 0) {
-						long nowNanos = System.nanoTime();
-						remainNanos -= nowNanos - lastNanos;
-						lastNanos = nowNanos;
-					}
-					long tempMillis = TimeUnit.MILLISECONDS.convert(
-							remainNanos, TimeUnit.NANOSECONDS);
-					if (tempMillis <= 0 && timeout != 0) {
-						throw new TimeoutException();
-					}
-					lockTask.wait(tempMillis);
-				} else {
-					// support a unblocked "get current value"
-					return null;
-				}
-			}
-		}
-	}
+  public boolean isAsynch() {
+    return asynch;
+  }
 
-	public Throwable getException() {
-		synchronized (lockTask) {
-			return exception;
-		}
-	}
+  public void setAsynch(boolean asynch) {
+    this.asynch = asynch;
+  }
 
-	public ITaskListener getTaskListener() {
-		synchronized (lockTask) {
-			return taskListener;
-		}
-	}
+  public boolean isCancelled() {
+    synchronized (lockTask) {
+      return cancelled;
+    }
+  }
 
-	final protected void handleException() {
-		try {
-			if (cancelled) {
-				if (Log.isLoggable(Level.FINEST)) {
-					Log.finest("" + this + " exception after cancel"); //$NON-NLS-1$
-				}
-				undo();
-			} else {
-				if (Log.isLoggable(Level.FINEST)) {
-					Log.finest("" + this + " exception, propagate"); //$NON-NLS-1$
-				}
-				taskFailed();
-			}
-		} catch (Exception e) {
-			Log.log(Level.SEVERE,
-					"" + this + " exception in exception handling", e); //$NON-NLS-1$
-		} finally {
-			handleFinally();
-		}
-	}
+  public boolean isDone() {
+    synchronized (lockTask) {
+      return computed || cancelled;
+    }
+  }
 
-	final protected void handleFinally() {
-		try {
-			if (Log.isLoggable(Level.FINEST)) {
-				Log.finest("" + this + " finally, propagate"); //$NON-NLS-1$
-			}
-			taskFinally();
-		} catch (Exception e) {
-			Log.log(Level.SEVERE,
-					"" + this + " exception in finally handling", e); //$NON-NLS-1$
-		}
-	}
+  public boolean isFailed() {
+    synchronized (lockTask) {
+      return exception != null;
+    }
+  }
 
-	final protected void handleResult() {
-		try {
-			if (cancelled) {
-				if (Log.isLoggable(Level.FINEST)) {
-					Log.finest("" + this + " computed after cancel, undo"); //$NON-NLS-1$
-				}
-				undo();
-			} else {
-				if (Log.isLoggable(Level.FINEST)) {
-					Log.finest("" + this + " computed, propagate"); //$NON-NLS-1$
-				}
-				taskFinished();
-			}
-		} catch (Exception e) {
-			Log.log(Level.SEVERE,
-					"" + this + " exception in result handling", e); //$NON-NLS-1$
-		} finally {
-			handleFinally();
-		}
-	}
+  public void reset() {
+    synchronized (lockTask) {
+      active = false;
+      computed = false;
+      exception = null;
+      result = null;
+    }
+  }
 
-	public boolean isActive() {
-		synchronized (lockTask) {
-			return active;
-		}
-	}
+  final public void run() {
+    synchronized (lockTask) {
+      if (active || cancelled || computed) {
+        if (Log.isLoggable(Level.FINEST)) {
+          Log.finest("" + this + " will not run" + (cancelled ? " (canceled)" : "")); //$NON-NLS-1$
+        }
+        return;
+      }
+      active = true;
+    }
+    taskStarted();
+    basicRun();
+  }
 
-	public boolean isAsynch() {
-		return asynch;
-	}
+  final public void runAsync() {
+    setAsynch(true);
+    run();
+  }
 
-	public boolean isCancelled() {
-		synchronized (lockTask) {
-			return cancelled;
-		}
-	}
+  protected void setResult(R object) {
+    synchronized (lockTask) {
+      computed = true;
+      active = false;
+      result = object;
+      lockTask.notifyAll();
+    }
+    if (Log.isLoggable(Level.FINEST)) {
+      Log.finest("" + this + " computation ready"); //$NON-NLS-1$
+    }
+    handleResult();
+  }
 
-	public boolean isDone() {
-		synchronized (lockTask) {
-			return computed || cancelled;
-		}
-	}
+  protected void taskCancelled() {
+    if (taskListener != null) {
+      taskListener.taskCancelled(this);
+    }
+  }
 
-	public boolean isFailed() {
-		synchronized (lockTask) {
-			return exception != null;
-		}
-	}
+  protected void taskFailed() {
+    if (taskListener != null) {
+      taskListener.taskFailed(this, new ExecutionException(
+          basicGetException()));
+    }
+  }
 
-	public void reset() {
-		synchronized (lockTask) {
-			active = false;
-			computed = false;
-			exception = null;
-			result = null;
-		}
-	}
+  protected void taskFinally() {
+    // redefine
+  }
 
-	final public void run() {
-		synchronized (lockTask) {
-			if (active || cancelled || computed) {
-				if (Log.isLoggable(Level.FINEST)) {
-					Log.finest("" + this + " will not run" + (cancelled ? " (canceled)" : "")); //$NON-NLS-1$
-				}
-				return;
-			}
-			active = true;
-		}
-		taskStarted();
-		basicRun();
-	}
+  protected void taskFinished() {
+    if (taskListener != null) {
+      taskListener.taskFinished(this, basicGetResult());
+    }
+  }
 
-	final public void runAsync() {
-		setAsynch(true);
-		run();
-	}
+  protected void taskStarted() {
+    if (taskListener != null) {
+      taskListener.taskStarted(this);
+    }
+  }
 
-	public void setAsynch(boolean asynch) {
-		this.asynch = asynch;
-	}
+  @Override
+  public String toString() {
+    return getClass().getName() + " - " + id;
+  }
 
-	protected void setException(Throwable e) {
-		synchronized (lockTask) {
-			computed = true;
-			active = false;
-			exception = e;
-			lockTask.notifyAll();
-		}
-		if (Log.isLoggable(Level.FINEST)) {
-			Log.finest("" + this + " computation failed"); //$NON-NLS-1$
-		}
-		handleException();
-	}
-
-	protected void setResult(R object) {
-		synchronized (lockTask) {
-			computed = true;
-			active = false;
-			result = object;
-			lockTask.notifyAll();
-		}
-		if (Log.isLoggable(Level.FINEST)) {
-			Log.finest("" + this + " computation ready"); //$NON-NLS-1$
-		}
-		handleResult();
-	}
-
-	public void setTaskListener(ITaskListener taskListener) {
-		synchronized (lockTask) {
-			if (active || cancelled || computed) {
-				throw new IllegalStateException("already started");
-			}
-			this.taskListener = taskListener;
-		}
-	}
-
-	protected void taskCancelled() {
-		if (taskListener != null) {
-			taskListener.taskCancelled(this);
-		}
-	}
-
-	protected void taskFailed() {
-		if (taskListener != null) {
-			taskListener.taskFailed(this, new ExecutionException(
-					basicGetException()));
-		}
-	}
-
-	protected void taskFinally() {
-		// redefine
-	}
-
-	protected void taskFinished() {
-		if (taskListener != null) {
-			taskListener.taskFinished(this, basicGetResult());
-		}
-	}
-
-	protected void taskStarted() {
-		if (taskListener != null) {
-			taskListener.taskStarted(this);
-		}
-	}
-
-	@Override
-	public String toString() {
-		return getClass().getName() + " - " + id;
-	}
-
-	protected void undo() {
-		// redefine
-	}
+  protected void undo() {
+    // redefine
+  }
 
 }

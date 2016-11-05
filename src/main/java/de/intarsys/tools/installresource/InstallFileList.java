@@ -29,14 +29,14 @@
  */
 package de.intarsys.tools.installresource;
 
+import de.intarsys.tools.file.TempTools;
+import de.intarsys.tools.stream.StreamTools;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Enumeration;
-
-import de.intarsys.tools.file.TempTools;
-import de.intarsys.tools.stream.StreamTools;
 
 /**
  * An abstraction to access a directory structure to be deployed along with the
@@ -46,55 +46,55 @@ import de.intarsys.tools.stream.StreamTools;
  */
 public class InstallFileList extends Install {
 
-	public InstallFileList(String path, String name, boolean platformDependent) {
-		super(path, name, platformDependent);
-	}
+  public InstallFileList(String path, String name, boolean platformDependent) {
+    super(path, name, platformDependent);
+  }
 
-	protected void loadEntry(File parent, String name) throws IOException {
-		if (name.length() == 0 || name.startsWith("#")) { //$NON-NLS-1$
-			return;
-		}
-		Enumeration<URL> urls = find(name);
-		if (urls != null) {
-			if (urls.hasMoreElements()) {
-				URL url = urls.nextElement();
-				File entryFile = new File(parent, name);
-				File entryDir = entryFile.getParentFile();
-				if (entryDir != null && !entryDir.exists()) {
-					entryDir.mkdirs();
-				}
-				copy(url, entryFile);
-			}
-		}
-	}
+  protected void loadEntry(File parent, String name) throws IOException {
+    if (name.length() == 0 || name.startsWith("#")) { //$NON-NLS-1$
+      return;
+    }
+    Enumeration<URL> urls = find(name);
+    if (urls != null) {
+      if (urls.hasMoreElements()) {
+        URL url = urls.nextElement();
+        File entryFile = new File(parent, name);
+        File entryDir = entryFile.getParentFile();
+        if (entryDir != null && !entryDir.exists()) {
+          entryDir.mkdirs();
+        }
+        copy(url, entryFile);
+      }
+    }
+  }
 
-	protected void loadList(File parent, InputStream is) throws IOException {
-		StringBuilder sb = new StringBuilder();
-		int i = is.read();
-		while (i != -1) {
-			if (i == '\n') {
-				String entryName = sb.toString().trim();
-				loadEntry(parent, entryName);
-				sb.setLength(0);
-				i = is.read();
-				continue;
-			}
-			sb.append((char) i);
-			i = is.read();
-		}
-		String entryName = sb.toString().trim();
-		loadEntry(parent, entryName);
-	}
+  protected void loadList(File parent, InputStream is) throws IOException {
+    StringBuilder sb = new StringBuilder();
+    int i = is.read();
+    while (i != -1) {
+      if (i == '\n') {
+        String entryName = sb.toString().trim();
+        loadEntry(parent, entryName);
+        sb.setLength(0);
+        i = is.read();
+        continue;
+      }
+      sb.append((char) i);
+      i = is.read();
+    }
+    String entryName = sb.toString().trim();
+    loadEntry(parent, entryName);
+  }
 
-	@Override
-	protected File loadURL(URL url) throws IOException {
-		InputStream is = url.openStream();
-		try {
-			File file = TempTools.createTempDir("dir", getName());
-			loadList(file, is);
-			return file;
-		} finally {
-			StreamTools.close(is);
-		}
-	}
+  @Override
+  protected File loadURL(URL url) throws IOException {
+    InputStream is = url.openStream();
+    try {
+      File file = TempTools.createTempDir("dir", getName());
+      loadList(file, is);
+      return file;
+    } finally {
+      StreamTools.close(is);
+    }
+  }
 }

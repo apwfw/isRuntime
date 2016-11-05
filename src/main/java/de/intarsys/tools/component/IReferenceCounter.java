@@ -39,7 +39,7 @@ import de.intarsys.tools.event.INotificationSupport;
  * <p>
  * The object implements a reference counting mechanism that should behave like
  * this:
- * 
+ * <p>
  * <ul>
  * <li>the object should keep a counter that increments when acquired and
  * decrements when released</li>
@@ -62,39 +62,39 @@ import de.intarsys.tools.event.INotificationSupport;
  */
 public interface IReferenceCounter {
 
-	public static final Attribute ATTR_REFERENCECOUNT = new Attribute(
-			"referenceCount");
+  public static final Attribute ATTR_REFERENCECOUNT = new Attribute(
+      "referenceCount");
 
-	/**
-	 * Indicate usage of the object. If valid, the reference count should
-	 * increase and the method returns an opaque handle representing the
-	 * "usage claim". This handle must be returned upon calling "release".
-	 * 
-	 * @return An opaque usage token
-	 */
-	public Object acquire();
+  /**
+   * Indicate usage of the object. If valid, the reference count should
+   * increase and the method returns an opaque handle representing the
+   * "usage claim". This handle must be returned upon calling "release".
+   *
+   * @return An opaque usage token
+   */
+  public Object acquire();
 
-	/**
-	 * The current "usage level". This is the number of unreleased
-	 * "usage claims" via acquire.
-	 * 
-	 * @return The current "usage level".
-	 */
-	public int getReferenceCount();
+  /**
+   * The current "usage level". This is the number of unreleased
+   * "usage claims" via acquire.
+   *
+   * @return The current "usage level".
+   */
+  public int getReferenceCount();
 
-	/**
-	 * Old style release method
-	 * 
-	 * @deprecated use release(handle)
-	 */
-	@Deprecated
-	public void release();
+  /**
+   * Old style release method
+   *
+   * @deprecated use release(handle)
+   */
+  @Deprecated
+  public void release();
 
-	/**
-	 * The object is no longer needed. The reference count is decreased and the
-	 * usage marked with the opaque handle is disposed.
-	 * 
-	 * @param handle
-	 */
-	public void release(Object handle);
+  /**
+   * The object is no longer needed. The reference count is decreased and the
+   * usage marked with the opaque handle is disposed.
+   *
+   * @param handle
+   */
+  public void release(Object handle);
 }

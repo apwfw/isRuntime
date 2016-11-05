@@ -29,72 +29,70 @@
  */
 package de.intarsys.tools.variable;
 
+import de.intarsys.tools.collection.EmptyIterator;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import de.intarsys.tools.collection.EmptyIterator;
-
 /**
  * A general implementation for an object providing {@link IVariableNamespace}.
- * 
  */
 public class StandardVariableNamespace implements IVariableNamespace {
 
-	private Map variables;
+  private Map variables;
 
-	/**
-	 * Create a VariableScope
-	 * 
-	 */
-	public StandardVariableNamespace() {
-		super();
-	}
+  /**
+   * Create a VariableScope
+   */
+  public StandardVariableNamespace() {
+    super();
+  }
 
-	synchronized public String getVariable(String key) {
-		if (variables == null) {
-			return null;
-		}
-		return (String) variables.get(key);
-	}
+  synchronized public String getVariable(String key) {
+    if (variables == null) {
+      return null;
+    }
+    return (String) variables.get(key);
+  }
 
-	synchronized public String getVariable(String key, String defaultValue) {
-		if (variables == null) {
-			return defaultValue;
-		}
-		String result = (String) variables.get(key);
-		if (result == null) {
-			return defaultValue;
-		} else {
-			return (String) variables.get(key);
-		}
-	}
+  synchronized public String getVariable(String key, String defaultValue) {
+    if (variables == null) {
+      return defaultValue;
+    }
+    String result = (String) variables.get(key);
+    if (result == null) {
+      return defaultValue;
+    } else {
+      return (String) variables.get(key);
+    }
+  }
 
-	synchronized public Iterator getVariableIterator() {
-		if (variables == null) {
-			return EmptyIterator.UNIQUE;
-		}
-		return new HashMap(variables).entrySet().iterator();
-	}
+  synchronized public Iterator getVariableIterator() {
+    if (variables == null) {
+      return EmptyIterator.UNIQUE;
+    }
+    return new HashMap(variables).entrySet().iterator();
+  }
 
-	synchronized public Map getVariables() {
-		if (variables == null) {
-			variables = new HashMap();
-		}
-		return new HashMap(variables);
-	}
+  synchronized public Map getVariables() {
+    if (variables == null) {
+      variables = new HashMap();
+    }
+    return new HashMap(variables);
+  }
 
-	synchronized public void putVariable(String key, String value) {
-		if (variables == null) {
-			variables = new HashMap();
-		}
-		variables.put(key, value);
-	}
+  synchronized public void putVariable(String key, String value) {
+    if (variables == null) {
+      variables = new HashMap();
+    }
+    variables.put(key, value);
+  }
 
-	synchronized public void putVariables(Map v) {
-		if (variables == null) {
-			variables = new HashMap();
-		}
-		variables.putAll(v);
-	}
+  synchronized public void putVariables(Map v) {
+    if (variables == null) {
+      variables = new HashMap();
+    }
+    variables.putAll(v);
+  }
 }

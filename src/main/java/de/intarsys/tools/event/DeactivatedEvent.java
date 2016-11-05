@@ -31,18 +31,17 @@ package de.intarsys.tools.event;
 
 /**
  * An event indicating the de-activation of an application component.
- * 
  */
 public class DeactivatedEvent extends Event {
-	public static final EventType ID = new EventType(DeactivatedEvent.class
-			.getName());
+  public static final EventType ID = new EventType(DeactivatedEvent.class
+      .getName());
 
-	public DeactivatedEvent(Object source) {
-		super(source);
-	}
+  public DeactivatedEvent(Object source) {
+    super(source);
+  }
 
-	@Override
-	public EventType getEventType() {
-		return ID;
-	}
+  @Override
+  public EventType getEventType() {
+    return ID;
+  }
 }

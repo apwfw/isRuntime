@@ -41,41 +41,41 @@ import de.intarsys.tools.reflect.MethodInvocationException;
  */
 public class FunctorMethod extends Member implements IMethod {
 
-	private IFunctor functor;
+  private IFunctor functor;
 
-	private String name;
+  private String name;
 
-	public FunctorMethod(String name, IFunctor functor) {
-		this.name = name;
-		this.functor = functor;
-	}
+  public FunctorMethod(String name, IFunctor functor) {
+    this.name = name;
+    this.functor = functor;
+  }
 
-	public String getName() {
-		return name;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public IClass[] getParameterTypes() {
-		return null;
-	}
+  public IClass[] getParameterTypes() {
+    return null;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.objectmodel.IReturnTypeInfo#getReturnType()
-	 */
-	public IClass getReturnType() {
-		return null;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.objectmodel.IReturnTypeInfo#getReturnType()
+   */
+  public IClass getReturnType() {
+    return null;
+  }
 
-	public Object invoke(Object receiver, IArgs args)
-			throws MethodInvocationException {
-		try {
-			IFunctorCall call = new FunctorCall(receiver, args);
-			return functor.perform(call);
-		} catch (FunctorInvocationException e) {
-			Throwable cause = (e.getCause() == null) ? e : e.getCause();
-			throw new MethodInvocationException(getName(), cause);
-		}
-	}
+  public Object invoke(Object receiver, IArgs args)
+      throws MethodInvocationException {
+    try {
+      IFunctorCall call = new FunctorCall(receiver, args);
+      return functor.perform(call);
+    } catch (FunctorInvocationException e) {
+      Throwable cause = (e.getCause() == null) ? e : e.getCause();
+      throw new MethodInvocationException(getName(), cause);
+    }
+  }
 
 }

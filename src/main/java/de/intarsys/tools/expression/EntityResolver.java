@@ -29,59 +29,58 @@
  */
 package de.intarsys.tools.expression;
 
+import de.intarsys.tools.functor.IArgs;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import de.intarsys.tools.functor.IArgs;
 
 /**
  * An {@link IStringEvaluator} that allows indirect literals. This is for
  * example useful when encoding a string in a browser environment where lots of
  * characters are reserved or simply not accessible (newline in applet
  * parameters).
- * 
  */
 public class EntityResolver extends ContainerResolver {
 
-	static private Map<String, String> entities = new HashMap<String, String>();
+  static private Map<String, String> entities = new HashMap<String, String>();
 
-	static {
-		entities.put("amp", "&");
-		entities.put("gt", ">");
-		entities.put("lt", "<");
-		entities.put("copy", "\u00A9");
-		entities.put("trade", "\u2122");
-		entities.put("cr", "\r");
-		entities.put("lf", "\n");
-		entities.put("quot", "\"");
-		entities.put("squot", "'");
-		entities.put("slash", "/");
-		entities.put("backslash", "\\");
-		entities.put("nl", System.getProperty("line.separator"));
-	}
+  static {
+    entities.put("amp", "&");
+    entities.put("gt", ">");
+    entities.put("lt", "<");
+    entities.put("copy", "\u00A9");
+    entities.put("trade", "\u2122");
+    entities.put("cr", "\r");
+    entities.put("lf", "\n");
+    entities.put("quot", "\"");
+    entities.put("squot", "'");
+    entities.put("slash", "/");
+    entities.put("backslash", "\\");
+    entities.put("nl", System.getProperty("line.separator"));
+  }
 
-	public EntityResolver() {
-	}
+  public EntityResolver() {
+  }
 
-	@Override
-	protected Object basicEvaluate(String expression, IArgs args)
-			throws EvaluationException {
-		try {
-			if (expression.startsWith("x")) {
-				String code = expression.substring(1);
-				int index = Integer.parseInt(code, 16);
-				return new String(Character.toChars(index));
-			} else if (expression.startsWith("o")) {
-				String code = expression.substring(1);
-				int index = Integer.parseInt(code, 8);
-				return new String(Character.toChars(index));
-			} else {
-				int index = Integer.parseInt(expression);
-				return new String(Character.toChars(index));
-			}
-		} catch (Exception e) {
-			return entities.get(expression);
-		}
-	}
+  @Override
+  protected Object basicEvaluate(String expression, IArgs args)
+      throws EvaluationException {
+    try {
+      if (expression.startsWith("x")) {
+        String code = expression.substring(1);
+        int index = Integer.parseInt(code, 16);
+        return new String(Character.toChars(index));
+      } else if (expression.startsWith("o")) {
+        String code = expression.substring(1);
+        int index = Integer.parseInt(code, 8);
+        return new String(Character.toChars(index));
+      } else {
+        int index = Integer.parseInt(expression);
+        return new String(Character.toChars(index));
+      }
+    } catch (Exception e) {
+      return entities.get(expression);
+    }
+  }
 
 }

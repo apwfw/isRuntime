@@ -41,194 +41,191 @@ import java.util.ResourceBundle;
  * A wrapper class for defining and accessing ResourceBundles.
  */
 public class MessageBundle {
-	protected static URL[] createURLs(String classpath) {
-		if (classpath == null) {
-			return new URL[0];
-		}
-		String[] names = classpath.split(";");
-		URL[] urls = new URL[names.length];
-		try {
-			for (int i = 0; i < urls.length; i++)
-				urls[i] = new File(names[i]).toURI().toURL();
-		} catch (MalformedURLException e) {
-			return new URL[0];
-		}
-		return urls;
-	}
+  private ClassLoader classLoader;
+  private Locale locale = Locale.getDefault();
+  private String path;
+  private ResourceBundle resourceBundle;
 
-	private ClassLoader classLoader;
+  /**
+   *
+   */
+  public MessageBundle() {
+    super();
+  }
 
-	private Locale locale = Locale.getDefault();
+  public MessageBundle(String path, ClassLoader classLoader) {
+    super();
+    this.path = path;
+    this.classLoader = classLoader;
+  }
 
-	private String path;
+  public MessageBundle(String path, String classpath) {
+    super();
+    this.path = path;
+    classLoader = new URLClassLoader(createURLs(classpath), Thread
+        .currentThread().getContextClassLoader());
+  }
 
-	private ResourceBundle resourceBundle;
+  protected static URL[] createURLs(String classpath) {
+    if (classpath == null) {
+      return new URL[0];
+    }
+    String[] names = classpath.split(";");
+    URL[] urls = new URL[names.length];
+    try {
+      for (int i = 0; i < urls.length; i++)
+        urls[i] = new File(names[i]).toURI().toURL();
+    } catch (MalformedURLException e) {
+      return new URL[0];
+    }
+    return urls;
+  }
 
-	/**
-	 * 
-	 */
-	public MessageBundle() {
-		super();
-	}
+  public String basicFormat(String pattern, Object... objects) {
+    return MessageFormat.format(pattern, objects);
+  }
 
-	public MessageBundle(String path, ClassLoader classLoader) {
-		super();
-		this.path = path;
-		this.classLoader = classLoader;
-	}
+  protected Object basicGetObject(String key) {
+    try {
+      ResourceBundle myBundle = getResourceBundle();
+      if (myBundle != null) {
+        return myBundle.getObject(key);
+      }
+      return null;
+    } catch (RuntimeException e) {
+      return null;
+    }
+  }
 
-	public MessageBundle(String path, String classpath) {
-		super();
-		this.path = path;
-		classLoader = new URLClassLoader(createURLs(classpath), Thread
-				.currentThread().getContextClassLoader());
-	}
+  public String basicGetString(String key) {
+    try {
+      ResourceBundle myBundle = getResourceBundle();
+      if (myBundle != null) {
+        return myBundle.getString(key);
+      }
+      return null;
+    } catch (RuntimeException e) {
+      return null;
+    }
+  }
 
-	public String basicFormat(String pattern, Object... objects) {
-		return MessageFormat.format(pattern, objects);
-	}
+  protected ResourceBundle createResourceBundle() {
+    if (getClassLoader() == null) {
+      return ResourceBundle.getBundle(getPath(), getLocale());
+    }
+    return ResourceBundle.getBundle(getPath(), getLocale(),
+        getClassLoader());
+  }
 
-	protected Object basicGetObject(String key) {
-		try {
-			ResourceBundle myBundle = getResourceBundle();
-			if (myBundle != null) {
-				return myBundle.getObject(key);
-			}
-			return null;
-		} catch (RuntimeException e) {
-			return null;
-		}
-	}
+  public ClassLoader getClassLoader() {
+    return classLoader;
+  }
 
-	public String basicGetString(String key) {
-		try {
-			ResourceBundle myBundle = getResourceBundle();
-			if (myBundle != null) {
-				return myBundle.getString(key);
-			}
-			return null;
-		} catch (RuntimeException e) {
-			return null;
-		}
-	}
+  public void setClassLoader(ClassLoader classLoader) {
+    this.classLoader = classLoader;
+  }
 
-	protected ResourceBundle createResourceBundle() {
-		if (getClassLoader() == null) {
-			return ResourceBundle.getBundle(getPath(), getLocale());
-		}
-		return ResourceBundle.getBundle(getPath(), getLocale(),
-				getClassLoader());
-	}
+  protected String getFallbackString(String key, Object... objects) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("{"); //$NON-NLS-1$
+    sb.append(key);
+    sb.append("}"); //$NON-NLS-1$
+    if (objects != null) {
+      for (int i = 0; i < objects.length; i++) {
+        sb.append("["); //$NON-NLS-1$
+        sb.append(objects[i]);
+        sb.append("]"); //$NON-NLS-1$
+      }
+    }
+    return sb.toString();
+  }
 
-	public ClassLoader getClassLoader() {
-		return classLoader;
-	}
+  public Locale getLocale() {
+    return locale;
+  }
 
-	protected String getFallbackString(String key, Object... objects) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{"); //$NON-NLS-1$
-		sb.append(key);
-		sb.append("}"); //$NON-NLS-1$
-		if (objects != null) {
-			for (int i = 0; i < objects.length; i++) {
-				sb.append("["); //$NON-NLS-1$
-				sb.append(objects[i]);
-				sb.append("]"); //$NON-NLS-1$
-			}
-		}
-		return sb.toString();
-	}
+  public void setLocale(Locale locale) {
+    this.locale = locale;
+  }
 
-	public Locale getLocale() {
-		return locale;
-	}
+  public Message getMessage(String key) {
+    return new Message(this, key);
+  }
 
-	public Message getMessage(String key) {
-		return new Message(this, key);
-	}
+  public Object getObject(String key) {
+    return basicGetObject(key);
+  }
 
-	public Object getObject(String key) {
-		return basicGetObject(key);
-	}
+  public String getPath() {
+    return path;
+  }
 
-	public String getPath() {
-		return path;
-	}
+  public void setPath(String resourcesName) {
+    this.path = resourcesName;
+  }
 
-	public ResourceBundle getResourceBundle() {
-		if (resourceBundle == null) {
-			resourceBundle = createResourceBundle();
-		}
-		return resourceBundle;
-	}
+  public ResourceBundle getResourceBundle() {
+    if (resourceBundle == null) {
+      resourceBundle = createResourceBundle();
+    }
+    return resourceBundle;
+  }
 
-	public String getString(String key) {
-		String result = basicGetString(key);
-		if (result == null) {
-			return getFallbackString(key, new String[] {});
-		}
-		return result.replace("''", "'");
-	}
+  public String getString(String key) {
+    String result = basicGetString(key);
+    if (result == null) {
+      return getFallbackString(key, new String[]{});
+    }
+    return result.replace("''", "'");
+  }
 
-	public String getString(String key, Object arg1) {
-		String pattern = basicGetString(key);
-		if (pattern == null) {
-			return getFallbackString(key, new Object[] { arg1 });
-		}
-		return MessageFormat.format(pattern, arg1);
-	}
+  public String getString(String key, Object arg1) {
+    String pattern = basicGetString(key);
+    if (pattern == null) {
+      return getFallbackString(key, new Object[]{arg1});
+    }
+    return MessageFormat.format(pattern, arg1);
+  }
 
-	public String getString(String key, Object arg1, Object arg2) {
-		String pattern = basicGetString(key);
-		if (pattern == null) {
-			return getFallbackString(key, new Object[] { arg1, arg2 });
-		}
-		return MessageFormat.format(pattern, arg1, arg2);
-	}
+  public String getString(String key, Object arg1, Object arg2) {
+    String pattern = basicGetString(key);
+    if (pattern == null) {
+      return getFallbackString(key, new Object[]{arg1, arg2});
+    }
+    return MessageFormat.format(pattern, arg1, arg2);
+  }
 
-	public String getString(String key, Object arg1, Object arg2, Object arg3) {
-		String pattern = basicGetString(key);
-		if (pattern == null) {
-			return getFallbackString(key, new Object[] { arg1, arg2, arg3 });
-		}
-		return MessageFormat.format(pattern, arg1, arg2, arg3);
-	}
+  public String getString(String key, Object arg1, Object arg2, Object arg3) {
+    String pattern = basicGetString(key);
+    if (pattern == null) {
+      return getFallbackString(key, new Object[]{arg1, arg2, arg3});
+    }
+    return MessageFormat.format(pattern, arg1, arg2, arg3);
+  }
 
-	public String getString(String key, Object arg1, Object arg2, Object arg3,
-			Object arg4) {
-		String pattern = basicGetString(key);
-		if (pattern == null) {
-			return getFallbackString(key,
-					new Object[] { arg1, arg2, arg3, arg4 });
-		}
-		return MessageFormat.format(pattern, arg1, arg2, arg3, arg4);
-	}
+  public String getString(String key, Object arg1, Object arg2, Object arg3,
+                          Object arg4) {
+    String pattern = basicGetString(key);
+    if (pattern == null) {
+      return getFallbackString(key,
+          new Object[]{arg1, arg2, arg3, arg4});
+    }
+    return MessageFormat.format(pattern, arg1, arg2, arg3, arg4);
+  }
 
-	public String getString(String key, Object[] args) {
-		String pattern = basicGetString(key);
-		if (pattern == null) {
-			return getFallbackString(key, args);
-		}
-		return MessageFormat.format(pattern, args);
-	}
+  public String getString(String key, Object[] args) {
+    String pattern = basicGetString(key);
+    if (pattern == null) {
+      return getFallbackString(key, args);
+    }
+    return MessageFormat.format(pattern, args);
+  }
 
-	public boolean lookupString(String key) {
-		String result = basicGetString(key);
-		if (result == null) {
-			return false;
-		}
-		return true;
-	}
-
-	public void setClassLoader(ClassLoader classLoader) {
-		this.classLoader = classLoader;
-	}
-
-	public void setLocale(Locale locale) {
-		this.locale = locale;
-	}
-
-	public void setPath(String resourcesName) {
-		this.path = resourcesName;
-	}
+  public boolean lookupString(String key) {
+    String result = basicGetString(key);
+    if (result == null) {
+      return false;
+    }
+    return true;
+  }
 }

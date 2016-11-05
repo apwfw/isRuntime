@@ -37,59 +37,58 @@ import de.intarsys.tools.reflect.MethodInvocationException;
 
 /**
  * An event indicating the upcoming invocation of a method for a receiver.
- * 
  */
 public class InvokeIntercept extends Event {
-	public static final EventType ID = new EventType(InvokeIntercept.class
-			.getName());
+  public static final EventType ID = new EventType(InvokeIntercept.class
+      .getName());
 
-	final private IArgs args;
+  final private IArgs args;
 
-	final private INotificationListener dispatcher;
+  final private INotificationListener dispatcher;
 
-	final private IMethod method;
+  final private IMethod method;
 
-	private Object result;
+  private Object result;
 
-	public InvokeIntercept(Object receiver, INotificationListener dispatcher,
-			IMethod method, IArgs args) {
-		super(receiver);
-		this.dispatcher = dispatcher;
-		this.method = method;
-		this.args = args;
-	}
+  public InvokeIntercept(Object receiver, INotificationListener dispatcher,
+                         IMethod method, IArgs args) {
+    super(receiver);
+    this.dispatcher = dispatcher;
+    this.method = method;
+    this.args = args;
+  }
 
-	public IArgs getArgs() {
-		return args;
-	}
+  public IArgs getArgs() {
+    return args;
+  }
 
-	public INotificationListener getDispatcher() {
-		return dispatcher;
-	}
+  public INotificationListener getDispatcher() {
+    return dispatcher;
+  }
 
-	@Override
-	public EventType getEventType() {
-		return ID;
-	}
+  @Override
+  public EventType getEventType() {
+    return ID;
+  }
 
-	public IMethod getMethod() {
-		return method;
-	}
+  public IMethod getMethod() {
+    return method;
+  }
 
-	public Object getReceiver() {
-		return getSource();
-	}
+  public Object getReceiver() {
+    return getSource();
+  }
 
-	public Object getResult() {
-		return result;
-	}
+  public Object getResult() {
+    return result;
+  }
 
-	public Object resume() throws MethodInvocationException {
-		return ObjectModelTools.invokeInterceptResume(getReceiver(),
-				getDispatcher(), getMethod(), getArgs());
-	}
+  public void setResult(Object result) {
+    this.result = result;
+  }
 
-	public void setResult(Object result) {
-		this.result = result;
-	}
+  public Object resume() throws MethodInvocationException {
+    return ObjectModelTools.invokeInterceptResume(getReceiver(),
+        getDispatcher(), getMethod(), getArgs());
+  }
 }

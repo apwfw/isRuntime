@@ -37,19 +37,18 @@ import de.intarsys.tools.message.MessageBundle;
  * An {@link IStringEvaluator} accessing messages in a bundle indirectly via
  * {@link Message} object references. This may speed up usage as no actual
  * message lookup is done in the resources.
- * 
  */
 public class MessageBundleMessageResolver implements IStringEvaluator {
 
-	private MessageBundle bundle;
+  private MessageBundle bundle;
 
-	public MessageBundleMessageResolver(MessageBundle bundle) {
-		super();
-		this.bundle = bundle;
-	}
+  public MessageBundleMessageResolver(MessageBundle bundle) {
+    super();
+    this.bundle = bundle;
+  }
 
-	public Object evaluate(String expression, IArgs pArgs)
-			throws EvaluationException {
-		return new Message(bundle, expression);
-	}
+  public Object evaluate(String expression, IArgs pArgs)
+      throws EvaluationException {
+    return new Message(bundle, expression);
+  }
 }

@@ -33,7 +33,7 @@ import java.util.logging.Level;
 
 /**
  * A trace of {@link ISample} instances for a specific {@link IMonitor} .
- * 
+ * <p>
  * <p>
  * A trace means recording samples (and tags) while executing. The trace is
  * later on aggregated in the {@link IMonitor}. The {@link IMonitor} may
@@ -41,22 +41,20 @@ import java.util.logging.Level;
  * </p>
  */
 public interface ITrace {
-	/**
-	 * Take a sample and tag it with <code>description</code>. The sample is
-	 * stored in addition to the "fix" start and stop sample.
-	 * 
-	 * @param level
-	 */
-	public ISample sample(Level level, String description);
+  /**
+   * Take a sample and tag it with <code>description</code>. The sample is
+   * stored in addition to the "fix" start and stop sample.
+   *
+   * @param level
+   */
+  public ISample sample(Level level, String description);
 
-	/**
-	 * Add a key/value pair to <code>this</code>. This data is not interpreted
-	 * by the monitor.
-	 * 
-	 * @param key
-	 *            The name of the value to store.
-	 * @param tag
-	 *            The object to store with the measurement.
-	 */
-	public void tag(String key, Object tag);
+  /**
+   * Add a key/value pair to <code>this</code>. This data is not interpreted
+   * by the monitor.
+   *
+   * @param key The name of the value to store.
+   * @param tag The object to store with the measurement.
+   */
+  public void tag(String key, Object tag);
 }

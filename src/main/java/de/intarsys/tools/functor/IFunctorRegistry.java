@@ -31,27 +31,24 @@ package de.intarsys.tools.functor;
 
 /**
  * A registry for accessing {@link IFunctor} instances.
- * 
  */
 public interface IFunctorRegistry {
 
-	/**
-	 * The collection of all registered {@link IFunctor} instances.
-	 * 
-	 * @return All registered {@link IFunctor} instances.
-	 */
-	public IFunctor[] getFunctors();
+  /**
+   * The collection of all registered {@link IFunctor} instances.
+   *
+   * @return All registered {@link IFunctor} instances.
+   */
+  public IFunctor[] getFunctors();
 
-	/**
-	 * The {@link IFunctor} registered with <code>id</code> or <code>null</code>
-	 * .
-	 * 
-	 * @param id
-	 *            The id of the {@link IFunctor} to lookup.
-	 * 
-	 * @return The {@link IFunctor} registered with <code>id</code> or
-	 *         <code>null</code>.
-	 */
-	public IFunctor lookupFunctor(String id);
+  /**
+   * The {@link IFunctor} registered with <code>id</code> or <code>null</code>
+   * .
+   *
+   * @param id The id of the {@link IFunctor} to lookup.
+   * @return The {@link IFunctor} registered with <code>id</code> or
+   * <code>null</code>.
+   */
+  public IFunctor lookupFunctor(String id);
 
 }

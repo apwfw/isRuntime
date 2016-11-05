@@ -32,11 +32,11 @@ package de.intarsys.tools.component;
 /**
  * This interface declares the ability of a dynamically loaded component to be
  * instantiated.
- * 
+ * <p>
  * <p>
  * This is the base interface for all instance based component interfaces.
  * </p>
  */
 public interface IInstantiable {
-	// this is a tagging interface
+  // this is a tagging interface
 }

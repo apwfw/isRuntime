@@ -33,17 +33,16 @@ import java.util.Iterator;
 
 /**
  * Filter all null objects from the base iterator.
- * 
  */
 public class NullFilterIterator<T> extends FilterIterator<T> {
 
-	public NullFilterIterator(Iterator<T> baseIterator) {
-		super(baseIterator);
-	}
+  public NullFilterIterator(Iterator<T> baseIterator) {
+    super(baseIterator);
+  }
 
-	@Override
-	protected boolean accept(T object) {
-		return object != null;
-	}
+  @Override
+  protected boolean accept(T object) {
+    return object != null;
+  }
 
 }

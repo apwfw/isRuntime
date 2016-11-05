@@ -29,259 +29,260 @@
  */
 package de.intarsys.tools.monitor;
 
+import de.intarsys.tools.dom.ElementConfigurationException;
+import de.intarsys.tools.dom.ElementTools;
+import de.intarsys.tools.dom.IElementConfigurable;
+import org.w3c.dom.Element;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.w3c.dom.Element;
-
-import de.intarsys.tools.dom.ElementConfigurationException;
-import de.intarsys.tools.dom.ElementTools;
-import de.intarsys.tools.dom.IElementConfigurable;
-
 /**
  * An abstract superclass to ease implementation of IMonitor objects.
  */
 public abstract class AbstractMonitor implements IMonitor, IElementConfigurable {
 
-	/** The default logging level to use for a new monitor instance */
-	private static Level defaultLevel = Level.INFO;
+  /**
+   * The default logging level to use for a new monitor instance
+   */
+  private static Level defaultLevel = Level.INFO;
+  /**
+   * The logical full qualified name of the monitor
+   */
+  private String name;
+  /**
+   * The logger instance that should receive log messages when a trace is
+   * taken.
+   */
+  private Logger logger;
+  /**
+   * The log level to use for this monitor
+   */
+  private Level level = defaultLevel;
+  /**
+   * the collection of traces (depending on the trace flags)
+   */
+  private LinkedList traces = new LinkedList();
+  /**
+   * control the trace collecting behavior.
+   */
+  private int collectAll = 0;
+  private int logCycle = 100;
+  private int traceCount = 0;
+  /**
+   * The current IMonitorTrace. The monitor may be used from different
+   * threads, so any will get its own trace.
+   * <p>
+   * <p>
+   * In a typical production environment the number of trace instances is
+   * bound as threads will be pooled.
+   * </p>
+   */
+  private ThreadLocal<AbstractMonitorTrace> tracePerThread = new ThreadLocal<AbstractMonitorTrace>() {
+    @Override
+    protected AbstractMonitorTrace initialValue() {
+      return createMonitorTrace();
+    }
+  };
 
-	public static Level getDefaultLevel() {
-		return defaultLevel;
-	}
+  public AbstractMonitor() {
+    this("");
+  }
 
-	public static void setDefaultLevel(Level defaultLevel) {
-		AbstractMonitor.defaultLevel = defaultLevel;
-	}
+  public AbstractMonitor(String name) {
+    super();
+    this.name = name;
+    logger = Logger.getLogger(name);
+  }
 
-	/** The logical full qualified name of the monitor */
-	private String name;
+  public static Level getDefaultLevel() {
+    return defaultLevel;
+  }
 
-	/**
-	 * The logger instance that should receive log messages when a trace is
-	 * taken.
-	 */
-	private Logger logger;
+  ;
 
-	/** The log level to use for this monitor */
-	private Level level = defaultLevel;
+  public static void setDefaultLevel(Level defaultLevel) {
+    AbstractMonitor.defaultLevel = defaultLevel;
+  }
 
-	/** the collection of traces (depending on the trace flags) */
-	private LinkedList traces = new LinkedList();
+  /*
+   * Start a new "measuring".
+   *
+   * @see de.intarsys.monitor.IMonitor#start()
+   */
+  final public ITrace attach() {
+    // todo how to handle re-entry of active monitors
+    AbstractMonitorTrace trace = (AbstractMonitorTrace) getCurrentTrace();
+    trace.start();
+    Trace.registerTrace(trace);
+    return trace;
+  }
 
-	/** control the trace collecting behavior. */
-	private int collectAll = 0;
+  public void configure(Element element) throws ElementConfigurationException {
+    setName(ElementTools.getPathString(element, "name", ""));
+    setCollectAll(ElementTools.getPathInt(element, "collect.count", 0));
+    String loggerString = ElementTools.getPathString(element, "logger",
+        getName());
+    if (loggerString != null) {
+      Logger logger = Logger.getLogger(loggerString);
+      setLogger(logger);
+    }
+    String defaultLevelString = defaultLevel.getName();
+    String levelString = ElementTools.getPathString(element, "level",
+        defaultLevelString);
+    setLevel(Level.parse(levelString));
+    int intValue = ElementTools.getPathInt(element, "logcycle", 100);
+    setLogCycle(intValue);
+  }
 
-	private int logCycle = 100;
+  /**
+   * Factory method for a new IMonitorSample.
+   *
+   * @return The new sample.
+   */
+  protected abstract AbstractMonitorTrace createMonitorTrace();
 
-	private int traceCount = 0;
+  final public void detach() {
+    AbstractMonitorTrace trace = (AbstractMonitorTrace) getCurrentTrace();
+    trace.stop();
+  }
 
-	/**
-	 * The current IMonitorTrace. The monitor may be used from different
-	 * threads, so any will get its own trace.
-	 * 
-	 * <p>
-	 * In a typical production environment the number of trace instances is
-	 * bound as threads will be pooled.
-	 * </p>
-	 */
-	private ThreadLocal<AbstractMonitorTrace> tracePerThread = new ThreadLocal<AbstractMonitorTrace>() {
-		@Override
-		protected AbstractMonitorTrace initialValue() {
-			return createMonitorTrace();
-		}
-	};
+  /**
+   * The internal representation of the trace collection (if any).
+   *
+   * @return The internal representation of the trace collection (if any).
+   */
+  protected LinkedList getBasicTraces() {
+    return traces;
+  }
 
-	public AbstractMonitor() {
-		this("");
-	};
+  public int getCollectAll() {
+    return collectAll;
+  }
 
-	public AbstractMonitor(String name) {
-		super();
-		this.name = name;
-		logger = Logger.getLogger(name);
-	}
+  public void setCollectAll(int count) {
+    this.collectAll = count;
+  }
 
-	/*
-	 * Start a new "measuring".
-	 * 
-	 * @see de.intarsys.monitor.IMonitor#start()
-	 */
-	final public ITrace attach() {
-		// todo how to handle re-entry of active monitors
-		AbstractMonitorTrace trace = (AbstractMonitorTrace) getCurrentTrace();
-		trace.start();
-		Trace.registerTrace(trace);
-		return trace;
-	}
+  /**
+   * The currently active IMonitorTrace for the running thread.
+   *
+   * @return The currently active IMonitorTrace for the running thread.
+   */
+  public ITrace getCurrentTrace() {
+    return tracePerThread.get();
+  }
 
-	public void configure(Element element) throws ElementConfigurationException {
-		setName(ElementTools.getPathString(element, "name", ""));
-		setCollectAll(ElementTools.getPathInt(element, "collect.count", 0));
-		String loggerString = ElementTools.getPathString(element, "logger",
-				getName());
-		if (loggerString != null) {
-			Logger logger = Logger.getLogger(loggerString);
-			setLogger(logger);
-		}
-		String defaultLevelString = defaultLevel.getName();
-		String levelString = ElementTools.getPathString(element, "level",
-				defaultLevelString);
-		setLevel(Level.parse(levelString));
-		int intValue = ElementTools.getPathInt(element, "logcycle", 100);
-		setLogCycle(intValue);
-	}
+  /**
+   * DOCUMENT ME!
+   *
+   * @return Returns the traceLogLevel.
+   */
+  public Level getLevel() {
+    return level;
+  }
 
-	/**
-	 * Factory method for a new IMonitorSample.
-	 * 
-	 * @return The new sample.
-	 */
-	protected abstract AbstractMonitorTrace createMonitorTrace();
+  public void setLevel(Level traceLogLevel) {
+    this.level = traceLogLevel;
+  }
 
-	final public void detach() {
-		AbstractMonitorTrace trace = (AbstractMonitorTrace) getCurrentTrace();
-		trace.stop();
-	}
+  public int getLogCycle() {
+    return logCycle;
+  }
 
-	/**
-	 * The internal representation of the trace collection (if any).
-	 * 
-	 * @return The internal representation of the trace collection (if any).
-	 */
-	protected LinkedList getBasicTraces() {
-		return traces;
-	}
+  public void setLogCycle(int pLogCycle) {
+    this.logCycle = pLogCycle;
+  }
 
-	public int getCollectAll() {
-		return collectAll;
-	}
+  public Logger getLogger() {
+    return logger;
+  }
 
-	/**
-	 * The currently active IMonitorTrace for the running thread.
-	 * 
-	 * @return The currently active IMonitorTrace for the running thread.
-	 */
-	public ITrace getCurrentTrace() {
-		return tracePerThread.get();
-	}
+  public void setLogger(Logger traceLog) {
+    this.logger = traceLog;
+  }
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return Returns the traceLogLevel.
-	 */
-	public Level getLevel() {
-		return level;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.monitor.IMonitor#getName()
+   */
+  public String getName() {
+    return name;
+  }
 
-	public int getLogCycle() {
-		return logCycle;
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	public Logger getLogger() {
-		return logger;
-	}
+  public synchronized List getTraces() {
+    List list = new ArrayList(traces);
+    return list;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.monitor.IMonitor#getName()
-	 */
-	public String getName() {
-		return name;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.monitor.IMonitor#reset()
+   */
+  public void reset() {
+    traceLog();
+    traces = new LinkedList();
+    traceCount = 0;
+  }
 
-	public synchronized List getTraces() {
-		List list = new ArrayList(traces);
-		return list;
-	}
+  /**
+   * @deprecated use attach
+   */
+  @Deprecated
+  public void start() {
+    attach();
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.monitor.IMonitor#reset()
-	 */
-	public void reset() {
-		traceLog();
-		traces = new LinkedList();
-		traceCount = 0;
-	}
+  /**
+   * Get informed that a trace has been started.
+   *
+   * @param trace The trace that is started.
+   */
+  protected synchronized void started(ITrace trace) {
+    //
+  }
 
-	public void setCollectAll(int count) {
-		this.collectAll = count;
-	}
+  /**
+   * @deprecated use detach
+   */
+  @Deprecated
+  public void stop() {
+    detach();
+  }
 
-	public void setLevel(Level traceLogLevel) {
-		this.level = traceLogLevel;
-	}
+  /**
+   * Get informed that a trace has been finished.
+   *
+   * @param trace The trace that is finished.
+   */
+  protected synchronized void stopped(ITrace trace) {
+    Trace.unregisterTrace(trace);
+    if (getCollectAll() > 0) {
+      getBasicTraces().add(trace);
+      tracePerThread.set(createMonitorTrace());
 
-	public void setLogCycle(int pLogCycle) {
-		this.logCycle = pLogCycle;
-	}
+      if (getCollectAll() < getBasicTraces().size()) {
+        getBasicTraces().removeFirst();
+      }
+    }
+    traceCount++;
+    if (getLogCycle() != -1 && traceCount >= getLogCycle()) {
+      reset();
+    }
+  }
 
-	public void setLogger(Logger traceLog) {
-		this.logger = traceLog;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * @deprecated use attach
-	 */
-	@Deprecated
-	public void start() {
-		attach();
-	}
-
-	/**
-	 * Get informed that a trace has been started.
-	 * 
-	 * @param trace
-	 *            The trace that is started.
-	 */
-	protected synchronized void started(ITrace trace) {
-		//
-	}
-
-	/**
-	 * @deprecated use detach
-	 */
-	@Deprecated
-	public void stop() {
-		detach();
-	}
-
-	/**
-	 * Get informed that a trace has been finished.
-	 * 
-	 * @param trace
-	 *            The trace that is finished.
-	 */
-	protected synchronized void stopped(ITrace trace) {
-		Trace.unregisterTrace(trace);
-		if (getCollectAll() > 0) {
-			getBasicTraces().add(trace);
-			tracePerThread.set(createMonitorTrace());
-
-			if (getCollectAll() < getBasicTraces().size()) {
-				getBasicTraces().removeFirst();
-			}
-		}
-		traceCount++;
-		if (getLogCycle() != -1 && traceCount >= getLogCycle()) {
-			reset();
-		}
-	}
-
-	protected void traceLog() {
-		if (getLogger() != null) {
-			getLogger().logp(getLevel(), "", "", toString());
-		}
-	}
+  protected void traceLog() {
+    if (getLogger() != null) {
+      getLogger().logp(getLevel(), "", "", toString());
+    }
+  }
 }

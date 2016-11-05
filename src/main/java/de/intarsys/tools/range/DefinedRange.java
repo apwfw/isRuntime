@@ -29,56 +29,56 @@
  */
 package de.intarsys.tools.range;
 
+import de.intarsys.tools.number.NumberList;
+import de.intarsys.tools.number.NumberParser;
+import de.intarsys.tools.number.NumberWrapper;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import de.intarsys.tools.number.NumberList;
-import de.intarsys.tools.number.NumberParser;
-import de.intarsys.tools.number.NumberWrapper;
-
 public class DefinedRange implements IRange {
 
-	public static DefinedRange create(int index) {
-		NumberList wrapper = new NumberList();
-		wrapper.add(index);
-		return new DefinedRange(wrapper);
-	}
+  private NumberWrapper value;
 
-	public static DefinedRange create(List<Integer> indices) {
-		NumberList wrapper = new NumberList();
-		wrapper.addAll(indices);
-		return new DefinedRange(wrapper);
-	}
+  public DefinedRange(NumberWrapper value) {
+    super();
+    this.value = value;
+  }
 
-	public static DefinedRange create(String stringValue) throws IOException {
-		NumberWrapper wrapper = NumberParser.parseInteger(stringValue.trim());
-		return new DefinedRange(wrapper);
-	}
+  public static DefinedRange create(int index) {
+    NumberList wrapper = new NumberList();
+    wrapper.add(index);
+    return new DefinedRange(wrapper);
+  }
 
-	private NumberWrapper value;
+  public static DefinedRange create(List<Integer> indices) {
+    NumberList wrapper = new NumberList();
+    wrapper.addAll(indices);
+    return new DefinedRange(wrapper);
+  }
 
-	public DefinedRange(NumberWrapper value) {
-		super();
-		this.value = value;
-	}
+  public static DefinedRange create(String stringValue) throws IOException {
+    NumberWrapper wrapper = NumberParser.parseInteger(stringValue.trim());
+    return new DefinedRange(wrapper);
+  }
 
-	@Override
-	public List<Integer> getIndices(int current, int count) {
-		List<Integer> indices = new ArrayList<Integer>();
-		for (Iterator<?> it = getValue().iterator(); it.hasNext();) {
-			Number number = (Number) it.next();
-			int index = number.intValue();
-			if (index >= 0 && (index < count || count < 0)) {
-				indices.add(index);
-			}
-		}
-		return indices;
-	}
+  @Override
+  public List<Integer> getIndices(int current, int count) {
+    List<Integer> indices = new ArrayList<Integer>();
+    for (Iterator<?> it = getValue().iterator(); it.hasNext(); ) {
+      Number number = (Number) it.next();
+      int index = number.intValue();
+      if (index >= 0 && (index < count || count < 0)) {
+        indices.add(index);
+      }
+    }
+    return indices;
+  }
 
-	public NumberWrapper getValue() {
-		return value;
-	}
+  public NumberWrapper getValue() {
+    return value;
+  }
 
 }

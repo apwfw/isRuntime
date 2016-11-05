@@ -41,34 +41,33 @@ package de.intarsys.tools.functor;
  * <p>
  * Syntax, semantics and application to the {@link IFunctorCall} of declarations
  * are up to the client.
- * 
  */
 public interface IDeclaration {
 
-	/**
-	 * Create a copy of this.
-	 * 
-	 * @return A copy of this.
-	 */
-	public IDeclaration copy();
+  /**
+   * Create a copy of this.
+   *
+   * @return A copy of this.
+   */
+  public IDeclaration copy();
 
-	/**
-	 * An optional declaration context. This may be for example the object that
-	 * will launch the {@link IFunctorCall} later and has parsed some
-	 * declarations on startup.
-	 * 
-	 * @return An optional declaration context.
-	 */
-	public Object getDeclarationContext();
+  /**
+   * An optional declaration context. This may be for example the object that
+   * will launch the {@link IFunctorCall} later and has parsed some
+   * declarations on startup.
+   *
+   * @return An optional declaration context.
+   */
+  public Object getDeclarationContext();
 
-	/**
-	 * <code>true</code> if this declaration has child elements itself.
-	 * <p>
-	 * A {@link IDeclarationElement} may be a {@link IDeclarationBlock},
-	 * supporting nested declarations. You should not use "instanceof
-	 * IDeclarationBlock" to check this behavior but this method.
-	 * 
-	 * @return <code>true</code> if this declaration has child elements itself.
-	 */
-	public boolean isBlock();
+  /**
+   * <code>true</code> if this declaration has child elements itself.
+   * <p>
+   * A {@link IDeclarationElement} may be a {@link IDeclarationBlock},
+   * supporting nested declarations. You should not use "instanceof
+   * IDeclarationBlock" to check this behavior but this method.
+   *
+   * @return <code>true</code> if this declaration has child elements itself.
+   */
+  public boolean isBlock();
 }

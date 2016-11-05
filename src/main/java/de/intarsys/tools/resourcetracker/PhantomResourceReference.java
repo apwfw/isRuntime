@@ -38,26 +38,26 @@ import java.lang.ref.PhantomReference;
  * {@link ResourceTracker} that created it for disposal.
  */
 public class PhantomResourceReference extends PhantomReference implements
-		IResourceReference {
+    IResourceReference {
 
-	private ResourceTracker tracker;
+  private ResourceTracker tracker;
 
-	private Object resource;
+  private Object resource;
 
-	public PhantomResourceReference(Object container, Object resource,
-			ResourceTracker tracker) {
-		super(container, tracker.getQueue());
-		this.tracker = tracker;
-		this.resource = resource;
-	}
+  public PhantomResourceReference(Object container, Object resource,
+                                  ResourceTracker tracker) {
+    super(container, tracker.getQueue());
+    this.tracker = tracker;
+    this.resource = resource;
+  }
 
-	public void dispose() {
-		tracker.dispose(this);
-		resource = null;
-		clear();
-	}
+  public void dispose() {
+    tracker.dispose(this);
+    resource = null;
+    clear();
+  }
 
-	public Object getResource() {
-		return resource;
-	}
+  public Object getResource() {
+    return resource;
+  }
 }

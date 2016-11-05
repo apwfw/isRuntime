@@ -31,91 +31,97 @@ package de.intarsys.tools.cache;
 
 /**
  * An entry in the cache implementation.
- * 
+ * <p>
  * <p>
  * A cache entries "importance" is expressed by a "sample". The CacheEntry with
  * the smallest sample is considered the least valuable.
  * </p>
- * 
+ * <p>
  * <p>
  * This implementation supports a simple "most recently used" strategy.
  * </p>
  */
 public class CacheEntry<T> implements Comparable {
-	/** remember the last used sample to ensure no two samples are the same */
-	private static int LASTSAMPLE = 0;
+  /**
+   * remember the last used sample to ensure no two samples are the same
+   */
+  private static int LASTSAMPLE = 0;
 
-	/** The key of the cache entry */
-	private final Object key;
+  /**
+   * The key of the cache entry
+   */
+  private final Object key;
 
-	/** The wrapped value of the entry */
-	private final T value;
+  /**
+   * The wrapped value of the entry
+   */
+  private final T value;
 
-	/** The sample representing the "importance" of the entry */
-	private int sample;
+  /**
+   * The sample representing the "importance" of the entry
+   */
+  private int sample;
 
-	/**
-	 * Create a cache entry.
-	 * 
-	 * @param key
-	 *            The key for the entry
-	 * @param value
-	 *            The value for the entry
-	 */
-	protected CacheEntry(Object key, T value) {
-		super();
-		this.key = key;
-		this.value = value;
-		touch();
-	}
+  /**
+   * Create a cache entry.
+   *
+   * @param key   The key for the entry
+   * @param value The value for the entry
+   */
+  protected CacheEntry(Object key, T value) {
+    super();
+    this.key = key;
+    this.value = value;
+    touch();
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Comparable#compareTo(java.lang.Object)
-	 */
-	public int compareTo(Object o) {
-		CacheEntry other = (CacheEntry) o;
-		if (getSample() == other.getSample()) {
-			return 0;
-		}
-		if (getSample() < other.getSample()) {
-			return 1;
-		}
-		return -1;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.lang.Comparable#compareTo(java.lang.Object)
+   */
+  public int compareTo(Object o) {
+    CacheEntry other = (CacheEntry) o;
+    if (getSample() == other.getSample()) {
+      return 0;
+    }
+    if (getSample() < other.getSample()) {
+      return 1;
+    }
+    return -1;
+  }
 
-	/**
-	 * The key of the cache entry.
-	 * 
-	 * @return Returns the key.
-	 */
-	public Object getKey() {
-		return key;
-	}
+  /**
+   * The key of the cache entry.
+   *
+   * @return Returns the key.
+   */
+  public Object getKey() {
+    return key;
+  }
 
-	/**
-	 * The sample representing the "importance" of the entry.
-	 * 
-	 * @return Returns the sample.
-	 */
-	public int getSample() {
-		return sample;
-	}
+  /**
+   * The sample representing the "importance" of the entry.
+   *
+   * @return Returns the sample.
+   */
+  public int getSample() {
+    return sample;
+  }
 
-	/**
-	 * The value of the cache entry.
-	 * 
-	 * @return Returns the value.
-	 */
-	public T getValue() {
-		return value;
-	}
+  /**
+   * The value of the cache entry.
+   *
+   * @return Returns the value.
+   */
+  public T getValue() {
+    return value;
+  }
 
-	/**
-	 * Mark the Cache entry as recently used.
-	 */
-	synchronized protected void touch() {
-		sample = LASTSAMPLE++;
-	}
+  /**
+   * Mark the Cache entry as recently used.
+   */
+  synchronized protected void touch() {
+    sample = LASTSAMPLE++;
+  }
 }

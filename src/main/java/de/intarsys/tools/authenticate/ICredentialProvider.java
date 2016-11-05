@@ -31,15 +31,14 @@ package de.intarsys.tools.authenticate;
 
 /**
  * Provide any type of credentials needed for authentication.
- * 
  */
 public interface ICredentialProvider {
 
-	/**
-	 * An {@link ICredential} or null to indicate cancellation.
-	 * 
-	 * @return An {@link ICredential} or null to indicate cancellation.
-	 */
-	public ICredential getCredential();
+  /**
+   * An {@link ICredential} or null to indicate cancellation.
+   *
+   * @return An {@link ICredential} or null to indicate cancellation.
+   */
+  public ICredential getCredential();
 
 }

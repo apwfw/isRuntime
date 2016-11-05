@@ -34,11 +34,11 @@ package de.intarsys.tools.facade;
  */
 public interface IFacadeSupport {
 
-	/**
-	 * The associated {@link IFacade}.
-	 * 
-	 * @return The associated {@link IFacade}.
-	 */
-	public IFacade createFacade();
+  /**
+   * The associated {@link IFacade}.
+   *
+   * @return The associated {@link IFacade}.
+   */
+  public IFacade createFacade();
 
 }

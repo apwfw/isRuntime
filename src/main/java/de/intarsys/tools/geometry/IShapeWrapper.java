@@ -4,6 +4,6 @@ import java.awt.Shape;
 
 public interface IShapeWrapper {
 
-	public Shape getBaseShape();
+  public Shape getBaseShape();
 
 }

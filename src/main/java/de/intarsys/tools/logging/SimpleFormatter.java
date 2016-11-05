@@ -29,6 +29,9 @@
  */
 package de.intarsys.tools.logging;
 
+import de.intarsys.tools.format.TrivialDateFormat;
+import de.intarsys.tools.string.StringTools;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.Format;
@@ -38,238 +41,239 @@ import java.util.logging.Formatter;
 import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 
-import de.intarsys.tools.format.TrivialDateFormat;
-import de.intarsys.tools.string.StringTools;
-
 /**
  * A simple usable formatter for java logging
  */
 public class SimpleFormatter extends Formatter {
 
-	/** The line separator. */
-	private static final String LF = System.getProperty("line.separator");
+  /**
+   * The line separator.
+   */
+  private static final String LF = System.getProperty("line.separator");
 
-	static {
-		// force classloading - strange problems may arise when logging within
-		// classloader
-		new TrivialDateFormat();
-		StringTools.isEmpty("");
-		Calendar.getInstance();
-		SDC.get();
-	}
+  static {
+    // force classloading - strange problems may arise when logging within
+    // classloader
+    new TrivialDateFormat();
+    StringTools.isEmpty("");
+    Calendar.getInstance();
+    SDC.get();
+  }
 
-	/** A thread safe date format. */
-	private Format dateFormat = new TrivialDateFormat();
+  /**
+   * The StringBuffer to format the message (this is not thread safe).
+   */
+  private final StringBuffer sb = new StringBuffer();
+  /**
+   * A thread safe date format.
+   */
+  private Format dateFormat = new TrivialDateFormat();
+  private int widthSDC = 20;
 
-	/** The StringBuffer to format the message (this is not thread safe). */
-	private final StringBuffer sb = new StringBuffer();
+  private boolean showDate = true;
 
-	private int widthSDC = 20;
+  private boolean showLevel = true;
 
-	private boolean showDate = true;
+  private boolean showName = true;
 
-	private boolean showLevel = true;
+  private boolean showSDC = false;
 
-	private boolean showName = true;
+  private boolean showThread = true;
 
-	private boolean showSDC = false;
+  private int widthLevel = 7;
 
-	private boolean showThread = true;
+  private int widthName = 30;
 
-	private int widthLevel = 7;
+  private int widthThread = 15;
 
-	private int widthName = 30;
+  /**
+   *
+   */
+  public SimpleFormatter() {
+    super();
+    configure();
+  }
 
-	private int widthThread = 15;
+  protected void configure() {
+    String cname = getClass().getName();
+    setShowSDC(getBooleanProperty(cname + ".sdc.show", isShowSDC()));
+    setWidthSDC(getIntProperty(cname + ".sdc.width", getWidthSDC()));
+    setShowThread(getBooleanProperty(cname + ".thread.show", isShowThread()));
+    setWidthThread(getIntProperty(cname + ".thread.width", getWidthThread()));
+    setShowDate(getBooleanProperty(cname + ".date.show", isShowDate()));
+    setShowLevel(getBooleanProperty(cname + ".level.show", isShowLevel()));
+    setWidthLevel(getIntProperty(cname + ".level.width", getWidthLevel()));
+    setShowName(getBooleanProperty(cname + ".name.show", isShowName()));
+    setWidthName(getIntProperty(cname + ".name.width", getWidthName()));
+  }
 
-	/**
-	 * 
-	 */
-	public SimpleFormatter() {
-		super();
-		configure();
-	}
+  @Override
+  public synchronized String format(LogRecord record) {
+    sb.setLength(0);
+    if (isShowDate()) {
+      sb.append("[");
+      int index = sb.length();
+      dateFormat.format(new Date(record.getMillis()), sb, null);
+      for (int i = sb.length() - index; i < 24; i++) {
+        sb.append(' ');
+      }
+      sb.append("]");
+    }
+    if (isShowLevel()) {
+      sb.append("[");
+      String levelString = record.getLevel().toString();
+      sb.append(levelString);
+      for (int i = levelString.length(); i < widthLevel; i++) {
+        sb.append(' ');
+      }
+      sb.append("]");
+    }
+    if (isShowName()) {
+      String loggerString = record.getLoggerName();
+      if (loggerString == null) {
+        loggerString = "<unknown>";
+      }
+      if (loggerString.length() > widthName) {
+        loggerString = StringTools.getTrailing(loggerString, widthName);
+      }
+      sb.append("[");
+      sb.append(loggerString);
+      for (int i = loggerString.length(); i < widthName; i++) {
+        sb.append(' ');
+      }
+      sb.append("]");
+    }
+    if (isShowThread()) {
+      String threadString = Thread.currentThread().getName();
+      if (threadString.length() > widthThread) {
+        threadString = StringTools.getTrailing(threadString,
+            widthThread);
+      }
+      sb.append("[");
+      sb.append(threadString);
+      for (int i = threadString.length(); i < widthThread; i++) {
+        sb.append(' ');
+      }
+      sb.append("]");
+    }
+    if (isShowSDC()) {
+      sb.append("[");
+      String sdcString = String.valueOf(SDC.get());
+      sb.append(sdcString);
+      for (int i = sdcString.length(); i < widthSDC; i++) {
+        sb.append(' ');
+      }
+      sb.append("]");
+    }
+    sb.append(" ");
+    sb.append(record.getMessage());
+    sb.append(LF);
+    if (record.getThrown() != null) {
+      try {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        record.getThrown().printStackTrace(pw);
+        pw.close();
+        sb.append(sw.toString());
+        sb.append(LF);
+      } catch (Exception ex) {
+        // ignore
+      }
+    }
+    return sb.toString();
+  }
 
-	protected void configure() {
-		String cname = getClass().getName();
-		setShowSDC(getBooleanProperty(cname + ".sdc.show", isShowSDC()));
-		setWidthSDC(getIntProperty(cname + ".sdc.width", getWidthSDC()));
-		setShowThread(getBooleanProperty(cname + ".thread.show", isShowThread()));
-		setWidthThread(getIntProperty(cname + ".thread.width", getWidthThread()));
-		setShowDate(getBooleanProperty(cname + ".date.show", isShowDate()));
-		setShowLevel(getBooleanProperty(cname + ".level.show", isShowLevel()));
-		setWidthLevel(getIntProperty(cname + ".level.width", getWidthLevel()));
-		setShowName(getBooleanProperty(cname + ".name.show", isShowName()));
-		setWidthName(getIntProperty(cname + ".name.width", getWidthName()));
-	}
+  protected boolean getBooleanProperty(String name, boolean defaultValue) {
+    LogManager manager = LogManager.getLogManager();
+    String property = manager.getProperty(name);
+    if (StringTools.isEmpty(property)) {
+      return defaultValue;
+    }
+    return Boolean.valueOf(property.trim());
+  }
 
-	@Override
-	public synchronized String format(LogRecord record) {
-		sb.setLength(0);
-		if (isShowDate()) {
-			sb.append("[");
-			int index = sb.length();
-			dateFormat.format(new Date(record.getMillis()), sb, null);
-			for (int i = sb.length() - index; i < 24; i++) {
-				sb.append(' ');
-			}
-			sb.append("]");
-		}
-		if (isShowLevel()) {
-			sb.append("[");
-			String levelString = record.getLevel().toString();
-			sb.append(levelString);
-			for (int i = levelString.length(); i < widthLevel; i++) {
-				sb.append(' ');
-			}
-			sb.append("]");
-		}
-		if (isShowName()) {
-			String loggerString = record.getLoggerName();
-			if (loggerString == null) {
-				loggerString = "<unknown>";
-			}
-			if (loggerString.length() > widthName) {
-				loggerString = StringTools.getTrailing(loggerString, widthName);
-			}
-			sb.append("[");
-			sb.append(loggerString);
-			for (int i = loggerString.length(); i < widthName; i++) {
-				sb.append(' ');
-			}
-			sb.append("]");
-		}
-		if (isShowThread()) {
-			String threadString = Thread.currentThread().getName();
-			if (threadString.length() > widthThread) {
-				threadString = StringTools.getTrailing(threadString,
-						widthThread);
-			}
-			sb.append("[");
-			sb.append(threadString);
-			for (int i = threadString.length(); i < widthThread; i++) {
-				sb.append(' ');
-			}
-			sb.append("]");
-		}
-		if (isShowSDC()) {
-			sb.append("[");
-			String sdcString = String.valueOf(SDC.get());
-			sb.append(sdcString);
-			for (int i = sdcString.length(); i < widthSDC; i++) {
-				sb.append(' ');
-			}
-			sb.append("]");
-		}
-		sb.append(" ");
-		sb.append(record.getMessage());
-		sb.append(LF);
-		if (record.getThrown() != null) {
-			try {
-				StringWriter sw = new StringWriter();
-				PrintWriter pw = new PrintWriter(sw);
-				record.getThrown().printStackTrace(pw);
-				pw.close();
-				sb.append(sw.toString());
-				sb.append(LF);
-			} catch (Exception ex) {
-				// ignore
-			}
-		}
-		return sb.toString();
-	}
+  protected int getIntProperty(String name, int defaultValue) {
+    LogManager manager = LogManager.getLogManager();
+    String property = manager.getProperty(name);
+    if (StringTools.isEmpty(property)) {
+      return defaultValue;
+    }
+    try {
+      return Integer.valueOf(property.trim());
+    } catch (NumberFormatException e) {
+      return defaultValue;
+    }
+  }
 
-	protected boolean getBooleanProperty(String name, boolean defaultValue) {
-		LogManager manager = LogManager.getLogManager();
-		String property = manager.getProperty(name);
-		if (StringTools.isEmpty(property)) {
-			return defaultValue;
-		}
-		return Boolean.valueOf(property.trim());
-	}
+  public int getWidthLevel() {
+    return widthLevel;
+  }
 
-	protected int getIntProperty(String name, int defaultValue) {
-		LogManager manager = LogManager.getLogManager();
-		String property = manager.getProperty(name);
-		if (StringTools.isEmpty(property)) {
-			return defaultValue;
-		}
-		try {
-			return Integer.valueOf(property.trim());
-		} catch (NumberFormatException e) {
-			return defaultValue;
-		}
-	}
+  public void setWidthLevel(int widthLevel) {
+    this.widthLevel = widthLevel;
+  }
 
-	public int getWidthLevel() {
-		return widthLevel;
-	}
+  public int getWidthName() {
+    return widthName;
+  }
 
-	public int getWidthName() {
-		return widthName;
-	}
+  public void setWidthName(int widthLoggername) {
+    this.widthName = widthLoggername;
+  }
 
-	public int getWidthSDC() {
-		return widthSDC;
-	}
+  public int getWidthSDC() {
+    return widthSDC;
+  }
 
-	public int getWidthThread() {
-		return widthThread;
-	}
+  public void setWidthSDC(int widthSDC) {
+    this.widthSDC = widthSDC;
+  }
 
-	public boolean isShowDate() {
-		return showDate;
-	}
+  public int getWidthThread() {
+    return widthThread;
+  }
 
-	public boolean isShowLevel() {
-		return showLevel;
-	}
+  public void setWidthThread(int widthThread) {
+    this.widthThread = widthThread;
+  }
 
-	public boolean isShowName() {
-		return showName;
-	}
+  public boolean isShowDate() {
+    return showDate;
+  }
 
-	public boolean isShowSDC() {
-		return showSDC;
-	}
+  public void setShowDate(boolean showDate) {
+    this.showDate = showDate;
+  }
 
-	public boolean isShowThread() {
-		return showThread;
-	}
+  public boolean isShowLevel() {
+    return showLevel;
+  }
 
-	public void setShowDate(boolean showDate) {
-		this.showDate = showDate;
-	}
+  public void setShowLevel(boolean showLevel) {
+    this.showLevel = showLevel;
+  }
 
-	public void setShowLevel(boolean showLevel) {
-		this.showLevel = showLevel;
-	}
+  public boolean isShowName() {
+    return showName;
+  }
 
-	public void setShowName(boolean showName) {
-		this.showName = showName;
-	}
+  public void setShowName(boolean showName) {
+    this.showName = showName;
+  }
 
-	public void setShowSDC(boolean showSDC) {
-		this.showSDC = showSDC;
-	}
+  public boolean isShowSDC() {
+    return showSDC;
+  }
 
-	public void setShowThread(boolean showThread) {
-		this.showThread = showThread;
-	}
+  public void setShowSDC(boolean showSDC) {
+    this.showSDC = showSDC;
+  }
 
-	public void setWidthLevel(int widthLevel) {
-		this.widthLevel = widthLevel;
-	}
+  public boolean isShowThread() {
+    return showThread;
+  }
 
-	public void setWidthName(int widthLoggername) {
-		this.widthName = widthLoggername;
-	}
-
-	public void setWidthSDC(int widthSDC) {
-		this.widthSDC = widthSDC;
-	}
-
-	public void setWidthThread(int widthThread) {
-		this.widthThread = widthThread;
-	}
+  public void setShowThread(boolean showThread) {
+    this.showThread = showThread;
+  }
 }

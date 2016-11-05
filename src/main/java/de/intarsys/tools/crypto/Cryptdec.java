@@ -29,87 +29,86 @@
  */
 package de.intarsys.tools.crypto;
 
+import de.intarsys.tools.exception.ExceptionTools;
+
+import javax.crypto.Cipher;
 import java.io.IOException;
 import java.util.Arrays;
 
-import javax.crypto.Cipher;
-
-import de.intarsys.tools.exception.ExceptionTools;
-
 /**
- * 
+ *
  */
 abstract public class Cryptdec implements ICryptdec {
 
-	final private String id;
+  final private String id;
 
-	private byte[] initializationVector;
+  private byte[] initializationVector;
 
-	private Cipher ecipher;
+  private Cipher ecipher;
 
-	private Cipher dcipher;
+  private Cipher dcipher;
 
-	public Cryptdec(String id, byte[] iv) {
-		this.id = id;
-		this.initializationVector = Arrays.copyOf(iv, iv.length);
-	}
+  public Cryptdec(String id, byte[] iv) {
+    this.id = id;
+    this.initializationVector = Arrays.copyOf(iv, iv.length);
+  }
 
-	/**
-	 * Decrypt a byte array.
-	 * 
-	 * @param bytes
-	 * @return The decrypted representation of <code>bytes</code>
-	 * @throws IOException
-	 */
-	public byte[] decrypt(byte[] bytes) throws IOException {
-		try {
-			return dcipher.doFinal(bytes);
-		} catch (Exception e) {
-			throw ExceptionTools.createIOException(e.getMessage(), e);
-		}
-	}
+  /**
+   * Decrypt a byte array.
+   *
+   * @param bytes
+   * @return The decrypted representation of <code>bytes</code>
+   * @throws IOException
+   */
+  public byte[] decrypt(byte[] bytes) throws IOException {
+    try {
+      return dcipher.doFinal(bytes);
+    } catch (Exception e) {
+      throw ExceptionTools.createIOException(e.getMessage(), e);
+    }
+  }
 
-	/**
-	 * Encrypt a byte array.
-	 * 
-	 * @param bytes
-	 * @return The encrypted representation of <code>bytes</code>
-	 * @throws IOException
-	 */
-	public byte[] encrypt(byte[] bytes) throws IOException {
-		try {
-			return ecipher.doFinal(bytes);
-		} catch (Exception e) {
-			throw ExceptionTools.createIOException(e.getMessage(), e);
-		}
-	}
+  /**
+   * Encrypt a byte array.
+   *
+   * @param bytes
+   * @return The encrypted representation of <code>bytes</code>
+   * @throws IOException
+   */
+  public byte[] encrypt(byte[] bytes) throws IOException {
+    try {
+      return ecipher.doFinal(bytes);
+    } catch (Exception e) {
+      throw ExceptionTools.createIOException(e.getMessage(), e);
+    }
+  }
 
-	protected Cipher getDcipher() {
-		return dcipher;
-	}
+  protected Cipher getDcipher() {
+    return dcipher;
+  }
 
-	protected Cipher getEcipher() {
-		return ecipher;
-	}
+  protected void setDcipher(Cipher dcipher) {
+    this.dcipher = dcipher;
+  }
 
-	public String getId() {
-		return id;
-	}
+  protected Cipher getEcipher() {
+    return ecipher;
+  }
 
-	public byte[] getInitializationVector() {
-		return initializationVector;
-	}
+  protected void setEcipher(Cipher ecipher) {
+    this.ecipher = ecipher;
+  }
 
-	protected void setDcipher(Cipher dcipher) {
-		this.dcipher = dcipher;
-	}
+  public String getId() {
+    return id;
+  }
 
-	protected void setEcipher(Cipher ecipher) {
-		this.ecipher = ecipher;
-	}
+  public byte[] getInitializationVector() {
+    return initializationVector;
+  }
 
-	protected void setInitializationVector(byte[] initializationVector) {
-		this.initializationVector = initializationVector;
-	}
+  protected void setInitializationVector(byte[] initializationVector) {
+    this.initializationVector = initializationVector;
+  }
 
 }

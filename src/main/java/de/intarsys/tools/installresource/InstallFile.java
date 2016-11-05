@@ -29,11 +29,11 @@
  */
 package de.intarsys.tools.installresource;
 
+import de.intarsys.tools.file.TempTools;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-
-import de.intarsys.tools.file.TempTools;
 
 /**
  * An abstraction to access a single file to be deployed along with the
@@ -41,15 +41,15 @@ import de.intarsys.tools.file.TempTools;
  */
 public class InstallFile extends Install {
 
-	public InstallFile(String path, String name, boolean platformDependent) {
-		super(path, name, platformDependent);
-	}
+  public InstallFile(String path, String name, boolean platformDependent) {
+    super(path, name, platformDependent);
+  }
 
-	@Override
-	protected File loadURL(URL url) throws IOException {
-		File file = TempTools.createTempFile("file", getName());
-		copy(url, file);
-		return file;
-	}
+  @Override
+  protected File loadURL(URL url) throws IOException {
+    File file = TempTools.createTempFile("file", getName());
+    copy(url, file);
+    return file;
+  }
 
 }

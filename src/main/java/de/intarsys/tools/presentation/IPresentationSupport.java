@@ -34,43 +34,43 @@ package de.intarsys.tools.presentation;
  */
 public interface IPresentationSupport {
 
-	public static final Object ATTR_DESCRIPTION = "description"; //$NON-NLS-1$
+  public static final Object ATTR_DESCRIPTION = "description"; //$NON-NLS-1$
 
-	public static final Object ATTR_LABEL = "label"; //$NON-NLS-1$
+  public static final Object ATTR_LABEL = "label"; //$NON-NLS-1$
 
-	public static final Object ATTR_ICON = "icon"; //$NON-NLS-1$
+  public static final Object ATTR_ICON = "icon"; //$NON-NLS-1$
 
-	public static final Object ATTR_TIP = "tip"; //$NON-NLS-1$
+  public static final Object ATTR_TIP = "tip"; //$NON-NLS-1$
 
-	/**
-	 * A long, descriptive string representation.
-	 * 
-	 * @return A long, descriptive string representation.
-	 */
-	public String getDescription();
+  /**
+   * A long, descriptive string representation.
+   *
+   * @return A long, descriptive string representation.
+   */
+  public String getDescription();
 
-	/**
-	 * A name for an icon.
-	 * 
-	 * @return A name for an icon.
-	 */
-	public String getIconName();
+  /**
+   * A name for an icon.
+   *
+   * @return A name for an icon.
+   */
+  public String getIconName();
 
-	/**
-	 * A short string representation (suitable for example for use with an icon
-	 * or menu item).
-	 * 
-	 * @return A short string representation (suitable for example for use with
-	 *         an icon or menu item).
-	 */
-	public String getLabel();
+  /**
+   * A short string representation (suitable for example for use with an icon
+   * or menu item).
+   *
+   * @return A short string representation (suitable for example for use with
+   * an icon or menu item).
+   */
+  public String getLabel();
 
-	/**
-	 * An "intermediate" length description (suitable for example with a
-	 * tooltip).
-	 * 
-	 * @return An "intermediate" length description (suitable for example with a
-	 *         tooltip).
-	 */
-	public String getTip();
+  /**
+   * An "intermediate" length description (suitable for example with a
+   * tooltip).
+   *
+   * @return An "intermediate" length description (suitable for example with a
+   * tooltip).
+   */
+  public String getTip();
 }

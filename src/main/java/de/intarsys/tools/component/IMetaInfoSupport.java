@@ -31,16 +31,15 @@ package de.intarsys.tools.component;
 
 /**
  * This interface declares the components ability to provide meta information.
- * 
  */
 public interface IMetaInfoSupport extends IInstantiable {
-	public static final String META_ID = "id"; //$NON-NLS-1$
+  public static final String META_ID = "id"; //$NON-NLS-1$
 
-	public static final String META_NAME = "name"; //$NON-NLS-1$
+  public static final String META_NAME = "name"; //$NON-NLS-1$
 
-	public static final String META_VERSION = "version"; //$NON-NLS-1$
+  public static final String META_VERSION = "version"; //$NON-NLS-1$
 
-	public static final String META_VENDOR = "vendor"; //$NON-NLS-1$
+  public static final String META_VENDOR = "vendor"; //$NON-NLS-1$
 
-	public String getMetaInfo(String name);
+  public String getMetaInfo(String name);
 }

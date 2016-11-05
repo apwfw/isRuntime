@@ -31,18 +31,17 @@ package de.intarsys.tools.event;
 
 /**
  * An event indicating the stop of an application component.
- * 
  */
 public class StoppedEvent extends Event {
-	public static final EventType ID = new EventType(StoppedEvent.class
-			.getName());
+  public static final EventType ID = new EventType(StoppedEvent.class
+      .getName());
 
-	public StoppedEvent(Object source) {
-		super(source);
-	}
+  public StoppedEvent(Object source) {
+    super(source);
+  }
 
-	@Override
-	public EventType getEventType() {
-		return ID;
-	}
+  @Override
+  public EventType getEventType() {
+    return ID;
+  }
 }

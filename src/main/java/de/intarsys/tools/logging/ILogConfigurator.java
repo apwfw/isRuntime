@@ -35,10 +35,9 @@ import java.util.logging.Logger;
  * Classes implementing this interface can be used in conjunction with the
  * singleton LogConfigurator to configure Logger instances created by the class
  * LogTools.
- * 
  */
 public interface ILogConfigurator {
 
-	public void configure(Logger logger);
+  public void configure(Logger logger);
 
 }

@@ -37,29 +37,29 @@ import java.util.logging.Logger;
  */
 public class LogConfigurator {
 
-	static class DefaultConfigurator implements ILogConfigurator {
+  private static ILogConfigurator INSTANCE;
 
-		public void configure(Logger logger) {
-			//
-		}
+  private LogConfigurator() {
+    //
+  }
 
-	}
+  public static ILogConfigurator get() {
+    if (INSTANCE == null) {
+      INSTANCE = new DefaultConfigurator();
+    }
+    return INSTANCE;
+  }
 
-	private static ILogConfigurator INSTANCE;
+  public static void set(ILogConfigurator configurator) {
+    INSTANCE = configurator;
+  }
 
-	public static ILogConfigurator get() {
-		if (INSTANCE == null) {
-			INSTANCE = new DefaultConfigurator();
-		}
-		return INSTANCE;
-	}
+  static class DefaultConfigurator implements ILogConfigurator {
 
-	public static void set(ILogConfigurator configurator) {
-		INSTANCE = configurator;
-	}
+    public void configure(Logger logger) {
+      //
+    }
 
-	private LogConfigurator() {
-		// 
-	}
+  }
 
 }

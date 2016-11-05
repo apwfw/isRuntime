@@ -9,26 +9,26 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "property")
 public class Property {
 
-	@XmlAttribute(name = "name", required = true)
-	private String name;
-	@XmlAttribute(name = "value", required = true)
-	private String value;
+  @XmlAttribute(name = "name", required = true)
+  private String name;
+  @XmlAttribute(name = "value", required = true)
+  private String value;
 
-	public Property() {
-	}
+  public Property() {
+  }
 
-	public Property(String name, String value) {
-		super();
-		this.name = name;
-		this.value = value;
-	}
+  public Property(String name, String value) {
+    super();
+    this.name = name;
+    this.value = value;
+  }
 
-	public String getName() {
-		return name;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public String getValue() {
-		return value;
-	}
+  public String getValue() {
+    return value;
+  }
 
 }

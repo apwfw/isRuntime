@@ -32,69 +32,67 @@ package de.intarsys.tools.facade;
 import de.intarsys.tools.attribute.IAttributeSupport;
 
 /**
- * 
+ *
  */
 public class DelegatingFacadeFactory extends FacadeFactory {
-	private IFacadeFactory[] factories = new IFacadeFactory[10];
+  private static final Object ATTR_FACADE = new Object();
+  private IFacadeFactory[] factories = new IFacadeFactory[10];
+  private int count = 0;
 
-	private int count = 0;
+  /**
+   *
+   */
+  public DelegatingFacadeFactory() {
+    super();
+  }
 
-	/**
-	 * 
-	 */
-	public DelegatingFacadeFactory() {
-		super();
-	}
+  protected IFacade basicCreate(Object nativeObject) {
+    for (int i = 0; i < count; i++) {
+      IFacade result = factories[i].createFacade(nativeObject);
+      if (result != null) {
+        return result;
+      }
+    }
+    return null;
+  }
 
-	protected IFacade basicCreate(Object nativeObject) {
-		for (int i = 0; i < count; i++) {
-			IFacade result = factories[i].createFacade(nativeObject);
-			if (result != null) {
-				return result;
-			}
-		}
-		return null;
-	}
+  public void addFactory(IFacadeFactory factory) {
+    if (count >= factories.length) {
+      IFacadeFactory[] tempFactories = new IFacadeFactory[count + 2];
+      System.arraycopy(factories, 0, tempFactories, 0, count);
+      factories = tempFactories;
+    }
+    factories[count++] = factory;
+  }
 
-	public void addFactory(IFacadeFactory factory) {
-		if (count >= factories.length) {
-			IFacadeFactory[] tempFactories = new IFacadeFactory[count + 2];
-			System.arraycopy(factories, 0, tempFactories, 0, count);
-			factories = tempFactories;
-		}
-		factories[count++] = factory;
-	}
+  public void removeFactory(IFacadeFactory factory) {
+    for (int i = 0; i < count; i++) {
+      IFacadeFactory oldFactory = factories[i];
+      if (oldFactory == factory) {
+        if ((i + 1) < count) {
+          System.arraycopy(factories, i + 1, factories, i, count - i
+              - 1);
+        }
+        factories[count--] = null;
+      }
+    }
+  }
 
-	public void removeFactory(IFacadeFactory factory) {
-		for (int i = 0; i < count; i++) {
-			IFacadeFactory oldFactory = factories[i];
-			if (oldFactory == factory) {
-				if ((i + 1) < count) {
-					System.arraycopy(factories, i + 1, factories, i, count - i
-							- 1);
-				}
-				factories[count--] = null;
-			}
-		}
-	}
-
-	final public IFacade createFacade(Object nativeObject) {
-		if (nativeObject instanceof IAttributeSupport) {
-			IAttributeSupport as = (IAttributeSupport) nativeObject;
-			IFacade result = (IFacade) as.getAttribute(ATTR_FACADE);
-			if (result == null) {
-				result = basicCreate(nativeObject);
-				if (result != null) {
-					as.setAttribute(ATTR_FACADE, result);
-				}
-			}
-			return result;
-		}
-		if (nativeObject != null) {
-			return basicCreate(nativeObject);
-		}
-		return null;
-	}
-
-	private static final Object ATTR_FACADE = new Object();
+  final public IFacade createFacade(Object nativeObject) {
+    if (nativeObject instanceof IAttributeSupport) {
+      IAttributeSupport as = (IAttributeSupport) nativeObject;
+      IFacade result = (IFacade) as.getAttribute(ATTR_FACADE);
+      if (result == null) {
+        result = basicCreate(nativeObject);
+        if (result != null) {
+          as.setAttribute(ATTR_FACADE, result);
+        }
+      }
+      return result;
+    }
+    if (nativeObject != null) {
+      return basicCreate(nativeObject);
+    }
+    return null;
+  }
 }

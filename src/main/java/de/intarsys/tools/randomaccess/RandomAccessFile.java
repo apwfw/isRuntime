@@ -39,188 +39,186 @@ import java.util.logging.Logger;
  */
 public class RandomAccessFile extends AbstractRandomAccess {
 
-	/** The logger to be used in this package */
-	private static Logger Log = PACKAGE.Log;
+  /**
+   * The logger to be used in this package
+   */
+  private static Logger Log = PACKAGE.Log;
 
-	/**
-	 * The wrapped RandomAccessFile of the java library
-	 */
-	private java.io.RandomAccessFile fileAccess;
+  /**
+   * The wrapped RandomAccessFile of the java library
+   */
+  private java.io.RandomAccessFile fileAccess;
 
-	/**
-	 * Flag if this is used read only
-	 */
-	private boolean readOnly = false;
+  /**
+   * Flag if this is used read only
+   */
+  private boolean readOnly = false;
 
-	private File file;
+  private File file;
 
-	/**
-	 * @param file
-	 *            to open for random access
-	 * @throws FileNotFoundException
-	 *             if file was not found or the file is locked by a different
-	 *             process
-	 */
-	public RandomAccessFile(File file) throws IOException {
-		this(file, true);
-	}
+  /**
+   * @param file to open for random access
+   * @throws FileNotFoundException if file was not found or the file is locked by a different
+   *                               process
+   */
+  public RandomAccessFile(File file) throws IOException {
+    this(file, true);
+  }
 
-	/**
-	 * @param file
-	 *            to open for random access
-	 * @throws FileNotFoundException
-	 *             if file was not found or the file is locked by a different
-	 *             process
-	 */
-	public RandomAccessFile(File file, boolean create) throws IOException {
-		this.file = file;
-		if (create && !file.exists()) {
-			File dir = file.getParentFile();
-			if ((dir != null) && !dir.exists()) {
-				dir.mkdirs();
-			}
-			file.createNewFile();
-		}
-		if (!file.exists()) {
-			throw new FileNotFoundException(
-					"file does not exist or can't be created");
-		}
-		if (file.canWrite()) {
-			try {
-				fileAccess = new java.io.RandomAccessFile(file, "rw");
-				return;
-			} catch (IOException e) {
-				// canWrite() doesn't check for user permissions
-				// try again with readonly
-			}
-		}
-		fileAccess = new java.io.RandomAccessFile(file, "r");
-		readOnly = true;
-	}
+  /**
+   * @param file to open for random access
+   * @throws FileNotFoundException if file was not found or the file is locked by a different
+   *                               process
+   */
+  public RandomAccessFile(File file, boolean create) throws IOException {
+    this.file = file;
+    if (create && !file.exists()) {
+      File dir = file.getParentFile();
+      if ((dir != null) && !dir.exists()) {
+        dir.mkdirs();
+      }
+      file.createNewFile();
+    }
+    if (!file.exists()) {
+      throw new FileNotFoundException(
+          "file does not exist or can't be created");
+    }
+    if (file.canWrite()) {
+      try {
+        fileAccess = new java.io.RandomAccessFile(file, "rw");
+        return;
+      } catch (IOException e) {
+        // canWrite() doesn't check for user permissions
+        // try again with readonly
+      }
+    }
+    fileAccess = new java.io.RandomAccessFile(file, "r");
+    readOnly = true;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.randomaccess.IRandomAccessData#close()
-	 */
-	public void close() throws IOException {
-		if (fileAccess != null) {
-			fileAccess.close();
-		}
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.randomaccess.IRandomAccessData#close()
+   */
+  public void close() throws IOException {
+    if (fileAccess != null) {
+      fileAccess.close();
+    }
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.randomaccess.IRandomAccess#flush()
-	 */
-	public void flush() throws IOException {
-		fileAccess.getChannel().force(true);
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.randomaccess.IRandomAccess#flush()
+   */
+  public void flush() throws IOException {
+    fileAccess.getChannel().force(true);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.randomaccess.IRandomAccessData#getLength()
-	 */
-	public long getLength() throws IOException {
-		return fileAccess.length();
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.randomaccess.IRandomAccessData#getLength()
+   */
+  public long getLength() throws IOException {
+    return fileAccess.length();
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.randomaccess.IRandomAccessData#getOffset()
-	 */
-	public long getOffset() throws IOException {
-		return fileAccess.getFilePointer();
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.randomaccess.IRandomAccessData#setLength(int)
+   */
+  public void setLength(long newLength) throws IOException {
+    fileAccess.setLength(newLength);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.randomaccess.IRandomAccessData#isReadOnly()
-	 */
-	public boolean isReadOnly() {
-		return readOnly;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.randomaccess.IRandomAccessData#getOffset()
+   */
+  public long getOffset() throws IOException {
+    return fileAccess.getFilePointer();
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.randomaccess.IRandomAccessData#read()
-	 */
-	public int read() throws IOException {
-		return fileAccess.read();
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.randomaccess.IRandomAccessData#isReadOnly()
+   */
+  public boolean isReadOnly() {
+    return readOnly;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.randomaccess.IRandomAccessData#read(byte[])
-	 */
-	public int read(byte[] buffer) throws IOException {
-		return fileAccess.read(buffer);
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.randomaccess.IRandomAccessData#read()
+   */
+  public int read() throws IOException {
+    return fileAccess.read();
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.randomaccess.IRandomAccessData#read(byte[], int,
-	 *      int)
-	 */
-	public int read(byte[] buffer, int start, int numBytes) throws IOException {
-		return fileAccess.read(buffer, start, numBytes);
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.randomaccess.IRandomAccessData#read(byte[])
+   */
+  public int read(byte[] buffer) throws IOException {
+    return fileAccess.read(buffer);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.randomaccess.IRandomAccessData#seek(long)
-	 */
-	public void seek(long offset) throws IOException {
-		fileAccess.seek(offset);
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.randomaccess.IRandomAccessData#read(byte[], int,
+   *      int)
+   */
+  public int read(byte[] buffer, int start, int numBytes) throws IOException {
+    return fileAccess.read(buffer, start, numBytes);
+  }
 
-	public void seekBy(long delta) throws IOException {
-		seek(fileAccess.getFilePointer() + delta);
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.randomaccess.IRandomAccessData#seek(long)
+   */
+  public void seek(long offset) throws IOException {
+    fileAccess.seek(offset);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.randomaccess.IRandomAccessData#setLength(int)
-	 */
-	public void setLength(long newLength) throws IOException {
-		fileAccess.setLength(newLength);
-	}
+  public void seekBy(long delta) throws IOException {
+    seek(fileAccess.getFilePointer() + delta);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.randomaccess.IRandomAccessData#write(byte[])
-	 */
-	public void write(byte[] buffer) throws IOException {
-		fileAccess.write(buffer);
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.randomaccess.IRandomAccessData#write(byte[])
+   */
+  public void write(byte[] buffer) throws IOException {
+    fileAccess.write(buffer);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.randomaccess.IRandomAccessData#write(byte[], int,
-	 *      int)
-	 */
-	public void write(byte[] buffer, int start, int numBytes)
-			throws IOException {
-		fileAccess.write(buffer, start, numBytes);
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.randomaccess.IRandomAccessData#write(byte[], int,
+   *      int)
+   */
+  public void write(byte[] buffer, int start, int numBytes)
+      throws IOException {
+    fileAccess.write(buffer, start, numBytes);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.randomaccess.IRandomAccessData#write(int)
-	 */
-	public void write(int b) throws IOException {
-		fileAccess.write(b);
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.randomaccess.IRandomAccessData#write(int)
+   */
+  public void write(int b) throws IOException {
+    fileAccess.write(b);
+  }
 }

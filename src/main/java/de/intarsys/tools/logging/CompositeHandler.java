@@ -8,43 +8,42 @@ import java.util.logging.LogRecord;
 /**
  * A Java logging {@link Handler} that forwards to a collection of other
  * {@link Handler} instances.
- * 
  */
 public class CompositeHandler extends Handler {
 
-	private List<Handler> handlers = new ArrayList<Handler>();
+  private List<Handler> handlers = new ArrayList<Handler>();
 
-	public void addHandler(Handler handler) {
-		handlers.add(handler);
-	}
+  public void addHandler(Handler handler) {
+    handlers.add(handler);
+  }
 
-	@Override
-	public void close() throws SecurityException {
-		for (Handler handler : handlers) {
-			handler.close();
-		}
-	}
+  @Override
+  public void close() throws SecurityException {
+    for (Handler handler : handlers) {
+      handler.close();
+    }
+  }
 
-	@Override
-	public void flush() {
-		for (Handler handler : handlers) {
-			handler.flush();
-		}
-	}
+  @Override
+  public void flush() {
+    for (Handler handler : handlers) {
+      handler.flush();
+    }
+  }
 
-	public Handler[] getHandlers() {
-		return handlers.toArray(new Handler[handlers.size()]);
-	}
+  public Handler[] getHandlers() {
+    return handlers.toArray(new Handler[handlers.size()]);
+  }
 
-	@Override
-	public void publish(LogRecord record) {
-		for (Handler handler : handlers) {
-			handler.publish(record);
-		}
-	}
+  @Override
+  public void publish(LogRecord record) {
+    for (Handler handler : handlers) {
+      handler.publish(record);
+    }
+  }
 
-	public void removeHandler(Handler handler) {
-		handlers.remove(handler);
-	}
+  public void removeHandler(Handler handler) {
+    handlers.remove(handler);
+  }
 
 }

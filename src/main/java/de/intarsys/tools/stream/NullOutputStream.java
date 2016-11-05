@@ -33,48 +33,44 @@ import java.io.IOException;
 
 /**
  * An output stream killing its data.
- * 
  */
 public class NullOutputStream extends java.io.OutputStream {
-	/**
-	 * NullOutputStream constructor comment.
-	 */
-	public NullOutputStream() {
-		super();
-	}
+  /**
+   * NullOutputStream constructor comment.
+   */
+  public NullOutputStream() {
+    super();
+  }
 
-	@Override
-	public void write(byte[] b) throws IOException {
-		// ignore character
-	}
+  @Override
+  public void write(byte[] b) throws IOException {
+    // ignore character
+  }
 
-	@Override
-	public void write(byte[] b, int off, int len) throws IOException {
-		// ignore
-	}
+  @Override
+  public void write(byte[] b, int off, int len) throws IOException {
+    // ignore
+  }
 
-	/**
-	 * Writes the specified byte to this output stream. The general contract for
-	 * <code>write</code> is that one byte is written to the output stream.
-	 * The byte to be written is the eight low-order bits of the argument
-	 * <code>b</code>. The 24 high-order bits of <code>b</code> are
-	 * ignored.
-	 * 
-	 * <p>
-	 * Subclasses of <code>OutputStream</code> must provide an implementation
-	 * for this method.
-	 * </p>
-	 * 
-	 * @param b
-	 *            the <code>byte</code>.
-	 * 
-	 * @exception IOException
-	 *                if an I/O error occurs. In particular, an
-	 *                <code>IOException</code> may be thrown if the output
-	 *                stream has been closed.
-	 */
-	@Override
-	public void write(int b) throws IOException {
-		// ignore
-	}
+  /**
+   * Writes the specified byte to this output stream. The general contract for
+   * <code>write</code> is that one byte is written to the output stream.
+   * The byte to be written is the eight low-order bits of the argument
+   * <code>b</code>. The 24 high-order bits of <code>b</code> are
+   * ignored.
+   * <p>
+   * <p>
+   * Subclasses of <code>OutputStream</code> must provide an implementation
+   * for this method.
+   * </p>
+   *
+   * @param b the <code>byte</code>.
+   * @throws IOException if an I/O error occurs. In particular, an
+   *                     <code>IOException</code> may be thrown if the output
+   *                     stream has been closed.
+   */
+  @Override
+  public void write(int b) throws IOException {
+    // ignore
+  }
 }

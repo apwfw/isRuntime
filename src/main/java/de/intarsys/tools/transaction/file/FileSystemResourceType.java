@@ -34,23 +34,22 @@ import de.intarsys.tools.transaction.IResourceType;
 
 /**
  * The {@link IResourceType} for {@link FileSystemResource} instances.
- * 
  */
 public class FileSystemResourceType extends
-		CommonResourceType<FileSystemResource> {
+    CommonResourceType<FileSystemResource> {
 
-	final private static FileSystemResourceType ACTIVE = new FileSystemResourceType();
+  final private static FileSystemResourceType ACTIVE = new FileSystemResourceType();
 
-	static public FileSystemResourceType get() {
-		return ACTIVE;
-	}
+  protected FileSystemResourceType() {
+  }
 
-	protected FileSystemResourceType() {
-	}
+  static public FileSystemResourceType get() {
+    return ACTIVE;
+  }
 
-	@Override
-	public FileSystemResource createResource(FileSystemResource parent) {
-		return new FileSystemResource(this, parent);
-	}
+  @Override
+  public FileSystemResource createResource(FileSystemResource parent) {
+    return new FileSystemResource(this, parent);
+  }
 
 }

@@ -31,21 +31,21 @@ package de.intarsys.tools.valueholder;
 
 public class ObjectValueHolder<T> implements IValueHolder<T> {
 
-	private T value;
+  private T value;
 
-	public ObjectValueHolder(T value) {
-		super();
-		this.value = value;
-	}
+  public ObjectValueHolder(T value) {
+    super();
+    this.value = value;
+  }
 
-	public T get() {
-		return value;
-	}
+  public T get() {
+    return value;
+  }
 
-	public T set(T newValue) {
-		T oldValue = value;
-		value = newValue;
-		return oldValue;
-	}
+  public T set(T newValue) {
+    T oldValue = value;
+    value = newValue;
+    return oldValue;
+  }
 
 }

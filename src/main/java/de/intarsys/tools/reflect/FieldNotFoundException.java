@@ -31,24 +31,24 @@ package de.intarsys.tools.reflect;
 
 public class FieldNotFoundException extends FieldException {
 
-	private String name;
+  private String name;
 
-	public FieldNotFoundException(String name) {
-		super();
-		this.name = name;
-	}
+  public FieldNotFoundException(String name) {
+    super();
+    this.name = name;
+  }
 
-	@Override
-	public String getMessage() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("field '");
-		sb.append(getName());
-		sb.append("' not found");
-		return sb.toString();
-	}
+  @Override
+  public String getMessage() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("field '");
+    sb.append(getName());
+    sb.append("' not found");
+    return sb.toString();
+  }
 
-	@Override
-	public String getName() {
-		return name;
-	}
+  @Override
+  public String getName() {
+    return name;
+  }
 }

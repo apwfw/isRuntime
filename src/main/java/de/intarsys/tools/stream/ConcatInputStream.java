@@ -37,81 +37,80 @@ import java.util.List;
 
 /**
  * A stream that reads from all its inputs until all are empty.
- * 
  */
 public class ConcatInputStream extends InputStream {
-	/**
-	 * The list of all input streams that are read in succession.
-	 */
-	final private List inputs = new ArrayList();
+  /**
+   * The list of all input streams that are read in succession.
+   */
+  final private List inputs = new ArrayList();
 
-	/**
-	 * The input stream we are currently reading from
-	 */
-	private InputStream current = null;
+  /**
+   * The input stream we are currently reading from
+   */
+  private InputStream current = null;
 
-	/**
-	 * The currently active input stream.
-	 */
-	private int index = 0;
+  /**
+   * The currently active input stream.
+   */
+  private int index = 0;
 
-	/**
-	 * 
-	 */
-	public ConcatInputStream() {
-		super();
-	}
+  /**
+   *
+   */
+  public ConcatInputStream() {
+    super();
+  }
 
-	public void addInput(InputStream input) {
-		inputs.add(input);
-		if (current == null) {
-			current = input;
-		}
-	}
+  public void addInput(InputStream input) {
+    inputs.add(input);
+    if (current == null) {
+      current = input;
+    }
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.io.InputStream#close()
-	 */
-	@Override
-	public void close() throws IOException {
-		IOException ex = null;
-		for (Iterator it = inputs.iterator(); it.hasNext();) {
-			InputStream is = (InputStream) it.next();
-			try {
-				is.close();
-			} catch (IOException e) {
-				ex = e;
-			}
-		}
-		super.close();
-		if (ex != null) {
-			throw ex;
-		}
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.io.InputStream#close()
+   */
+  @Override
+  public void close() throws IOException {
+    IOException ex = null;
+    for (Iterator it = inputs.iterator(); it.hasNext(); ) {
+      InputStream is = (InputStream) it.next();
+      try {
+        is.close();
+      } catch (IOException e) {
+        ex = e;
+      }
+    }
+    super.close();
+    if (ex != null) {
+      throw ex;
+    }
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.io.InputStream#read()
-	 */
-	@Override
-	public int read() throws IOException {
-		if (current == null) {
-			return -1;
-		}
-		int result = current.read();
-		if (result == -1) {
-			index++;
-			if (index >= inputs.size()) {
-				current = null;
-			} else {
-				current = (InputStream) inputs.get(index);
-			}
-			return read();
-		} else {
-			return result;
-		}
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.io.InputStream#read()
+   */
+  @Override
+  public int read() throws IOException {
+    if (current == null) {
+      return -1;
+    }
+    int result = current.read();
+    if (result == -1) {
+      index++;
+      if (index >= inputs.size()) {
+        current = null;
+      } else {
+        current = (InputStream) inputs.get(index);
+      }
+      return read();
+    } else {
+      return result;
+    }
+  }
 }

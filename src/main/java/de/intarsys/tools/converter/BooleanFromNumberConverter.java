@@ -34,16 +34,16 @@ package de.intarsys.tools.converter;
  */
 public class BooleanFromNumberConverter implements IConverter<Number, Boolean> {
 
-	public Boolean convert(Number source) throws ConversionException {
-		return source.intValue() != 0;
-	}
+  public Boolean convert(Number source) throws ConversionException {
+    return source.intValue() != 0;
+  }
 
-	public Class<?> getSourceType() {
-		return Number.class;
-	}
+  public Class<?> getSourceType() {
+    return Number.class;
+  }
 
-	public Class<?> getTargetType() {
-		return Boolean.class;
-	}
+  public Class<?> getTargetType() {
+    return Boolean.class;
+  }
 
 }

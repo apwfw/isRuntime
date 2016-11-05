@@ -9,130 +9,130 @@ import de.intarsys.tools.reflect.IFieldHandler;
 import de.intarsys.tools.reflect.ObjectCreationException;
 
 public class FunctorFieldHandler implements IFieldHandler,
-		INotificationSupport, IAttributeSupport {
+    INotificationSupport, IAttributeSupport {
 
-	private IFunctor getter;
+  private IFunctor getter;
 
-	private String name;
+  private String name;
 
-	private IFunctor setter;
+  private IFunctor setter;
 
-	public FunctorFieldHandler() {
-	}
+  public FunctorFieldHandler() {
+  }
 
-	public FunctorFieldHandler(String name, IFunctor getter, IFunctor setter) {
-		super();
-		this.name = name;
-		this.getter = getter;
-		this.setter = setter;
-	}
+  public FunctorFieldHandler(String name, IFunctor getter, IFunctor setter) {
+    super();
+    this.name = name;
+    this.getter = getter;
+    this.setter = setter;
+  }
 
-	public void addNotificationListener(EventType type,
-			INotificationListener listener) {
-		if (getter instanceof INotificationSupport) {
-			((INotificationSupport) getter).addNotificationListener(type,
-					listener);
-		}
-	}
+  public void addNotificationListener(EventType type,
+                                      INotificationListener listener) {
+    if (getter instanceof INotificationSupport) {
+      ((INotificationSupport) getter).addNotificationListener(type,
+          listener);
+    }
+  }
 
-	public Object getAttribute(Object key) {
-		if (getter instanceof IAttributeSupport) {
-			return ((IAttributeSupport) getter).getAttribute(key);
-		}
-		return null;
-	}
+  public Object getAttribute(Object key) {
+    if (getter instanceof IAttributeSupport) {
+      return ((IAttributeSupport) getter).getAttribute(key);
+    }
+    return null;
+  }
 
-	public IFunctor getGetter() {
-		return getter;
-	}
+  public IFunctor getGetter() {
+    return getter;
+  }
 
-	public String getName() {
-		return name;
-	}
+  public void setGetter(IFunctor getter) {
+    this.getter = getter;
+  }
 
-	public IFunctor getSetter() {
-		return setter;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public Object getValue(Object object) throws FieldAccessException {
-		if (getter == null) {
-			return null;
-		}
-		IFunctorCall call;
-		if (object instanceof IFunctorCallFactory) {
-			try {
-				call = ((IFunctorCallFactory) object).createFunctorCall(getter,
-						object, Args.create());
-			} catch (ObjectCreationException e) {
-				throw new FieldAccessException(getName(), e);
-			}
-		} else {
-			call = new FunctorCall(object, Args.create());
-		}
-		try {
-			return getter.perform(call);
-		} catch (FunctorInvocationException e) {
-			Throwable cause = e.getCause() == null ? e : e.getCause();
-			throw new FieldAccessException(getName(), cause);
-		}
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	public Object removeAttribute(Object key) {
-		if (getter instanceof IAttributeSupport) {
-			return ((IAttributeSupport) getter).removeAttribute(key);
-		}
-		return null;
-	}
+  public IFunctor getSetter() {
+    return setter;
+  }
 
-	public void removeNotificationListener(EventType type,
-			INotificationListener listener) {
-		if (getter instanceof INotificationSupport) {
-			((INotificationSupport) getter).removeNotificationListener(type,
-					listener);
-		}
-	}
+  public void setSetter(IFunctor setter) {
+    this.setter = setter;
+  }
 
-	public Object setAttribute(Object key, Object value) {
-		if (getter instanceof IAttributeSupport) {
-			return ((IAttributeSupport) getter).setAttribute(key, value);
-		}
-		return null;
-	}
+  public Object getValue(Object object) throws FieldAccessException {
+    if (getter == null) {
+      return null;
+    }
+    IFunctorCall call;
+    if (object instanceof IFunctorCallFactory) {
+      try {
+        call = ((IFunctorCallFactory) object).createFunctorCall(getter,
+            object, Args.create());
+      } catch (ObjectCreationException e) {
+        throw new FieldAccessException(getName(), e);
+      }
+    } else {
+      call = new FunctorCall(object, Args.create());
+    }
+    try {
+      return getter.perform(call);
+    } catch (FunctorInvocationException e) {
+      Throwable cause = e.getCause() == null ? e : e.getCause();
+      throw new FieldAccessException(getName(), cause);
+    }
+  }
 
-	public void setGetter(IFunctor getter) {
-		this.getter = getter;
-	}
+  public Object removeAttribute(Object key) {
+    if (getter instanceof IAttributeSupport) {
+      return ((IAttributeSupport) getter).removeAttribute(key);
+    }
+    return null;
+  }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public void removeNotificationListener(EventType type,
+                                         INotificationListener listener) {
+    if (getter instanceof INotificationSupport) {
+      ((INotificationSupport) getter).removeNotificationListener(type,
+          listener);
+    }
+  }
 
-	public void setSetter(IFunctor setter) {
-		this.setter = setter;
-	}
+  public Object setAttribute(Object key, Object value) {
+    if (getter instanceof IAttributeSupport) {
+      return ((IAttributeSupport) getter).setAttribute(key, value);
+    }
+    return null;
+  }
 
-	public Object setValue(Object object, Object value)
-			throws FieldAccessException {
-		if (setter == null) {
-			return null;
-		}
-		IFunctorCall call;
-		if (object instanceof IFunctorCallFactory) {
-			try {
-				call = ((IFunctorCallFactory) object).createFunctorCall(setter,
-						object, Args.createIndexed(value));
-			} catch (ObjectCreationException e) {
-				throw new FieldAccessException(getName(), e);
-			}
-		} else {
-			call = new FunctorCall(object, Args.createIndexed(value));
-		}
-		try {
-			return setter.perform(call);
-		} catch (FunctorInvocationException e) {
-			Throwable cause = e.getCause() == null ? e : e.getCause();
-			throw new FieldAccessException(getName(), cause);
-		}
-	}
+  public Object setValue(Object object, Object value)
+      throws FieldAccessException {
+    if (setter == null) {
+      return null;
+    }
+    IFunctorCall call;
+    if (object instanceof IFunctorCallFactory) {
+      try {
+        call = ((IFunctorCallFactory) object).createFunctorCall(setter,
+            object, Args.createIndexed(value));
+      } catch (ObjectCreationException e) {
+        throw new FieldAccessException(getName(), e);
+      }
+    } else {
+      call = new FunctorCall(object, Args.createIndexed(value));
+    }
+    try {
+      return setter.perform(call);
+    } catch (FunctorInvocationException e) {
+      Throwable cause = e.getCause() == null ? e : e.getCause();
+      throw new FieldAccessException(getName(), cause);
+    }
+  }
 
 }

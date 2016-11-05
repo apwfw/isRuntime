@@ -33,12 +33,12 @@ import java.util.concurrent.ExecutionException;
 
 public interface ITaskListener {
 
-	public void taskCancelled(Object task);
+  public void taskCancelled(Object task);
 
-	public void taskFailed(Object task, ExecutionException exception);
+  public void taskFailed(Object task, ExecutionException exception);
 
-	public void taskFinished(Object task, Object result);
+  public void taskFinished(Object task, Object result);
 
-	public void taskStarted(Object task);
+  public void taskStarted(Object task);
 
 }

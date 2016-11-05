@@ -33,20 +33,20 @@ package de.intarsys.tools.preferences;
  * A VM singleton for a {@link IPreferencesFactory}
  */
 public class PreferencesFactory {
-	/**
-	 * The VM wide IPreferencesFactory
-	 */
-	private static IPreferencesFactory ACTIVE = new NullPreferencesFactory();
+  /**
+   * The VM wide IPreferencesFactory
+   */
+  private static IPreferencesFactory ACTIVE = new NullPreferencesFactory();
 
-	public static IPreferencesFactory get() {
-		return ACTIVE;
-	}
+  private PreferencesFactory() {
+    super();
+  }
 
-	public static void set(IPreferencesFactory active) {
-		ACTIVE = active;
-	}
+  public static IPreferencesFactory get() {
+    return ACTIVE;
+  }
 
-	private PreferencesFactory() {
-		super();
-	}
+  public static void set(IPreferencesFactory active) {
+    ACTIVE = active;
+  }
 }

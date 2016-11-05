@@ -29,16 +29,16 @@
  */
 package de.intarsys.tools.enumeration;
 
+import de.intarsys.tools.message.Message;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import de.intarsys.tools.message.Message;
 
 /**
  * The abstract superclass for an enumeration implementation.
  * <p>
  * To implement an enumeration class:
- * 
+ * <p>
  * <pre>
  *                 - create a subclass of EnumItem
  *                 - create a final public static attribute named META to the EnumMeta of the class.
@@ -49,167 +49,166 @@ import de.intarsys.tools.message.Message;
  */
 public abstract class EnumItem implements Comparable {
 
-	static {
-		new CanonicalFromEnumItemConverter();
-	}
+  private static final Map META = new HashMap();
+  protected static int WEIGHT = 0;
 
-	private static final Map META = new HashMap();
+  static {
+    new CanonicalFromEnumItemConverter();
+  }
 
-	protected static int WEIGHT = 0;
+  /**
+   * The enumeration id
+   */
+  private final String id;
+  /**
+   * An integer defining the natural order of the items.
+   */
+  private final int weight;
+  private final EnumMeta<EnumItem> meta;
+  private String iconName;
+  /**
+   * The label to use for the enumeration value
+   */
+  private Object label;
 
-	protected static EnumMeta getMeta(Class clazz) {
-		EnumMeta result = (EnumMeta) META.get(clazz);
-		if (result == null) {
-			result = new EnumMeta(clazz);
-			META.put(clazz, result);
-		}
-		return result;
-	}
+  protected EnumItem(EnumMeta pMeta, String pId, Object pLabel, int pWeight) {
+    super();
+    this.meta = pMeta;
+    this.meta.addItem(this);
+    this.id = pId;
+    this.label = pLabel;
+    this.weight = pWeight;
+  }
 
-	private String iconName;
+  protected EnumItem(String pId) {
+    super();
+    this.meta = getMeta(getClass());
+    this.meta.addItem(this);
+    this.id = pId;
+    this.label = new Message(this, id);
+    this.weight = WEIGHT++;
+  }
 
-	/** The enumeration id */
-	private final String id;
+  protected EnumItem(String pId, int pWeight) {
+    super();
+    this.meta = getMeta(getClass());
+    this.meta.addItem(this);
+    this.id = pId;
+    this.label = new Message(this, id);
+    this.weight = pWeight;
+  }
 
-	/** The label to use for the enumeration value */
-	private Object label;
+  protected EnumItem(String pId, Message pMessage) {
+    super();
+    this.meta = getMeta(getClass());
+    this.meta.addItem(this);
+    this.id = pId;
+    this.label = pMessage;
+    this.weight = WEIGHT++;
+  }
 
-	/**
-	 * An integer defining the natural order of the items.
-	 */
-	private final int weight;
+  protected EnumItem(String pId, Message pMessage, int pWeight) {
+    super();
+    this.meta = getMeta(getClass());
+    this.meta.addItem(this);
+    this.id = pId;
+    this.label = pMessage;
+    this.weight = pWeight;
+  }
 
-	private final EnumMeta<EnumItem> meta;
+  /**
+   *
+   */
+  protected EnumItem(String pId, String pLabel) {
+    super();
+    this.meta = getMeta(getClass());
+    this.meta.addItem(this);
+    this.id = pId;
+    this.label = pLabel;
+    this.weight = WEIGHT++;
+  }
 
-	protected EnumItem(EnumMeta pMeta, String pId, Object pLabel, int pWeight) {
-		super();
-		this.meta = pMeta;
-		this.meta.addItem(this);
-		this.id = pId;
-		this.label = pLabel;
-		this.weight = pWeight;
-	}
+  protected EnumItem(String pId, String pLabel, int pWeight) {
+    super();
+    this.meta = getMeta(getClass());
+    this.meta.addItem(this);
+    this.id = pId;
+    this.label = pLabel;
+    this.weight = pWeight;
+  }
 
-	protected EnumItem(String pId) {
-		super();
-		this.meta = getMeta(getClass());
-		this.meta.addItem(this);
-		this.id = pId;
-		this.label = new Message(this, id);
-		this.weight = WEIGHT++;
-	}
+  protected static EnumMeta getMeta(Class clazz) {
+    EnumMeta result = (EnumMeta) META.get(clazz);
+    if (result == null) {
+      result = new EnumMeta(clazz);
+      META.put(clazz, result);
+    }
+    return result;
+  }
 
-	protected EnumItem(String pId, int pWeight) {
-		super();
-		this.meta = getMeta(getClass());
-		this.meta.addItem(this);
-		this.id = pId;
-		this.label = new Message(this, id);
-		this.weight = pWeight;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.lang.Comparable#compareTo(java.lang.Object)
+   */
+  public int compareTo(Object o) {
+    EnumItem other = (EnumItem) o;
+    return this.getWeight() - other.getWeight();
+  }
 
-	protected EnumItem(String pId, Message pMessage) {
-		super();
-		this.meta = getMeta(getClass());
-		this.meta.addItem(this);
-		this.id = pId;
-		this.label = pMessage;
-		this.weight = WEIGHT++;
-	}
+  protected String getDefaultLabel() {
+    return id;
+  }
 
-	protected EnumItem(String pId, Message pMessage, int pWeight) {
-		super();
-		this.meta = getMeta(getClass());
-		this.meta.addItem(this);
-		this.id = pId;
-		this.label = pMessage;
-		this.weight = pWeight;
-	}
+  public String getDescription() {
+    return getTip();
+  }
 
-	/**
-	 * 
-	 */
-	protected EnumItem(String pId, String pLabel) {
-		super();
-		this.meta = getMeta(getClass());
-		this.meta.addItem(this);
-		this.id = pId;
-		this.label = pLabel;
-		this.weight = WEIGHT++;
-	}
+  public String getIconName() {
+    return iconName;
+  }
 
-	protected EnumItem(String pId, String pLabel, int pWeight) {
-		super();
-		this.meta = getMeta(getClass());
-		this.meta.addItem(this);
-		this.id = pId;
-		this.label = pLabel;
-		this.weight = pWeight;
-	}
+  protected void setIconName(String iconName) {
+    this.iconName = iconName;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Comparable#compareTo(java.lang.Object)
-	 */
-	public int compareTo(Object o) {
-		EnumItem other = (EnumItem) o;
-		return this.getWeight() - other.getWeight();
-	}
+  public String getId() {
+    return id;
+  }
 
-	protected String getDefaultLabel() {
-		return id;
-	}
+  public String getLabel() {
+    if (label instanceof Message) {
+      label = ((Message) label).get();
+    }
+    return (String) label;
+  }
 
-	public String getDescription() {
-		return getTip();
-	}
+  protected void setLabel(String label) {
+    this.label = label;
+  }
 
-	public String getIconName() {
-		return iconName;
-	}
+  public String getLocalizedLabel() {
+    return getLabel();
+  }
 
-	public String getId() {
-		return id;
-	}
+  protected EnumMeta getMeta() {
+    return meta;
+  }
 
-	public String getLabel() {
-		if (label instanceof Message) {
-			label = ((Message) label).get();
-		}
-		return (String) label;
-	}
+  public String getTip() {
+    return getLabel();
+  }
 
-	public String getLocalizedLabel() {
-		return getLabel();
-	}
+  protected int getWeight() {
+    return weight;
+  }
 
-	protected EnumMeta getMeta() {
-		return meta;
-	}
+  protected void setDefault() {
+    getMeta().setDefault(this);
+  }
 
-	public String getTip() {
-		return getLabel();
-	}
-
-	protected int getWeight() {
-		return weight;
-	}
-
-	protected void setDefault() {
-		getMeta().setDefault(this);
-	}
-
-	protected void setIconName(String iconName) {
-		this.iconName = iconName;
-	}
-
-	protected void setLabel(String label) {
-		this.label = label;
-	}
-
-	@Override
-	public String toString() {
-		return getLabel();
-	}
+  @Override
+  public String toString() {
+    return getLabel();
+  }
 }

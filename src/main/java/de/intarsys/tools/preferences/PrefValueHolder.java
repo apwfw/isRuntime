@@ -33,34 +33,33 @@ import de.intarsys.tools.valueholder.IValueHolder;
 
 /**
  * An {@link IValueHolder} implementation that is backed up by preferences.
- * 
  */
 public abstract class PrefValueHolder implements IValueHolder {
 
-	final private IPreferences preferences;
+  final private IPreferences preferences;
 
-	final private String key;
+  final private String key;
 
-	final private Object defaultValue;
+  final private Object defaultValue;
 
-	public PrefValueHolder(IPreferences preferences, String key,
-			Object defaultValue) {
-		super();
-		this.preferences = preferences;
-		this.key = key;
-		this.defaultValue = defaultValue;
-	}
+  public PrefValueHolder(IPreferences preferences, String key,
+                         Object defaultValue) {
+    super();
+    this.preferences = preferences;
+    this.key = key;
+    this.defaultValue = defaultValue;
+  }
 
-	public Object getDefaultValue() {
-		return defaultValue;
-	}
+  public Object getDefaultValue() {
+    return defaultValue;
+  }
 
-	public String getKey() {
-		return key;
-	}
+  public String getKey() {
+    return key;
+  }
 
-	public IPreferences getPreferences() {
-		return preferences;
-	}
+  public IPreferences getPreferences() {
+    return preferences;
+  }
 
 }

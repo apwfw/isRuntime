@@ -31,17 +31,16 @@ package de.intarsys.tools.event;
 
 /**
  * An event indicating the positively acknowledged outcome of an execution.
- * 
  */
 public class OkEvent extends Event {
-	public static final EventType ID = new EventType(OkEvent.class.getName());
+  public static final EventType ID = new EventType(OkEvent.class.getName());
 
-	public OkEvent(Object source) {
-		super(source);
-	}
+  public OkEvent(Object source) {
+    super(source);
+  }
 
-	@Override
-	public EventType getEventType() {
-		return ID;
-	}
+  @Override
+  public EventType getEventType() {
+    return ID;
+  }
 }

@@ -33,19 +33,18 @@ import de.intarsys.aaa.resource.IResource;
 
 /**
  * A permission that negates its wrapped permission.
- * 
  */
 public class NotPermission implements IPermission {
 
-	final private IPermission operand;
+  final private IPermission operand;
 
-	public NotPermission(IPermission operand) {
-		super();
-		this.operand = operand;
-	}
+  public NotPermission(IPermission operand) {
+    super();
+    this.operand = operand;
+  }
 
-	public boolean isAccessGranted(IResource resource) {
-		return !operand.isAccessGranted(resource);
-	}
+  public boolean isAccessGranted(IResource resource) {
+    return !operand.isAccessGranted(resource);
+  }
 
 }

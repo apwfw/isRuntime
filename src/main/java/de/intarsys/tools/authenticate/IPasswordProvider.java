@@ -35,14 +35,14 @@ package de.intarsys.tools.authenticate;
  */
 public interface IPasswordProvider {
 
-	/**
-	 * Returns a password or null to indicate cancellation.
-	 * <p>
-	 * You should be prepared that requesting the password twice will return an
-	 * empty array or null, as the provider may null out the object for security
-	 * reasons.
-	 * 
-	 * @return a char[] containing the password or null
-	 */
-	public char[] getPassword();
+  /**
+   * Returns a password or null to indicate cancellation.
+   * <p>
+   * You should be prepared that requesting the password twice will return an
+   * empty array or null, as the provider may null out the object for security
+   * reasons.
+   *
+   * @return a char[] containing the password or null
+   */
+  public char[] getPassword();
 }

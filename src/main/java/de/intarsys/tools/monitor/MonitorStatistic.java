@@ -33,101 +33,111 @@ package de.intarsys.tools.monitor;
  * This object keeps the statistical computations for a sample in a monitor.
  */
 public class MonitorStatistic implements Comparable {
-	/**
-	 * The index within the sequence of sample when this description was first
-	 * encountered
-	 */
-	protected int index;
+  /**
+   * The index within the sequence of sample when this description was first
+   * encountered
+   */
+  protected int index;
 
-	/**
-	 * The description of the samples we are responsible for.
-	 */
-	protected String description;
+  /**
+   * The description of the samples we are responsible for.
+   */
+  protected String description;
 
-	/** attributes for the collected event statistics */
-	/** The minimum sample in all traces */
-	protected long min;
+  /** attributes for the collected event statistics */
+  /**
+   * The minimum sample in all traces
+   */
+  protected long min;
 
-	/** The maximum sample in all traces */
-	protected long max;
+  /**
+   * The maximum sample in all traces
+   */
+  protected long max;
 
-	/** The sum of all trace results */
-	protected long total;
+  /**
+   * The sum of all trace results
+   */
+  protected long total;
 
-	/** The number of traces taken so far */
-	protected long count;
+  /**
+   * The number of traces taken so far
+   */
+  protected long count;
 
-	/** The average sample value for all traces */
-	protected long avg;
+  /**
+   * The average sample value for all traces
+   */
+  protected long avg;
 
-	/**
-	 * 
-	 */
-	public MonitorStatistic(String description, int index) {
-		super();
-		reset();
-		this.description = description;
-		this.index = index;
-	}
+  /**
+   *
+   */
+  public MonitorStatistic(String description, int index) {
+    super();
+    reset();
+    this.description = description;
+    this.index = index;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Comparable#compareTo(java.lang.Object)
-	 */
-	public int compareTo(Object o) {
-		return index - ((MonitorStatistic) o).index;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.lang.Comparable#compareTo(java.lang.Object)
+   */
+  public int compareTo(Object o) {
+    return index - ((MonitorStatistic) o).index;
+  }
 
-	public long getAvg() {
-		return avg;
-	}
+  public long getAvg() {
+    return avg;
+  }
 
-	public long getCount() {
-		return count;
-	}
+  public void setAvg(long avg) {
+    this.avg = avg;
+  }
 
-	public int getIndex() {
-		return index;
-	}
+  public long getCount() {
+    return count;
+  }
 
-	public long getMax() {
-		return max;
-	}
+  public void setCount(long count) {
+    this.count = count;
+  }
 
-	public long getMin() {
-		return min;
-	}
+  public int getIndex() {
+    return index;
+  }
 
-	public long getTotal() {
-		return total;
-	}
+  public long getMax() {
+    return max;
+  }
 
-	public void reset() {
-		min = Long.MAX_VALUE;
-		max = Long.MIN_VALUE;
-		total = 0;
-		avg = 0;
-		count = 0;
-	}
+  public void setMax(long max) {
+    this.max = max;
+  }
 
-	public void setAvg(long avg) {
-		this.avg = avg;
-	}
+  public long getMin() {
+    return min;
+  }
 
-	public void setCount(long count) {
-		this.count = count;
-	}
+  public void setMin(long min) {
+    this.min = min;
+  }
 
-	public void setMax(long max) {
-		this.max = max;
-	}
+  public long getTotal() {
+    return total;
+  }
 
-	public void setMin(long min) {
-		this.min = min;
-	}
+  public void setTotal(long total) {
+    this.total = total;
+  }
 
-	public void setTotal(long total) {
-		this.total = total;
-	}
+  public void reset() {
+    min = Long.MAX_VALUE;
+    max = Long.MIN_VALUE;
+    total = 0;
+    avg = 0;
+    count = 0;
+  }
 }

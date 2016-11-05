@@ -31,73 +31,71 @@ package de.intarsys.tools.functor;
 
 /**
  * A group of {@link IDeclarationElement} instances.
- * 
  */
 public interface IDeclarationBlock extends IDeclaration {
 
-	/**
-	 * Add an {@link IDeclarationElement} to this block;
-	 * 
-	 * @param element
-	 */
-	public void addDeclarationElement(IDeclarationElement element);
+  /**
+   * Add an {@link IDeclarationElement} to this block;
+   *
+   * @param element
+   */
+  public void addDeclarationElement(IDeclarationElement element);
 
-	/**
-	 * Remove all {@link IDeclarationElement} instances from this block;
-	 * 
-	 */
-	public void clear();
+  /**
+   * Remove all {@link IDeclarationElement} instances from this block;
+   */
+  public void clear();
 
-	/**
-	 * The {@link IDeclarationElement} for the given name.
-	 * 
-	 * @param name
-	 * @return The {@link IDeclarationElement} for the given name.
-	 */
-	public IDeclarationElement getDeclarationElement(String name);
+  /**
+   * The {@link IDeclarationElement} for the given name.
+   *
+   * @param name
+   * @return The {@link IDeclarationElement} for the given name.
+   */
+  public IDeclarationElement getDeclarationElement(String name);
 
-	/**
-	 * The array of {@link IDeclarationElement} instances in this block.
-	 * 
-	 * @return The array of {@link IDeclarationElement} instances in this block.
-	 */
-	public IDeclarationElement[] getDeclarationElements();
+  /**
+   * The array of {@link IDeclarationElement} instances in this block.
+   *
+   * @return The array of {@link IDeclarationElement} instances in this block.
+   */
+  public IDeclarationElement[] getDeclarationElements();
 
-	/**
-	 * Move element to the position after its current position. This means that
-	 * the element declaration will be performed later.
-	 * <p>
-	 * If the element is the last declaration or not contained in the block this
-	 * method does nothing.
-	 * 
-	 * @param element
-	 */
-	public void moveDown(IDeclarationElement element);
+  /**
+   * Move element to the position after its current position. This means that
+   * the element declaration will be performed later.
+   * <p>
+   * If the element is the last declaration or not contained in the block this
+   * method does nothing.
+   *
+   * @param element
+   */
+  public void moveDown(IDeclarationElement element);
 
-	/**
-	 * Move element to the position before its current position. This means that
-	 * the element declaration will be performed earlier.
-	 * <p>
-	 * If the element is the first declaration or not contained in the block
-	 * this method does nothing.
-	 * 
-	 * @param element
-	 */
-	public void moveUp(IDeclarationElement element);
+  /**
+   * Move element to the position before its current position. This means that
+   * the element declaration will be performed earlier.
+   * <p>
+   * If the element is the first declaration or not contained in the block
+   * this method does nothing.
+   *
+   * @param element
+   */
+  public void moveUp(IDeclarationElement element);
 
-	/**
-	 * Remove an {@link IDeclarationElement} from this block;
-	 * 
-	 * @param element
-	 * @return <code>true</code> if declaration was removed
-	 */
-	public boolean removeDeclarationElement(IDeclarationElement element);
+  /**
+   * Remove an {@link IDeclarationElement} from this block;
+   *
+   * @param element
+   * @return <code>true</code> if declaration was removed
+   */
+  public boolean removeDeclarationElement(IDeclarationElement element);
 
-	/**
-	 * The number of declarations in this block.
-	 * 
-	 * @return The number of declarations in this block.
-	 */
-	public int size();
+  /**
+   * The number of declarations in this block.
+   *
+   * @return The number of declarations in this block.
+   */
+  public int size();
 
 }

@@ -40,387 +40,369 @@ import java.util.Set;
 
 /**
  * A map that wraps two other maps.
- * 
  */
 public class PartitionedMap implements Map {
-	private class PartitionIterator implements Iterator {
-		Iterator parentIterator = PartitionedMap.this.getParent().entrySet()
-				.iterator();
+  // Types of Iterators
+  private static final int KEYS = 0;
+  private static final int VALUES = 1;
+  private static final int ENTRIES = 2;
+  private Map child;
+  private Map parent;
 
-		Iterator subIterator = PartitionedMap.this.getChild().entrySet()
-				.iterator();
+  public PartitionedMap() {
+    this(null, null);
+  }
 
-		int type;
+  public PartitionedMap(Map parent, Map child) {
+    super();
+    setChild((child == null) ? new HashMap() : child);
+    setParent((parent == null) ? new HashMap() : parent);
+  }
 
-		PartitionIterator(int type) {
-			this.type = type;
-		}
+  static public Map create(Map parent, Map child) {
+    if (parent == null) {
+      return child;
+    }
+    if (child == null) {
+      return parent;
+    }
+    return new PartitionedMap(parent, child);
+  }
 
-		public boolean hasNext() {
-			return parentIterator.hasNext() || subIterator.hasNext();
-		}
+  /**
+   * Removes all mappings from this map (optional operation).
+   */
+  public void clear() {
+    getChild().clear();
+  }
 
-		public Object next() {
-			Map.Entry e = null;
-			if (parentIterator.hasNext()) {
-				e = (Map.Entry) parentIterator.next();
-			} else {
-				e = (Map.Entry) subIterator.next();
-			}
-			if (e != null) {
-				return (type == KEYS) ? e.getKey() : ((type == VALUES) ? e
-						.getValue() : e);
-			}
-			throw new NoSuchElementException();
-		}
+  /**
+   * Returns <tt>true</tt> if this map contains a mapping for the specified
+   * key.
+   *
+   * @param key key whose presence in this map is to be tested.
+   * @return <tt>true</tt> if this map contains a mapping for the specified
+   * key.
+   */
+  public boolean containsKey(java.lang.Object key) {
+    return getChild().containsKey(key)
+        || ((getParent() == null) ? false : getParent()
+        .containsKey(key));
+  }
 
-		public void remove() {
-			throw new UnsupportedOperationException(
-					"Partitioned Maps do not support this");
-		}
-	}
+  /**
+   * Returns <tt>true</tt> if this map maps one or more keys to the
+   * specified value. More formally, returns <tt>true</tt> if and only if
+   * this map contains at least one mapping to a value <tt>v</tt> such that
+   * <tt>(value==null ? v==null : value.equals(v))</tt>. This operation
+   * will probably require time linear in the map size for most
+   * implementations of the <tt>Map</tt> interface.
+   *
+   * @param value value whose presence in this map is to be tested.
+   * @return <tt>true</tt> if this map maps one or more keys to the
+   * specified value.
+   */
+  public boolean containsValue(java.lang.Object value) {
+    return getChild().containsValue(value)
+        || ((getParent() == null) ? false : getParent().containsValue(
+        value));
+  }
 
-	// Types of Iterators
-	private static final int KEYS = 0;
+  /**
+   * Returns a set view of the mappings contained in this map. Each element in
+   * the returned set is a <tt>Map.Entry</tt>. The set is backed by the
+   * map, so changes to the map are reflected in the set, and vice-versa. If
+   * the map is modified while an iteration over the set is in progress, the
+   * results of the iteration are undefined. The set supports element removal,
+   * which removes the corresponding mapping from the map, via the
+   * <tt>Iterator.remove</tt>, <tt>Set.remove</tt>, <tt>removeAll</tt>,
+   * <tt>retainAll</tt> and <tt>clear</tt> operations. It does not support
+   * the <tt>add</tt> or <tt>addAll</tt> operations.
+   *
+   * @return a set view of the mappings contained in this map.
+   */
+  public java.util.Set entrySet() {
+    Set set = new AbstractSet() {
+      @Override
+      public void clear() {
+        getChild().clear();
+      }
 
-	private static final int VALUES = 1;
+      @Override
+      public boolean contains(Object o) {
+        // i dont claim this to be efficient....
+        return getChild().entrySet().contains(o)
+            || ((getParent() == null) ? false : getParent()
+            .entrySet().contains(o));
+      }
 
-	private static final int ENTRIES = 2;
+      @Override
+      public Iterator iterator() {
+        return new PartitionIterator(ENTRIES);
+      }
 
-	static public Map create(Map parent, Map child) {
-		if (parent == null) {
-			return child;
-		}
-		if (child == null) {
-			return parent;
-		}
-		return new PartitionedMap(parent, child);
-	}
+      @Override
+      public boolean remove(Object o) {
+        return getChild().entrySet().remove(o)
+            || ((getParent() == null) ? false : getParent()
+            .entrySet().remove(o));
+      }
 
-	private Map child;
+      @Override
+      public int size() {
+        return getChild().size()
+            + ((getParent() == null) ? 0 : getParent().size());
+      }
+    };
 
-	private Map parent;
+    return set;
+  }
 
-	public PartitionedMap() {
-		this(null, null);
-	}
+  /**
+   * Returns the value to which this map maps the specified key. Returns
+   * <tt>null</tt> if the map contains no mapping for this key. A return
+   * value of <tt>null</tt> does not <i>necessarily</i> indicate that the
+   * map contains no mapping for the key; it's also possible that the map
+   * explicitly maps the key to <tt>null</tt>. The <tt>containsKey</tt>
+   * operation may be used to distinguish these two cases.
+   *
+   * @param key key whose associated value is to be returned.
+   * @return the value to which this map maps the specified key, or
+   * <tt>null</tt> if the map contains no mapping for this key.
+   * @see #containsKey(Object)
+   */
+  public java.lang.Object get(java.lang.Object key) {
+    Object result = getChild().get(key);
+    return (result == null) ? ((getParent() == null) ? null : getParent()
+        .get(key)) : result;
+  }
 
-	public PartitionedMap(Map parent, Map child) {
-		super();
-		setChild((child == null) ? new HashMap() : child);
-		setParent((parent == null) ? new HashMap() : parent);
-	}
+  protected Map getChild() {
+    return child;
+  }
 
-	/**
-	 * Removes all mappings from this map (optional operation).
-	 */
-	public void clear() {
-		getChild().clear();
-	}
+  private void setChild(java.util.Map newSubMap) {
+    child = newSubMap;
+  }
 
-	/**
-	 * Returns <tt>true</tt> if this map contains a mapping for the specified
-	 * key.
-	 * 
-	 * @param key
-	 *            key whose presence in this map is to be tested.
-	 * 
-	 * @return <tt>true</tt> if this map contains a mapping for the specified
-	 *         key.
-	 */
-	public boolean containsKey(java.lang.Object key) {
-		return getChild().containsKey(key)
-				|| ((getParent() == null) ? false : getParent()
-						.containsKey(key));
-	}
+  public java.util.Map getParent() {
+    return parent;
+  }
 
-	/**
-	 * Returns <tt>true</tt> if this map maps one or more keys to the
-	 * specified value. More formally, returns <tt>true</tt> if and only if
-	 * this map contains at least one mapping to a value <tt>v</tt> such that
-	 * <tt>(value==null ? v==null : value.equals(v))</tt>. This operation
-	 * will probably require time linear in the map size for most
-	 * implementations of the <tt>Map</tt> interface.
-	 * 
-	 * @param value
-	 *            value whose presence in this map is to be tested.
-	 * 
-	 * @return <tt>true</tt> if this map maps one or more keys to the
-	 *         specified value.
-	 */
-	public boolean containsValue(java.lang.Object value) {
-		return getChild().containsValue(value)
-				|| ((getParent() == null) ? false : getParent().containsValue(
-						value));
-	}
+  public void setParent(java.util.Map newParent) {
+    parent = newParent;
+  }
 
-	/**
-	 * Returns a set view of the mappings contained in this map. Each element in
-	 * the returned set is a <tt>Map.Entry</tt>. The set is backed by the
-	 * map, so changes to the map are reflected in the set, and vice-versa. If
-	 * the map is modified while an iteration over the set is in progress, the
-	 * results of the iteration are undefined. The set supports element removal,
-	 * which removes the corresponding mapping from the map, via the
-	 * <tt>Iterator.remove</tt>, <tt>Set.remove</tt>, <tt>removeAll</tt>,
-	 * <tt>retainAll</tt> and <tt>clear</tt> operations. It does not support
-	 * the <tt>add</tt> or <tt>addAll</tt> operations.
-	 * 
-	 * @return a set view of the mappings contained in this map.
-	 */
-	public java.util.Set entrySet() {
-		Set set = new AbstractSet() {
-			@Override
-			public void clear() {
-				getChild().clear();
-			}
+  /**
+   * Returns <tt>true</tt> if this map contains no key-value mappings.
+   *
+   * @return <tt>true</tt> if this map contains no key-value mappings.
+   */
+  public boolean isEmpty() {
+    return getChild().isEmpty()
+        && ((getParent() == null) ? true : getParent().isEmpty());
+  }
 
-			@Override
-			public boolean contains(Object o) {
-				// i dont claim this to be efficient....
-				return getChild().entrySet().contains(o)
-						|| ((getParent() == null) ? false : getParent()
-								.entrySet().contains(o));
-			}
+  /**
+   * Returns a set view of the keys contained in this map. The set is backed
+   * by the map, so changes to the map are reflected in the set, and
+   * vice-versa. If the map is modified while an iteration over the set is in
+   * progress, the results of the iteration are undefined. The set supports
+   * element removal, which removes the corresponding mapping from the map,
+   * via the <tt>Iterator.remove</tt>, <tt>Set.remove</tt>,
+   * <tt>removeAll</tt><tt>retainAll</tt>, and <tt>clear</tt>
+   * operations. It does not support the add or <tt>addAll</tt> operations.
+   *
+   * @return a set view of the keys contained in this map.
+   */
+  public java.util.Set keySet() {
+    Set set = new AbstractSet() {
+      @Override
+      public void clear() {
+        getChild().clear();
+      }
 
-			@Override
-			public Iterator iterator() {
-				return new PartitionIterator(ENTRIES);
-			}
+      @Override
+      public boolean contains(Object o) {
+        // i dont claim this to be efficient....
+        return ((getParent() == null) ? false : getParent()
+            .containsKey(o))
+            || getChild().containsKey(o);
+      }
 
-			@Override
-			public boolean remove(Object o) {
-				return getChild().entrySet().remove(o)
-						|| ((getParent() == null) ? false : getParent()
-								.entrySet().remove(o));
-			}
+      @Override
+      public Iterator iterator() {
+        return new PartitionIterator(KEYS);
+      }
 
-			@Override
-			public int size() {
-				return getChild().size()
-						+ ((getParent() == null) ? 0 : getParent().size());
-			}
-		};
+      @Override
+      public boolean remove(Object o) {
+        return (getChild().remove(o) != null)
+            || ((getParent() == null) ? false : (getParent()
+            .remove(o) != null));
+      }
 
-		return set;
-	}
+      @Override
+      public int size() {
+        return getChild().size()
+            + ((getParent() == null) ? 0 : getParent().size());
+      }
+    };
 
-	/**
-	 * Returns the value to which this map maps the specified key. Returns
-	 * <tt>null</tt> if the map contains no mapping for this key. A return
-	 * value of <tt>null</tt> does not <i>necessarily</i> indicate that the
-	 * map contains no mapping for the key; it's also possible that the map
-	 * explicitly maps the key to <tt>null</tt>. The <tt>containsKey</tt>
-	 * operation may be used to distinguish these two cases.
-	 * 
-	 * @param key
-	 *            key whose associated value is to be returned.
-	 * 
-	 * @return the value to which this map maps the specified key, or
-	 *         <tt>null</tt> if the map contains no mapping for this key.
-	 * 
-	 * @see #containsKey(Object)
-	 */
-	public java.lang.Object get(java.lang.Object key) {
-		Object result = getChild().get(key);
-		return (result == null) ? ((getParent() == null) ? null : getParent()
-				.get(key)) : result;
-	}
+    return set;
+  }
 
-	protected Map getChild() {
-		return child;
-	}
+  /**
+   * Associates the specified value with the specified key in this map
+   * (optional operation). If the map previously contained a mapping for this
+   * key, the old value is replaced.
+   *
+   * @param key   key with which the specified value is to be associated.
+   * @param value value to be associated with the specified key.
+   * @return previous value associated with specified key, or <tt>null</tt>
+   * if there was no mapping for key. A <tt>null</tt> return can
+   * also indicate that the map previously associated <tt>null</tt>
+   * with the specified key, if the implementation supports
+   * <tt>null</tt> values.
+   */
+  public java.lang.Object put(java.lang.Object key, java.lang.Object value) {
+    // not sure if this is really useful - if activated "local" variable
+    // overwrites the parent one
+    // if (getParent().containsKey(key)) {
+    // return getParent().put(key, value);
+    // }
+    return getChild().put(key, value);
+  }
 
-	public java.util.Map getParent() {
-		return parent;
-	}
+  /**
+   * Copies all of the mappings from the specified map to this map (optional
+   * operation). These mappings will replace any mappings that this map had
+   * for any of the keys currently in the specified map.
+   *
+   * @param t Mappings to be stored in this map.
+   */
+  public void putAll(java.util.Map t) {
+    Iterator i = t.entrySet().iterator();
+    while (i.hasNext()) {
+      Map.Entry e = (Map.Entry) i.next();
+      put(e.getKey(), e.getValue());
+    }
+  }
 
-	/**
-	 * Returns <tt>true</tt> if this map contains no key-value mappings.
-	 * 
-	 * @return <tt>true</tt> if this map contains no key-value mappings.
-	 */
-	public boolean isEmpty() {
-		return getChild().isEmpty()
-				&& ((getParent() == null) ? true : getParent().isEmpty());
-	}
+  /**
+   * Removes the mapping for this key from this map if present (optional
+   * operation).
+   *
+   * @param key key whose mapping is to be removed from the map.
+   * @return previous value associated with specified key, or <tt>null</tt>
+   * if there was no mapping for key. A <tt>null</tt> return can
+   * also indicate that the map previously associated <tt>null</tt>
+   * with the specified key, if the implementation supports
+   * <tt>null</tt> values.
+   */
+  public java.lang.Object remove(java.lang.Object key) {
+    if ((getParent() != null) && getParent().containsKey(key)) {
+      return getParent().remove(key);
+    }
+    return getChild().remove(key);
+  }
 
-	/**
-	 * Returns a set view of the keys contained in this map. The set is backed
-	 * by the map, so changes to the map are reflected in the set, and
-	 * vice-versa. If the map is modified while an iteration over the set is in
-	 * progress, the results of the iteration are undefined. The set supports
-	 * element removal, which removes the corresponding mapping from the map,
-	 * via the <tt>Iterator.remove</tt>, <tt>Set.remove</tt>,
-	 * <tt>removeAll</tt><tt>retainAll</tt>, and <tt>clear</tt>
-	 * operations. It does not support the add or <tt>addAll</tt> operations.
-	 * 
-	 * @return a set view of the keys contained in this map.
-	 */
-	public java.util.Set keySet() {
-		Set set = new AbstractSet() {
-			@Override
-			public void clear() {
-				getChild().clear();
-			}
+  /**
+   * Returns the number of key-value mappings in this map. If the map contains
+   * more than <tt>Integer.MAX_VALUE</tt> elements, returns
+   * <tt>Integer.MAX_VALUE</tt>.
+   *
+   * @return the number of key-value mappings in this map.
+   */
+  public int size() {
+    return ((getParent() == null) ? 0 : getParent().size())
+        + getChild().size();
+  }
 
-			@Override
-			public boolean contains(Object o) {
-				// i dont claim this to be efficient....
-				return ((getParent() == null) ? false : getParent()
-						.containsKey(o))
-						|| getChild().containsKey(o);
-			}
+  @Override
+  public String toString() {
+    return ((getParent() == null) ? "" : (getParent().toString() + System
+        .getProperty("line.separator")))
+        + getChild().toString();
+  }
 
-			@Override
-			public Iterator iterator() {
-				return new PartitionIterator(KEYS);
-			}
+  /**
+   * Returns a collection view of the values contained in this map. The
+   * collection is backed by the map, so changes to the map are reflected in
+   * the collection, and vice-versa. If the map is modified while an iteration
+   * over the collection is in progress, the results of the iteration are
+   * undefined. The collection supports element removal, which removes the
+   * corresponding mapping from the map, via the <tt>Iterator.remove</tt>,
+   * <tt>Collection.remove</tt>, <tt>removeAll</tt>, <tt>retainAll</tt>
+   * and <tt>clear</tt> operations. It does not support the add or
+   * <tt>addAll</tt> operations.
+   *
+   * @return a collection view of the values contained in this map.
+   */
+  public java.util.Collection values() {
+    Collection c = new AbstractCollection() {
+      @Override
+      public void clear() {
+        getChild().clear();
+      }
 
-			@Override
-			public boolean remove(Object o) {
-				return (getChild().remove(o) != null)
-						|| ((getParent() == null) ? false : (getParent()
-								.remove(o) != null));
-			}
+      @Override
+      public boolean contains(Object o) {
+        // i dont claim this to be efficient....
+        return ((getParent() == null) ? false : getParent()
+            .containsValue(o))
+            || getChild().containsValue(o);
+      }
 
-			@Override
-			public int size() {
-				return getChild().size()
-						+ ((getParent() == null) ? 0 : getParent().size());
-			}
-		};
+      @Override
+      public Iterator iterator() {
+        return new PartitionIterator(VALUES);
+      }
 
-		return set;
-	}
+      @Override
+      public int size() {
+        return getChild().size()
+            + ((getParent() == null) ? 0 : getParent().size());
+      }
+    };
 
-	/**
-	 * Associates the specified value with the specified key in this map
-	 * (optional operation). If the map previously contained a mapping for this
-	 * key, the old value is replaced.
-	 * 
-	 * @param key
-	 *            key with which the specified value is to be associated.
-	 * @param value
-	 *            value to be associated with the specified key.
-	 * 
-	 * @return previous value associated with specified key, or <tt>null</tt>
-	 *         if there was no mapping for key. A <tt>null</tt> return can
-	 *         also indicate that the map previously associated <tt>null</tt>
-	 *         with the specified key, if the implementation supports
-	 *         <tt>null</tt> values.
-	 */
-	public java.lang.Object put(java.lang.Object key, java.lang.Object value) {
-		// not sure if this is really useful - if activated "local" variable
-		// overwrites the parent one
-		// if (getParent().containsKey(key)) {
-		// return getParent().put(key, value);
-		// }
-		return getChild().put(key, value);
-	}
+    return c;
+  }
 
-	/**
-	 * Copies all of the mappings from the specified map to this map (optional
-	 * operation). These mappings will replace any mappings that this map had
-	 * for any of the keys currently in the specified map.
-	 * 
-	 * @param t
-	 *            Mappings to be stored in this map.
-	 */
-	public void putAll(java.util.Map t) {
-		Iterator i = t.entrySet().iterator();
-		while (i.hasNext()) {
-			Map.Entry e = (Map.Entry) i.next();
-			put(e.getKey(), e.getValue());
-		}
-	}
+  private class PartitionIterator implements Iterator {
+    Iterator parentIterator = PartitionedMap.this.getParent().entrySet()
+        .iterator();
 
-	/**
-	 * Removes the mapping for this key from this map if present (optional
-	 * operation).
-	 * 
-	 * @param key
-	 *            key whose mapping is to be removed from the map.
-	 * 
-	 * @return previous value associated with specified key, or <tt>null</tt>
-	 *         if there was no mapping for key. A <tt>null</tt> return can
-	 *         also indicate that the map previously associated <tt>null</tt>
-	 *         with the specified key, if the implementation supports
-	 *         <tt>null</tt> values.
-	 */
-	public java.lang.Object remove(java.lang.Object key) {
-		if ((getParent() != null) && getParent().containsKey(key)) {
-			return getParent().remove(key);
-		}
-		return getChild().remove(key);
-	}
+    Iterator subIterator = PartitionedMap.this.getChild().entrySet()
+        .iterator();
 
-	private void setChild(java.util.Map newSubMap) {
-		child = newSubMap;
-	}
+    int type;
 
-	public void setParent(java.util.Map newParent) {
-		parent = newParent;
-	}
+    PartitionIterator(int type) {
+      this.type = type;
+    }
 
-	/**
-	 * Returns the number of key-value mappings in this map. If the map contains
-	 * more than <tt>Integer.MAX_VALUE</tt> elements, returns
-	 * <tt>Integer.MAX_VALUE</tt>.
-	 * 
-	 * @return the number of key-value mappings in this map.
-	 */
-	public int size() {
-		return ((getParent() == null) ? 0 : getParent().size())
-				+ getChild().size();
-	}
+    public boolean hasNext() {
+      return parentIterator.hasNext() || subIterator.hasNext();
+    }
 
-	@Override
-	public String toString() {
-		return ((getParent() == null) ? "" : (getParent().toString() + System
-				.getProperty("line.separator")))
-				+ getChild().toString();
-	}
+    public Object next() {
+      Map.Entry e = null;
+      if (parentIterator.hasNext()) {
+        e = (Map.Entry) parentIterator.next();
+      } else {
+        e = (Map.Entry) subIterator.next();
+      }
+      if (e != null) {
+        return (type == KEYS) ? e.getKey() : ((type == VALUES) ? e
+            .getValue() : e);
+      }
+      throw new NoSuchElementException();
+    }
 
-	/**
-	 * Returns a collection view of the values contained in this map. The
-	 * collection is backed by the map, so changes to the map are reflected in
-	 * the collection, and vice-versa. If the map is modified while an iteration
-	 * over the collection is in progress, the results of the iteration are
-	 * undefined. The collection supports element removal, which removes the
-	 * corresponding mapping from the map, via the <tt>Iterator.remove</tt>,
-	 * <tt>Collection.remove</tt>, <tt>removeAll</tt>, <tt>retainAll</tt>
-	 * and <tt>clear</tt> operations. It does not support the add or
-	 * <tt>addAll</tt> operations.
-	 * 
-	 * @return a collection view of the values contained in this map.
-	 */
-	public java.util.Collection values() {
-		Collection c = new AbstractCollection() {
-			@Override
-			public void clear() {
-				getChild().clear();
-			}
-
-			@Override
-			public boolean contains(Object o) {
-				// i dont claim this to be efficient....
-				return ((getParent() == null) ? false : getParent()
-						.containsValue(o))
-						|| getChild().containsValue(o);
-			}
-
-			@Override
-			public Iterator iterator() {
-				return new PartitionIterator(VALUES);
-			}
-
-			@Override
-			public int size() {
-				return getChild().size()
-						+ ((getParent() == null) ? 0 : getParent().size());
-			}
-		};
-
-		return c;
-	}
+    public void remove() {
+      throw new UnsupportedOperationException(
+          "Partitioned Maps do not support this");
+    }
+  }
 }

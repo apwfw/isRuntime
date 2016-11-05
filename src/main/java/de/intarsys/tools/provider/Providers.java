@@ -7,6 +7,8 @@
 
 package de.intarsys.tools.provider;
 
+import de.intarsys.tools.stream.StreamTools;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,8 +25,6 @@ import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import de.intarsys.tools.stream.StreamTools;
-
 /**
  * This is an alternative service- or provider loading tool.
  * <p>
@@ -40,164 +40,158 @@ import de.intarsys.tools.stream.StreamTools;
 
 public class Providers {
 
-	static class ProviderEntry {
-		public String serviceName;
-		public String providerName;
-		public Object provider;
-	}
+  public static final char COMMENT = '#';
+  public static final String SEPARATOR = ";";
+  private static final Map<ClassLoader, Providers> providers = new HashMap<ClassLoader, Providers>();
+  private static final String PROVIDERLIST = "META-INF/provider/provider.list";
+  private static final Logger Log = Logger
+      .getLogger("de.intarsys.tools.provider");
+  private ClassLoader loader;
+  private List<ProviderEntry> entries = new ArrayList<ProviderEntry>();
 
-	public static final char COMMENT = '#';
+  protected Providers(ClassLoader cl) throws IOException {
+    loader = cl;
+    init();
+  }
 
-	public static final String SEPARATOR = ";";
+  static public Providers get() {
+    return get(Thread.currentThread().getContextClassLoader());
+  }
 
-	private static final Map<ClassLoader, Providers> providers = new HashMap<ClassLoader, Providers>();
+  static public Providers get(ClassLoader classloader) {
+    synchronized (providers) {
+      Providers result = providers.get(classloader);
+      if (result == null) {
+        try {
+          result = new Providers(classloader);
+        } catch (IOException e) {
+          throw new ProviderConfigurationException(
+              "error creating providers", e);
+        }
+        providers.put(classloader, result);
+      }
+      return result;
+    }
+  }
 
-	private static final String PROVIDERLIST = "META-INF/provider/provider.list";
+  protected void addProvider(ProviderEntry entry) {
+    for (ProviderEntry temp : entries) {
+      if (temp.serviceName.equals(entry.serviceName)
+          && temp.providerName.equals(entry.providerName)) {
+        return;
+      }
+    }
+    entries.add(entry);
+  }
 
-	static public Providers get() {
-		return get(Thread.currentThread().getContextClassLoader());
-	}
+  private void init() throws IOException {
+    Enumeration<URL> providerlistUrls;
+    if (loader == null) {
+      providerlistUrls = ClassLoader.getSystemResources(PROVIDERLIST);
+    } else {
+      providerlistUrls = loader.getResources(PROVIDERLIST);
+    }
+    while (providerlistUrls.hasMoreElements()) {
+      URL providerlistUrl = providerlistUrls.nextElement();
+      InputStream is = null;
+      try {
+        is = providerlistUrl.openStream();
+        register(is);
+      } finally {
+        StreamTools.close(is);
+      }
+    }
+  }
 
-	static public Providers get(ClassLoader classloader) {
-		synchronized (providers) {
-			Providers result = providers.get(classloader);
-			if (result == null) {
-				try {
-					result = new Providers(classloader);
-				} catch (IOException e) {
-					throw new ProviderConfigurationException(
-							"error creating providers", e);
-				}
-				providers.put(classloader, result);
-			}
-			return result;
-		}
-	}
+  public <S> Iterator<S> lookupProviders(final Class<S> service) {
+    return new Iterator<S>() {
 
-	private ClassLoader loader;
+      private ProviderEntry current;
 
-	private List<ProviderEntry> entries = new ArrayList<ProviderEntry>();
+      private String serviceName = service.getName();
 
-	private static final Logger Log = Logger
-			.getLogger("de.intarsys.tools.provider");
+      private Iterator<ProviderEntry> it = entries.iterator();
 
-	protected Providers(ClassLoader cl) throws IOException {
-		loader = cl;
-		init();
-	}
+      @Override
+      public boolean hasNext() {
+        if (current != null) {
+          return true;
+        }
+        while (it.hasNext()) {
+          ProviderEntry temp = it.next();
+          if (serviceName.equals(temp.serviceName)) {
+            current = temp;
+            return true;
+          }
+        }
+        return false;
+      }
 
-	protected void addProvider(ProviderEntry entry) {
-		for (ProviderEntry temp : entries) {
-			if (temp.serviceName.equals(entry.serviceName)
-					&& temp.providerName.equals(entry.providerName)) {
-				return;
-			}
-		}
-		entries.add(entry);
-	}
+      @Override
+      public S next() {
+        if (!hasNext()) {
+          throw new NoSuchElementException();
+        }
+        ProviderEntry temp = current;
+        current = null;
+        if (temp.provider == null) {
+          try {
+            temp.provider = Class.forName(temp.providerName, true,
+                loader).newInstance();
+          } catch (Throwable e) {
+            Log.log(Level.FINEST, "loading provider failed", e);
+            throw new ProviderConfigurationException("error loading "
+                + temp.providerName, e);
+          }
+        }
+        return (S) temp.provider;
+      }
 
-	private void init() throws IOException {
-		Enumeration<URL> providerlistUrls;
-		if (loader == null) {
-			providerlistUrls = ClassLoader.getSystemResources(PROVIDERLIST);
-		} else {
-			providerlistUrls = loader.getResources(PROVIDERLIST);
-		}
-		while (providerlistUrls.hasMoreElements()) {
-			URL providerlistUrl = providerlistUrls.nextElement();
-			InputStream is = null;
-			try {
-				is = providerlistUrl.openStream();
-				register(is);
-			} finally {
-				StreamTools.close(is);
-			}
-		}
-	}
+      @Override
+      public void remove() {
+        throw new UnsupportedOperationException();
+      }
 
-	public <S> Iterator<S> lookupProviders(final Class<S> service) {
-		return new Iterator<S>() {
+    };
+  }
 
-			private ProviderEntry current;
+  public void register(InputStream is) throws IOException {
+    BufferedReader r = null;
+    try {
+      r = new BufferedReader(new InputStreamReader(is, "utf-8"));
+      while (registerLine(r))
+        ;
+    } finally {
+      StreamTools.close(r);
+    }
+  }
 
-			private String serviceName = service.getName();
+  protected boolean registerLine(BufferedReader r) throws IOException {
+    String ln = r.readLine();
+    if (ln == null) {
+      return false;
+    }
+    int ci = ln.indexOf(COMMENT);
+    if (ci >= 0)
+      ln = ln.substring(0, ci);
+    ln = ln.trim();
+    if (ln.length() == 0) {
+      return true;
+    }
+    String[] parts = ln.split(SEPARATOR);
+    if (parts.length < 2) {
+      return true;
+    }
+    ProviderEntry entry = new ProviderEntry();
+    entry.serviceName = parts[0].trim();
+    entry.providerName = parts[1].trim();
+    addProvider(entry);
+    return true;
+  }
 
-			private Iterator<ProviderEntry> it = entries.iterator();
-
-			@Override
-			public boolean hasNext() {
-				if (current != null) {
-					return true;
-				}
-				while (it.hasNext()) {
-					ProviderEntry temp = it.next();
-					if (serviceName.equals(temp.serviceName)) {
-						current = temp;
-						return true;
-					}
-				}
-				return false;
-			}
-
-			@Override
-			public S next() {
-				if (!hasNext()) {
-					throw new NoSuchElementException();
-				}
-				ProviderEntry temp = current;
-				current = null;
-				if (temp.provider == null) {
-					try {
-						temp.provider = Class.forName(temp.providerName, true,
-								loader).newInstance();
-					} catch (Throwable e) {
-						Log.log(Level.FINEST, "loading provider failed", e);
-						throw new ProviderConfigurationException("error loading "
-								+ temp.providerName, e);
-					}
-				}
-				return (S) temp.provider;
-			}
-
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException();
-			}
-
-		};
-	}
-
-	public void register(InputStream is) throws IOException {
-		BufferedReader r = null;
-		try {
-			r = new BufferedReader(new InputStreamReader(is, "utf-8"));
-			while (registerLine(r))
-				;
-		} finally {
-			StreamTools.close(r);
-		}
-	}
-
-	protected boolean registerLine(BufferedReader r) throws IOException {
-		String ln = r.readLine();
-		if (ln == null) {
-			return false;
-		}
-		int ci = ln.indexOf(COMMENT);
-		if (ci >= 0)
-			ln = ln.substring(0, ci);
-		ln = ln.trim();
-		if (ln.length() == 0) {
-			return true;
-		}
-		String[] parts = ln.split(SEPARATOR);
-		if (parts.length < 2) {
-			return true;
-		}
-		ProviderEntry entry = new ProviderEntry();
-		entry.serviceName = parts[0].trim();
-		entry.providerName = parts[1].trim();
-		addProvider(entry);
-		return true;
-	}
+  static class ProviderEntry {
+    public String serviceName;
+    public String providerName;
+    public Object provider;
+  }
 }

@@ -30,25 +30,25 @@
 package de.intarsys.tools.transaction;
 
 /**
- * 
+ *
  */
 public class SubTransaction extends Transaction {
 
-	final private Transaction parent;
+  final private Transaction parent;
 
-	protected SubTransaction(Transaction parent) {
-		super();
-		this.parent = parent;
-		parent.addTransaction(this);
-	}
+  protected SubTransaction(Transaction parent) {
+    super();
+    this.parent = parent;
+    parent.addTransaction(this);
+  }
 
-	public ITransaction getParent() {
-		return parent;
-	}
+  public ITransaction getParent() {
+    return parent;
+  }
 
-	@Override
-	protected void stop() {
-		super.stop();
-		parent.removeTransaction(this);
-	}
+  @Override
+  protected void stop() {
+    super.stop();
+    parent.removeTransaction(this);
+  }
 }

@@ -29,34 +29,33 @@
  */
 package de.intarsys.tools.dom;
 
+import javax.xml.transform.ErrorListener;
+import javax.xml.transform.TransformerException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.xml.transform.ErrorListener;
-import javax.xml.transform.TransformerException;
-
 public class LoggingErrorListener implements ErrorListener {
 
-	private final Logger log;
+  private final Logger log;
 
-	public LoggingErrorListener() {
-		this(null);
-	}
+  public LoggingErrorListener() {
+    this(null);
+  }
 
-	public LoggingErrorListener(Logger pLog) {
-		log = pLog == null ? PACKAGE.Log : pLog;
-	}
+  public LoggingErrorListener(Logger pLog) {
+    log = pLog == null ? PACKAGE.Log : pLog;
+  }
 
-	public void error(TransformerException e) throws TransformerException {
-		log.log(Level.SEVERE, e.getLocalizedMessage(), e);
-	}
+  public void error(TransformerException e) throws TransformerException {
+    log.log(Level.SEVERE, e.getLocalizedMessage(), e);
+  }
 
-	public void fatalError(TransformerException e) throws TransformerException {
-		log.log(Level.SEVERE, e.getLocalizedMessage(), e);
-	}
+  public void fatalError(TransformerException e) throws TransformerException {
+    log.log(Level.SEVERE, e.getLocalizedMessage(), e);
+  }
 
-	public void warning(TransformerException e) throws TransformerException {
-		log.log(Level.WARNING, e.getLocalizedMessage(), e);
-	}
+  public void warning(TransformerException e) throws TransformerException {
+    log.log(Level.WARNING, e.getLocalizedMessage(), e);
+  }
 
 }

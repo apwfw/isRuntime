@@ -33,17 +33,15 @@ import de.intarsys.tools.reflect.ObjectCreationException;
 
 /**
  * A factory for {@link IFunctor} objects.
- * 
  */
 public interface IFunctorFactory<T, F extends IFunctor<T>> {
 
-	/**
-	 * Create a new {@link IFunctor} object.
-	 * 
-	 * @return The new {@link IFunctor}.
-	 * 
-	 * @throws ObjectCreationException
-	 */
-	public F createFunctor(Object... object) throws ObjectCreationException;
+  /**
+   * Create a new {@link IFunctor} object.
+   *
+   * @return The new {@link IFunctor}.
+   * @throws ObjectCreationException
+   */
+  public F createFunctor(Object... object) throws ObjectCreationException;
 
 }

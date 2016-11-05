@@ -32,22 +32,21 @@ package de.intarsys.tools.crypto;
 /**
  * This is a wrapper class that may be used to indicate to other software layers
  * that the wrapped data is to be kept secret when serializing / saving.
- * 
  */
 public class Secret {
 
-	private String value;
+  private String value;
 
-	public Secret(String value) {
-		setValue(value);
-	}
+  public Secret(String value) {
+    setValue(value);
+  }
 
-	public String getValue() {
-		return value;
-	}
+  public String getValue() {
+    return value;
+  }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
+  public void setValue(String value) {
+    this.value = value;
+  }
 
 }

@@ -34,44 +34,43 @@ import java.util.logging.Level;
 
 /**
  * A monitor that composes any number of other monitors.
- * 
  */
 public class CompositeMonitorTrace extends AbstractMonitorTrace {
-	/**
-	 * 
-	 */
-	private ITrace[] traces;
+  /**
+   *
+   */
+  private ITrace[] traces;
 
-	public CompositeMonitorTrace(AbstractMonitor monitor, ITrace[] traces) {
-		super(monitor);
-		this.traces = traces;
-	}
+  public CompositeMonitorTrace(AbstractMonitor monitor, ITrace[] traces) {
+    super(monitor);
+    this.traces = traces;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.monitor.IMonitorSample#sample(java.lang.String)
-	 */
-	@Override
-	protected ISample basicSample(String description) {
-		for (int i = 0; i < traces.length; i++) {
-			traces[i].sample(Level.INFO, description);
-		}
-		return null;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.monitor.IMonitorSample#sample(java.lang.String)
+   */
+  @Override
+  protected ISample basicSample(String description) {
+    for (int i = 0; i < traces.length; i++) {
+      traces[i].sample(Level.INFO, description);
+    }
+    return null;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		StringWriter result = new StringWriter();
-		for (int i = 0; i < traces.length; i++) {
-			result.write(traces[i].toString());
-			result.write("\n");
-		}
-		return result.toString();
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    StringWriter result = new StringWriter();
+    for (int i = 0; i < traces.length; i++) {
+      result.write(traces[i].toString());
+      result.write("\n");
+    }
+    return result.toString();
+  }
 }

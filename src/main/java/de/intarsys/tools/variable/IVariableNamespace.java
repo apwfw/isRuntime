@@ -38,56 +38,48 @@ import java.util.Map;
  * <p>
  * Variables are used most often for string replacements. You should not use
  * this feature for parameter or attribute passing between components.
- * 
  */
 public interface IVariableNamespace {
-	/**
-	 * The string variable stored with <code>key</code>.
-	 * 
-	 * @param key
-	 *            The name of the string variable
-	 * 
-	 * @return The string variable stored with <code>key</code>.
-	 */
-	public String getVariable(String key);
+  /**
+   * The string variable stored with <code>key</code>.
+   *
+   * @param key The name of the string variable
+   * @return The string variable stored with <code>key</code>.
+   */
+  public String getVariable(String key);
 
-	/**
-	 * The string variable stored with <code>key</code> or
-	 * <code>defaultValue</code> if the result would be <code>null</code>.
-	 * 
-	 * @param key
-	 *            The name of the string variable
-	 * @param defaultValue
-	 *            The value to use if result would be null
-	 * 
-	 * @return The string variable stored with <code>key</code> or
-	 *         <code>defaultValue</code> if the result would be
-	 *         <code>null</code>.
-	 */
-	public String getVariable(String key, String defaultValue);
+  /**
+   * The string variable stored with <code>key</code> or
+   * <code>defaultValue</code> if the result would be <code>null</code>.
+   *
+   * @param key          The name of the string variable
+   * @param defaultValue The value to use if result would be null
+   * @return The string variable stored with <code>key</code> or
+   * <code>defaultValue</code> if the result would be
+   * <code>null</code>.
+   */
+  public String getVariable(String key, String defaultValue);
 
-	/**
-	 * An iterator over the entries (Map.Entry) of the Map.
-	 * 
-	 * @return An iterator over the entries (Map.Entry) of the Map.
-	 */
-	public Iterator getVariableIterator();
+  /**
+   * An iterator over the entries (Map.Entry) of the Map.
+   *
+   * @return An iterator over the entries (Map.Entry) of the Map.
+   */
+  public Iterator getVariableIterator();
 
-	/**
-	 * The map holding the assoications from names to values.
-	 * 
-	 * @return The map holding the assoications from names to values.
-	 */
-	public Map getVariables();
+  /**
+   * The map holding the assoications from names to values.
+   *
+   * @return The map holding the assoications from names to values.
+   */
+  public Map getVariables();
 
-	/**
-	 * Enter a name/value binding in the map.
-	 * 
-	 * @param key
-	 *            The name of the string variable
-	 * @param value
-	 *            The value to use for the variable.
-	 */
-	public void putVariable(String key, String value);
+  /**
+   * Enter a name/value binding in the map.
+   *
+   * @param key   The name of the string variable
+   * @param value The value to use for the variable.
+   */
+  public void putVariable(String key, String value);
 
 }

@@ -36,19 +36,16 @@ import de.intarsys.tools.functor.IArgs;
  * delegate.
  */
 public interface IInvocationHandler {
-	/**
-	 * Make a reflective call to the method <code>name</code> within
-	 * <code>receiver</code>
-	 * 
-	 * @param receiver
-	 *            The object hosting the method.
-	 * @param name
-	 *            The name of the method to call.
-	 * @param args
-	 *            The arguments for the invocation.
-	 * @return The result of the invocation.
-	 * @throws MethodException
-	 */
-	public Object invoke(Object receiver, String name, IArgs args)
-			throws MethodException;
+  /**
+   * Make a reflective call to the method <code>name</code> within
+   * <code>receiver</code>
+   *
+   * @param receiver The object hosting the method.
+   * @param name     The name of the method to call.
+   * @param args     The arguments for the invocation.
+   * @return The result of the invocation.
+   * @throws MethodException
+   */
+  public Object invoke(Object receiver, String name, IArgs args)
+      throws MethodException;
 }

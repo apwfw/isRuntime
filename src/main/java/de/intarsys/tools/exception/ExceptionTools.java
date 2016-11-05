@@ -40,104 +40,103 @@ import java.util.concurrent.TimeoutException;
  * Tool class for dealing with Exceptions.
  */
 public class ExceptionTools {
-	static public IOException createIOException(String message, Throwable cause) {
-		IOException ioe = new IOException(message);
-		ioe.initCause(cause);
-		return ioe;
-	}
+  static public IOException createIOException(String message, Throwable cause) {
+    IOException ioe = new IOException(message);
+    ioe.initCause(cause);
+    return ioe;
+  }
 
-	/**
-	 * Simply fail with a {@link RuntimeException}.
-	 */
-	public static void fail() {
-		throw new RuntimeException("failed"); //$NON-NLS-1$
-	}
+  /**
+   * Simply fail with a {@link RuntimeException}.
+   */
+  public static void fail() {
+    throw new RuntimeException("failed"); //$NON-NLS-1$
+  }
 
-	public static <T> T futureSimpleGet(Future<T> future) {
-		try {
-			return future.get();
-		} catch (InterruptedException e) {
-			return null;
-		} catch (ExecutionException ex) {
-			if (ex.getCause() instanceof Error) {
-				throw (Error) ex.getCause();
-			}
-			if (ex.getCause() instanceof RuntimeException) {
-				throw (RuntimeException) ex.getCause();
-			}
-			throw new InternalError(
-					"Program execution should not reach this point.");
-		}
-	}
+  public static <T> T futureSimpleGet(Future<T> future) {
+    try {
+      return future.get();
+    } catch (InterruptedException e) {
+      return null;
+    } catch (ExecutionException ex) {
+      if (ex.getCause() instanceof Error) {
+        throw (Error) ex.getCause();
+      }
+      if (ex.getCause() instanceof RuntimeException) {
+        throw (RuntimeException) ex.getCause();
+      }
+      throw new InternalError(
+          "Program execution should not reach this point.");
+    }
+  }
 
-	public static <T extends Number> T futureSimpleGetNumber(Future<T> future) {
-		T result = futureSimpleGet(future);
-		if (result == null) {
-			result = (T) new Integer(-1);
-		}
-		return result;
-	}
+  public static <T extends Number> T futureSimpleGetNumber(Future<T> future) {
+    T result = futureSimpleGet(future);
+    if (result == null) {
+      result = (T) new Integer(-1);
+    }
+    return result;
+  }
 
-	static public Throwable getInChain(Throwable t, Class<?> clazz) {
-		if (clazz.isInstance(t)) {
-			return t;
-		}
-		if (t.getCause() != null) {
-			return getInChain(t.getCause(), clazz);
-		}
-		return null;
-	}
+  static public Throwable getInChain(Throwable t, Class<?> clazz) {
+    if (clazz.isInstance(t)) {
+      return t;
+    }
+    if (t.getCause() != null) {
+      return getInChain(t.getCause(), clazz);
+    }
+    return null;
+  }
 
-	/**
-	 * The root cause of <code>t</code>.
-	 * 
-	 * @param t
-	 *            A {@link Throwable}.
-	 * @return The most inner cause of <code>t</code>.
-	 */
-	static public Throwable getRoot(Throwable t) {
-		Throwable root = t;
-		while (root.getCause() != null) {
-			root = root.getCause();
-		}
-		return root;
-	}
+  /**
+   * The root cause of <code>t</code>.
+   *
+   * @param t A {@link Throwable}.
+   * @return The most inner cause of <code>t</code>.
+   */
+  static public Throwable getRoot(Throwable t) {
+    Throwable root = t;
+    while (root.getCause() != null) {
+      root = root.getCause();
+    }
+    return root;
+  }
 
-	static public String getStackTraceString(Throwable t) {
-		StringWriter sw = new StringWriter();
-		t.printStackTrace(new PrintWriter(sw));
-		return sw.toString();
-	}
+  static public String getStackTraceString(Throwable t) {
+    StringWriter sw = new StringWriter();
+    t.printStackTrace(new PrintWriter(sw));
+    return sw.toString();
+  }
 
-	static public boolean isInChain(Throwable t, Class<?> clazz) {
-		if (clazz.isInstance(t)) {
-			return true;
-		}
-		if (t.getCause() != null) {
-			return isInChain(t.getCause(), clazz);
-		}
-		return false;
-	}
+  static public boolean isInChain(Throwable t, Class<?> clazz) {
+    if (clazz.isInstance(t)) {
+      return true;
+    }
+    if (t.getCause() != null) {
+      return isInChain(t.getCause(), clazz);
+    }
+    return false;
+  }
 
-	public static boolean isKnownReason(Throwable t) {
-		if (t instanceof KnownReason) {
-			return true;
-		}
-		Throwable cause = t.getCause();
-		if (cause != null) {
-			return isKnownReason(cause);
-		}
-		return false;
-	}
+  public static boolean isKnownReason(Throwable t) {
+    if (t instanceof KnownReason) {
+      return true;
+    }
+    Throwable cause = t.getCause();
+    if (cause != null) {
+      return isKnownReason(cause);
+    }
+    return false;
+  }
 
-	public static boolean isTimeout(Throwable t) {
-		if (t instanceof TimeoutException) {
-			return true;
-		}
-		Throwable cause = t.getCause();
-		if (cause != null) {
-			return isTimeout(cause);
-		}
-		return false;
-	}
+  public static boolean isTimeout(Throwable t) {
+    if (t instanceof TimeoutException) {
+      return true;
+    }
+    Throwable cause = t.getCause();
+    if (cause != null) {
+      return isTimeout(cause);
+    }
+    return false;
+  }
 }

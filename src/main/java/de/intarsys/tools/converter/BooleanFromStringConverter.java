@@ -36,16 +36,16 @@ import de.intarsys.tools.string.Converter;
  */
 public class BooleanFromStringConverter implements IConverter<String, Boolean> {
 
-	public Boolean convert(String source) throws ConversionException {
-		return Converter.asBoolean(source, false);
-	}
+  public Boolean convert(String source) throws ConversionException {
+    return Converter.asBoolean(source, false);
+  }
 
-	public Class<?> getSourceType() {
-		return String.class;
-	}
+  public Class<?> getSourceType() {
+    return String.class;
+  }
 
-	public Class<?> getTargetType() {
-		return Boolean.class;
-	}
+  public Class<?> getTargetType() {
+    return Boolean.class;
+  }
 
 }

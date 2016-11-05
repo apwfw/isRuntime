@@ -29,25 +29,25 @@
  */
 package de.intarsys.tools.converter;
 
-import java.io.File;
-
 import de.intarsys.tools.locator.ILocator;
+
+import java.io.File;
 
 /**
  * Convert any {@link String} to a {@link ILocator} format.
  */
 public class FileFromStringConverter implements IConverter<String, File> {
 
-	public File convert(String source) throws ConversionException {
-		return new File(source);
-	}
+  public File convert(String source) throws ConversionException {
+    return new File(source);
+  }
 
-	public Class<?> getSourceType() {
-		return String.class;
-	}
+  public Class<?> getSourceType() {
+    return String.class;
+  }
 
-	public Class<?> getTargetType() {
-		return File.class;
-	}
+  public Class<?> getTargetType() {
+    return File.class;
+  }
 
 }

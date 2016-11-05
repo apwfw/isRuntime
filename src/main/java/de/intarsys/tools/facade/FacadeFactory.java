@@ -30,27 +30,27 @@
 package de.intarsys.tools.facade;
 
 /**
- * 
- * 
+ *
+ *
  */
 abstract public class FacadeFactory implements IFacadeFactory {
-	private static IFacadeFactory ACTIVE = new DelegatingFacadeFactory();
+  private static IFacadeFactory ACTIVE = new DelegatingFacadeFactory();
 
-	public static final IFacadeFactory get() {
-		return ACTIVE;
-	}
+  /**
+   *
+   */
+  public FacadeFactory() {
+    super();
+  }
 
-	public static final void set(IFacadeFactory factory) {
-		if (factory == null) {
-			throw new NullPointerException("factory can't be null");
-		}
-		ACTIVE = factory;
-	}
+  public static final IFacadeFactory get() {
+    return ACTIVE;
+  }
 
-	/**
-	 * 
-	 */
-	public FacadeFactory() {
-		super();
-	}
+  public static final void set(IFacadeFactory factory) {
+    if (factory == null) {
+      throw new NullPointerException("factory can't be null");
+    }
+    ACTIVE = factory;
+  }
 }

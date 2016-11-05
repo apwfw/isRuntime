@@ -33,12 +33,11 @@ import de.intarsys.tools.functor.IArgs;
 
 /**
  * Resolve names against system properties.
- * 
  */
 public class PropertiesResolver implements IStringEvaluator {
 
-	public Object evaluate(String expression, IArgs args)
-			throws EvaluationException {
-		return System.getProperty(expression);
-	}
+  public Object evaluate(String expression, IArgs args)
+      throws EvaluationException {
+    return System.getProperty(expression);
+  }
 }

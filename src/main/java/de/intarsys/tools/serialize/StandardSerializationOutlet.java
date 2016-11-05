@@ -37,24 +37,24 @@ import java.util.Map;
  */
 public class StandardSerializationOutlet implements ISerializationOutlet {
 
-	private Map<Class, ISerializationFactory> factories = new HashMap<Class, ISerializationFactory>();
+  private Map<Class, ISerializationFactory> factories = new HashMap<Class, ISerializationFactory>();
 
-	public ISerializationFactory[] getSerializationFactories() {
-		return factories.values().toArray(
-				new ISerializationFactory[factories.size()]);
-	}
+  public ISerializationFactory[] getSerializationFactories() {
+    return factories.values().toArray(
+        new ISerializationFactory[factories.size()]);
+  }
 
-	@Override
-	public ISerializationFactory lookupSerializationFactory(Class clazz,
-			SerializationContext context) {
-		return factories.get(clazz);
-	}
+  @Override
+  public ISerializationFactory lookupSerializationFactory(Class clazz,
+                                                          SerializationContext context) {
+    return factories.get(clazz);
+  }
 
-	public void registerSerializationFactory(ISerializationFactory factory) {
-		factories.put(factory.getSerializationType(), factory);
-	}
+  public void registerSerializationFactory(ISerializationFactory factory) {
+    factories.put(factory.getSerializationType(), factory);
+  }
 
-	public void unregisterSerializationFactory(ISerializationFactory factory) {
-		factories.remove(factory.getSerializationType());
-	}
+  public void unregisterSerializationFactory(ISerializationFactory factory) {
+    factories.remove(factory.getSerializationType());
+  }
 }

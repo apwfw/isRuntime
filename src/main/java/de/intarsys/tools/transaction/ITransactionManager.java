@@ -31,61 +31,60 @@ package de.intarsys.tools.transaction;
 
 /**
  * The public interface for client driven transaction management.
- * 
  */
 public interface ITransactionManager {
 
-	/**
-	 * Begin a new transaction in the current context.
-	 * 
-	 * @throws TransactionException
-	 */
-	public void begin() throws TransactionException;
+  /**
+   * Begin a new transaction in the current context.
+   *
+   * @throws TransactionException
+   */
+  public void begin() throws TransactionException;
 
-	/**
-	 * Commit the currently active transaction.
-	 * 
-	 * @throws TransactionException
-	 */
-	public void commit() throws TransactionException;
+  /**
+   * Commit the currently active transaction.
+   *
+   * @throws TransactionException
+   */
+  public void commit() throws TransactionException;
 
-	/**
-	 * Commit and resume the currently active transaction.
-	 * 
-	 * @throws TransactionException
-	 */
-	public void commitResume() throws TransactionException;
+  /**
+   * Commit and resume the currently active transaction.
+   *
+   * @throws TransactionException
+   */
+  public void commitResume() throws TransactionException;
 
-	/**
-	 * The currently active transaction.
-	 */
-	public ITransaction getTransaction();
+  /**
+   * The currently active transaction.
+   */
+  public ITransaction getTransaction();
 
-	/**
-	 * Resume a suspended transaction.
-	 * 
-	 * @throws TransactionException
-	 */
-	public void resume(ITransaction tx) throws TransactionException;
+  /**
+   * Resume a suspended transaction.
+   *
+   * @throws TransactionException
+   */
+  public void resume(ITransaction tx) throws TransactionException;
 
-	/**
-	 * Rollback the currently active transaction.
-	 * 
-	 * @throws TransactionException
-	 */
-	public void rollback() throws TransactionException;
+  /**
+   * Rollback the currently active transaction.
+   *
+   * @throws TransactionException
+   */
+  public void rollback() throws TransactionException;
 
-	/**
-	 * Rollback and resume the currently active transaction.
-	 * 
-	 * @throws TransactionException
-	 */
-	public void rollbackResume() throws TransactionException;
+  /**
+   * Rollback and resume the currently active transaction.
+   *
+   * @throws TransactionException
+   */
+  public void rollbackResume() throws TransactionException;
 
-	/**
-	 * Suspend the currently active transaction.
-	 * 
-	 * @throws TransactionException
-	 */
-	public ITransaction suspend() throws TransactionException;
+  /**
+   * Suspend the currently active transaction.
+   *
+   * @throws TransactionException
+   */
+  public ITransaction suspend() throws TransactionException;
 }

@@ -31,46 +31,45 @@ package de.intarsys.tools.transaction;
 
 /**
  * A transactional process.
- * 
  */
 public interface ITransaction {
 
-	/**
-	 * Commit all changes that belong to this transaction. The transaction is no
-	 * longer usable, all resources are released.
-	 * 
-	 * @throws TransactionException
-	 */
-	public void commit() throws TransactionException;
+  /**
+   * Commit all changes that belong to this transaction. The transaction is no
+   * longer usable, all resources are released.
+   *
+   * @throws TransactionException
+   */
+  public void commit() throws TransactionException;
 
-	/**
-	 * Commit all changes that belong to this transaction. The transaction may
-	 * be reused.
-	 * 
-	 * @throws TransactionException
-	 */
-	public void commitResume() throws TransactionException;
+  /**
+   * Commit all changes that belong to this transaction. The transaction may
+   * be reused.
+   *
+   * @throws TransactionException
+   */
+  public void commitResume() throws TransactionException;
 
-	/**
-	 * An optional parent for nested transactions.
-	 * 
-	 * @return The optional parent transaction.
-	 */
-	public ITransaction getParent();
+  /**
+   * An optional parent for nested transactions.
+   *
+   * @return The optional parent transaction.
+   */
+  public ITransaction getParent();
 
-	/**
-	 * Rollback all changes that belong to this transaction. The transaction is
-	 * no longer usable.
-	 * 
-	 * @throws TransactionException
-	 */
-	public void rollback() throws TransactionException;
+  /**
+   * Rollback all changes that belong to this transaction. The transaction is
+   * no longer usable.
+   *
+   * @throws TransactionException
+   */
+  public void rollback() throws TransactionException;
 
-	/**
-	 * Rollback all changes that belong to this transaction. The transaction may
-	 * be reused.
-	 * 
-	 * @throws TransactionException
-	 */
-	public void rollbackResume() throws TransactionException;
+  /**
+   * Rollback all changes that belong to this transaction. The transaction may
+   * be reused.
+   *
+   * @throws TransactionException
+   */
+  public void rollbackResume() throws TransactionException;
 }

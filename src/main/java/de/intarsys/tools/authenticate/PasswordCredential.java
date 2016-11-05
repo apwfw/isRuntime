@@ -31,24 +31,23 @@ package de.intarsys.tools.authenticate;
 
 /**
  * An {@link ICredential} container for user name and password.
- * 
  */
 public final class PasswordCredential implements ICredential {
 
-	private String user;
+  private String user;
 
-	private char[] password;
+  private char[] password;
 
-	public PasswordCredential(String userName, char[] password) {
-		this.user = userName;
-		this.password = password.clone();
-	}
+  public PasswordCredential(String userName, char[] password) {
+    this.user = userName;
+    this.password = password.clone();
+  }
 
-	public char[] getPassword() {
-		return password;
-	}
+  public char[] getPassword() {
+    return password;
+  }
 
-	public String getUser() {
-		return user;
-	}
+  public String getUser() {
+    return user;
+  }
 }

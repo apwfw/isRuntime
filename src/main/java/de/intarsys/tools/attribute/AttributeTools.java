@@ -34,123 +34,102 @@ import java.util.WeakHashMap;
 
 /**
  * Tool class for handling generic attributes.
- * 
  */
 public class AttributeTools {
 
-	private static final Map<Object, AttributeMap> objectAttributes = new WeakHashMap<Object, AttributeMap>();
+  private static final Map<Object, AttributeMap> objectAttributes = new WeakHashMap<Object, AttributeMap>();
 
-	/**
-	 * Get an attribute value from object
-	 * 
-	 * @param object
-	 *            The target object hosting the attribute
-	 * @param key
-	 *            the name of the attribute to get
-	 * 
-	 * @return The value of the attribute <code>key</code>
-	 */
-	static public Object getAttribute(Object object, Object key) {
-		if (object instanceof IAttributeSupport) {
-			return ((IAttributeSupport) object).getAttribute(key);
-		}
-		return getAttributeBasic(object, key);
-	}
+  /**
+   * Get an attribute value from object
+   *
+   * @param object The target object hosting the attribute
+   * @param key    the name of the attribute to get
+   * @return The value of the attribute <code>key</code>
+   */
+  static public Object getAttribute(Object object, Object key) {
+    if (object instanceof IAttributeSupport) {
+      return ((IAttributeSupport) object).getAttribute(key);
+    }
+    return getAttributeBasic(object, key);
+  }
 
-	/**
-	 * Get an attribute value from object
-	 * 
-	 * @param object
-	 *            The target object hosting the attribute
-	 * @param key
-	 *            the name of the attribute to get
-	 * 
-	 * @return The value of the attribute <code>key</code>
-	 */
-	synchronized static public Object getAttributeBasic(Object object,
-			Object key) {
-		AttributeMap attributes = objectAttributes.get(object);
-		if (attributes == null) {
-			return null;
-		}
-		return attributes.getAttribute(key);
-	}
+  /**
+   * Get an attribute value from object
+   *
+   * @param object The target object hosting the attribute
+   * @param key    the name of the attribute to get
+   * @return The value of the attribute <code>key</code>
+   */
+  synchronized static public Object getAttributeBasic(Object object,
+                                                      Object key) {
+    AttributeMap attributes = objectAttributes.get(object);
+    if (attributes == null) {
+      return null;
+    }
+    return attributes.getAttribute(key);
+  }
 
-	/**
-	 * Remove an attribute binding from object
-	 * 
-	 * @param object
-	 *            The target object hosting the attribute
-	 * @param key
-	 *            the name of the attribute to remove
-	 * 
-	 * @return The previously associated value for <code>key</code>
-	 */
-	static public Object removeAttribute(Object object, Object key) {
-		if (object instanceof IAttributeSupport) {
-			return ((IAttributeSupport) object).removeAttribute(key);
-		}
-		return removeAttributeBasic(object, key);
-	}
+  /**
+   * Remove an attribute binding from object
+   *
+   * @param object The target object hosting the attribute
+   * @param key    the name of the attribute to remove
+   * @return The previously associated value for <code>key</code>
+   */
+  static public Object removeAttribute(Object object, Object key) {
+    if (object instanceof IAttributeSupport) {
+      return ((IAttributeSupport) object).removeAttribute(key);
+    }
+    return removeAttributeBasic(object, key);
+  }
 
-	/**
-	 * Remove an attribute binding from object
-	 * 
-	 * @param object
-	 *            The target object hosting the attribute
-	 * @param key
-	 *            the name of the attribute to remove
-	 * 
-	 * @return The previously associated value for <code>key</code>
-	 */
-	synchronized static public Object removeAttributeBasic(Object object,
-			Object key) {
-		AttributeMap attributes = objectAttributes.get(object);
-		if (attributes == null) {
-			return null;
-		}
-		return attributes.removeAttribute(key);
-	}
+  /**
+   * Remove an attribute binding from object
+   *
+   * @param object The target object hosting the attribute
+   * @param key    the name of the attribute to remove
+   * @return The previously associated value for <code>key</code>
+   */
+  synchronized static public Object removeAttributeBasic(Object object,
+                                                         Object key) {
+    AttributeMap attributes = objectAttributes.get(object);
+    if (attributes == null) {
+      return null;
+    }
+    return attributes.removeAttribute(key);
+  }
 
-	/**
-	 * Set the value of an attribute in object
-	 * 
-	 * @param object
-	 *            The target object hosting the attribute
-	 * @param key
-	 *            the name of the attribute to set
-	 * @param value
-	 *            the new value the attribute
-	 * 
-	 * @return The previously associated value for <code>key</code>
-	 */
-	static public Object setAttribute(Object object, Object key, Object value) {
-		if (object instanceof IAttributeSupport) {
-			return ((IAttributeSupport) object).setAttribute(key, value);
-		}
-		return setAttributeBasic(object, key, value);
-	}
+  /**
+   * Set the value of an attribute in object
+   *
+   * @param object The target object hosting the attribute
+   * @param key    the name of the attribute to set
+   * @param value  the new value the attribute
+   * @return The previously associated value for <code>key</code>
+   */
+  static public Object setAttribute(Object object, Object key, Object value) {
+    if (object instanceof IAttributeSupport) {
+      return ((IAttributeSupport) object).setAttribute(key, value);
+    }
+    return setAttributeBasic(object, key, value);
+  }
 
-	/**
-	 * Set the value of an attribute in object
-	 * 
-	 * @param object
-	 *            The target object hosting the attribute
-	 * @param key
-	 *            the name of the attribute to set
-	 * @param value
-	 *            the new value the attribute
-	 * 
-	 * @return The previously associated value for <code>key</code>
-	 */
-	synchronized static public Object setAttributeBasic(Object object,
-			Object key, Object value) {
-		AttributeMap attributes = objectAttributes.get(object);
-		if (attributes == null) {
-			attributes = new AttributeMap();
-			objectAttributes.put(object, attributes);
-		}
-		return attributes.setAttribute(key, value);
-	}
+  /**
+   * Set the value of an attribute in object
+   *
+   * @param object The target object hosting the attribute
+   * @param key    the name of the attribute to set
+   * @param value  the new value the attribute
+   * @return The previously associated value for <code>key</code>
+   */
+  synchronized static public Object setAttributeBasic(Object object,
+                                                      Object key, Object value) {
+    AttributeMap attributes = objectAttributes.get(object);
+    if (attributes == null) {
+      attributes = new AttributeMap();
+      objectAttributes.put(object, attributes);
+    }
+    return attributes.setAttribute(key, value);
+  }
 
 }

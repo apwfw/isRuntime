@@ -29,103 +29,100 @@
  */
 package de.intarsys.tools.functor;
 
-import java.util.regex.Pattern;
-
 import de.intarsys.tools.string.StringTools;
+
+import java.util.regex.Pattern;
 
 /**
  * A common superclass for {@link IDeclarationElement} instances. This one has a
  * very simple implementation for modifiers. Only the presence of the modifier
  * string fragment in declared modifier string is checked.
- * 
  */
 abstract public class DeclarationElement extends Declaration implements
-		IDeclarationElement {
+    IDeclarationElement {
 
-	public static boolean validateName(String name) {
-		if (StringTools.isEmpty(name)) {
-			return false;
-		}
-		return Pattern.matches("[a-zA-Z0-9_]+", name);
-	}
+  private String modifierString;
+  private String name;
+  private String description;
 
-	public static boolean validatePath(String name) {
-		if (StringTools.isEmpty(name)) {
-			return false;
-		}
-		return Pattern.matches("([a-zA-Z0-9_]+\\.)+", name);
-	}
+  public DeclarationElement(Object declarationContext, String name,
+                            String modifiers) {
+    this(declarationContext, name, modifiers, null);
+  }
 
-	private String modifierString;
+  public DeclarationElement(Object declarationContext, String name,
+                            String modifiers, String description) {
+    super(declarationContext);
+    this.modifierString = modifiers;
+    this.name = name;
+    this.description = description;
+  }
 
-	private String name;
+  public static boolean validateName(String name) {
+    if (StringTools.isEmpty(name)) {
+      return false;
+    }
+    return Pattern.matches("[a-zA-Z0-9_]+", name);
+  }
 
-	private String description;
+  public static boolean validatePath(String name) {
+    if (StringTools.isEmpty(name)) {
+      return false;
+    }
+    return Pattern.matches("([a-zA-Z0-9_]+\\.)+", name);
+  }
 
-	public DeclarationElement(Object declarationContext, String name,
-			String modifiers) {
-		this(declarationContext, name, modifiers, null);
-	}
+  public void addModifier(String modifier) {
+    if (StringTools.isEmpty(modifierString)) {
+      modifierString = modifier;
+      return;
+    }
+    if (modifierString.indexOf(modifier) >= 0) {
+      return;
+    }
+    modifierString = modifierString + ";" + modifier;
+  }
 
-	public DeclarationElement(Object declarationContext, String name,
-			String modifiers, String description) {
-		super(declarationContext);
-		this.modifierString = modifiers;
-		this.name = name;
-		this.description = description;
-	}
+  public String getDescription() {
+    return description;
+  }
 
-	public void addModifier(String modifier) {
-		if (StringTools.isEmpty(modifierString)) {
-			modifierString = modifier;
-			return;
-		}
-		if (modifierString.indexOf(modifier) >= 0) {
-			return;
-		}
-		modifierString = modifierString + ";" + modifier;
-	}
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
-	public String getDescription() {
-		return description;
-	}
+  public String[] getModifiers() {
+    if (StringTools.isEmpty(modifierString)) {
+      return new String[0];
+    }
+    return modifierString.replaceAll("\\s", "").split("\\;");
+  }
 
-	public String[] getModifiers() {
-		if (StringTools.isEmpty(modifierString)) {
-			return new String[0];
-		}
-		return modifierString.replaceAll("\\s", "").split("\\;");
-	}
+  public String getModifierString() {
+    return modifierString;
+  }
 
-	public String getModifierString() {
-		return modifierString;
-	}
+  public void setModifierString(String modifierString) {
+    this.modifierString = modifierString;
+  }
 
-	public String getName() {
-		return name;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public boolean hasModifier(String modifier) {
-		if (modifierString == null) {
-			return false;
-		}
-		return modifierString.indexOf(modifier) >= 0;
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+  public boolean hasModifier(String modifier) {
+    if (modifierString == null) {
+      return false;
+    }
+    return modifierString.indexOf(modifier) >= 0;
+  }
 
-	public void setModifierString(String modifierString) {
-		this.modifierString = modifierString;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	@Override
-	public String toString() {
-		return "declaration <'" + getName() + "'> [" + modifierString + "]";
-	}
+  @Override
+  public String toString() {
+    return "declaration <'" + getName() + "'> [" + modifierString + "]";
+  }
 }

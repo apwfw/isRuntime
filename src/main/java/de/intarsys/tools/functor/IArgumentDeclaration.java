@@ -31,14 +31,13 @@ package de.intarsys.tools.functor;
 
 /**
  * The declaration for an argument to an {@link IFunctorCall}.
- * 
  */
 public interface IArgumentDeclaration extends IDeclarationElement {
 
-	public Object getDefaultValue() throws FunctorInvocationException;
+  public Object getDefaultValue() throws FunctorInvocationException;
 
-	public Class getType();
+  public Class getType();
 
-	public boolean isDefaultDefined();
+  public boolean isDefaultDefined();
 
 }

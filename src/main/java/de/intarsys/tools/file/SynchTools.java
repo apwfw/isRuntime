@@ -14,59 +14,59 @@ import java.io.IOException;
  */
 public class SynchTools {
 
-	private static byte[] bytes;
+  private static byte[] bytes;
 
-	static public void delSynchFile(File file) throws IOException {
-		file.delete();
-	}
+  static public void delSynchFile(File file) throws IOException {
+    file.delete();
+  }
 
-	public static byte[] getBytes() {
-		return bytes;
-	}
+  public static byte[] getBytes() {
+    return bytes;
+  }
 
-	static public File getSynchFile() throws IOException {
-		return File.createTempFile("synchfile", ".synch");
-	}
+  public static void setBytes(byte[] bytes) {
+    SynchTools.bytes = bytes;
+  }
 
-	public static void setBytes(byte[] bytes) {
-		SynchTools.bytes = bytes;
-	}
+  static public File getSynchFile() throws IOException {
+    return File.createTempFile("synchfile", ".synch");
+  }
 
-	static public void setSynchFile(File file) throws IOException {
-		setSynchFile(file, getBytes());
-		bytes = null;
-	}
+  static public void setSynchFile(File file) throws IOException {
+    setSynchFile(file, getBytes());
+    bytes = null;
+  }
 
-	static public void setSynchFile(File file, byte[] bytes) throws IOException {
-		FileOutputStream os = new FileOutputStream(file);
-		if (bytes != null) {
-			os.write(bytes);
-		}
-		os.close();
-	}
+  static public void setSynchFile(File file, byte[] bytes) throws IOException {
+    FileOutputStream os = new FileOutputStream(file);
+    if (bytes != null) {
+      os.write(bytes);
+    }
+    os.close();
+  }
 
-	static public void setSynchFile(File file, String value) throws IOException {
-		FileWriter w = new FileWriter(file);
-		w.write(value);
-		w.close();
-	}
+  static public void setSynchFile(File file, String value) throws IOException {
+    FileWriter w = new FileWriter(file);
+    w.write(value);
+    w.close();
+  }
 
-	static public void waitSynchFile(File file, int timeout) throws IOException {
-		long start = System.currentTimeMillis();
-		long count = 0;
-		while (count < timeout && !file.exists()) {
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				throw new IOException("waiting for synch file '"
-						+ file.getPath() + "' interrupted");
-			}
-			count = System.currentTimeMillis() - start;
-		}
-		if (!file.exists()) {
-			throw new IOException("timeout waiing for synch file '"
-					+ file.getPath() + "'");
-		}
-	}
+  static public void waitSynchFile(File file, int timeout) throws IOException {
+    long start = System.currentTimeMillis();
+    long count = 0;
+    while (count < timeout && !file.exists()) {
+      try {
+        Thread.sleep(100);
+      } catch (InterruptedException e) {
+        throw new IOException("waiting for synch file '"
+            + file.getPath() + "' interrupted");
+      }
+      count = System.currentTimeMillis() - start;
+    }
+    if (!file.exists()) {
+      throw new IOException("timeout waiing for synch file '"
+          + file.getPath() + "'");
+    }
+  }
 
 }

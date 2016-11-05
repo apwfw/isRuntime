@@ -32,62 +32,61 @@ package de.intarsys.tools.transaction;
 /**
  * A resource involved in a transactional task.
  * <p>
- * 
  */
 public interface IResource {
 
-	/**
-	 * begin is performed upon insertion of a resource in an active
-	 * {@link ITransaction} or upon start of an {@link ITransaction} already
-	 * containing the {@link IResource}.
-	 * 
-	 * @throws ResourceException
-	 */
-	public void begin() throws ResourceException;
+  /**
+   * begin is performed upon insertion of a resource in an active
+   * {@link ITransaction} or upon start of an {@link ITransaction} already
+   * containing the {@link IResource}.
+   *
+   * @throws ResourceException
+   */
+  public void begin() throws ResourceException;
 
-	/**
-	 * commit is performed when the {@link ITransaction} containing the
-	 * {@link IResource} is committed.
-	 * 
-	 * @throws ResourceException
-	 */
-	public void commit() throws ResourceException;
+  /**
+   * commit is performed when the {@link ITransaction} containing the
+   * {@link IResource} is committed.
+   *
+   * @throws ResourceException
+   */
+  public void commit() throws ResourceException;
 
-	/**
-	 * If this resource supports hierarchies, the optional parent is returned.
-	 * 
-	 * @return The optional parent resource.
-	 */
-	public IResource getParent();
+  /**
+   * If this resource supports hierarchies, the optional parent is returned.
+   *
+   * @return The optional parent resource.
+   */
+  public IResource getParent();
 
-	/**
-	 * The type that created this resource.
-	 * 
-	 * @return The resource type.
-	 */
-	public IResourceType getType();
+  /**
+   * The type that created this resource.
+   *
+   * @return The resource type.
+   */
+  public IResourceType getType();
 
-	/**
-	 * resume is performed when the {@link ITransaction} containing the
-	 * {@link IResource} is resumed.
-	 * 
-	 * @throws ResourceException
-	 */
-	public void resume();
+  /**
+   * resume is performed when the {@link ITransaction} containing the
+   * {@link IResource} is resumed.
+   *
+   * @throws ResourceException
+   */
+  public void resume();
 
-	/**
-	 * rollback is performed when the {@link ITransaction} containing the
-	 * {@link IResource} is rolled back.
-	 * 
-	 * @throws ResourceException
-	 */
-	public void rollback() throws ResourceException;
+  /**
+   * rollback is performed when the {@link ITransaction} containing the
+   * {@link IResource} is rolled back.
+   *
+   * @throws ResourceException
+   */
+  public void rollback() throws ResourceException;
 
-	/**
-	 * suspend is performed when the {@link ITransaction} containing the
-	 * {@link IResource} is suspended.
-	 * 
-	 * @throws ResourceException
-	 */
-	public void suspend();
+  /**
+   * suspend is performed when the {@link ITransaction} containing the
+   * {@link IResource} is suspended.
+   *
+   * @throws ResourceException
+   */
+  public void suspend();
 }

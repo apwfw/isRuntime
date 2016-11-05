@@ -29,45 +29,44 @@
  */
 package de.intarsys.aaa.authentication;
 
-import java.util.List;
-
 import de.intarsys.aaa.permission.IPermission;
 import de.intarsys.tools.authenticate.ICredential;
 
+import java.util.List;
+
 /**
  * The authenticated subject.
- * 
  */
 public interface ISubject {
 
-	/**
-	 * All {@link ICredential} instances associated with the subject.
-	 * 
-	 * @return All {@link ICredential} instances associated with the subject.
-	 */
-	public List<ICredential> getCredentials();
+  /**
+   * All {@link ICredential} instances associated with the subject.
+   *
+   * @return All {@link ICredential} instances associated with the subject.
+   */
+  public List<ICredential> getCredentials();
 
-	/**
-	 * The implementation object for this.
-	 * <p>
-	 * This is for example the persistent java object for a user.
-	 * 
-	 * @return The implementation object for this.
-	 */
-	public Object getImpl();
+  /**
+   * The implementation object for this.
+   * <p>
+   * This is for example the persistent java object for a user.
+   *
+   * @return The implementation object for this.
+   */
+  public Object getImpl();
 
-	/**
-	 * The list of permissions for this subject.
-	 * 
-	 * @return The list of permissions for this subject.
-	 */
-	public List<IPermission> getPermissions();
+  /**
+   * The list of permissions for this subject.
+   *
+   * @return The list of permissions for this subject.
+   */
+  public List<IPermission> getPermissions();
 
-	/**
-	 * A flag if this subject has administrative rights.
-	 * 
-	 * @return A flag if this subject has administrative rights.
-	 */
-	public boolean isAdministrator();
+  /**
+   * A flag if this subject has administrative rights.
+   *
+   * @return A flag if this subject has administrative rights.
+   */
+  public boolean isAdministrator();
 
 }

@@ -29,81 +29,79 @@
  */
 package de.intarsys.tools.dom;
 
+import de.intarsys.tools.stream.StreamTools;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-
-import de.intarsys.tools.stream.StreamTools;
-
 public class LoggingErrorHander implements ErrorHandler {
 
-	private final Logger log;
+  private static int filesCounter = 1;
+  private final Logger log;
+  private int fileNumber = -1;
+  private InputStream fileInputStream;
 
-	private static int filesCounter = 1;
-	private int fileNumber = -1;
-	private InputStream fileInputStream;
+  public LoggingErrorHander() {
+    this(null);
+  }
 
-	public LoggingErrorHander() {
-		this(null);
-	}
+  public LoggingErrorHander(Logger pLog) {
+    log = pLog == null ? PACKAGE.Log : pLog;
+  }
 
-	public LoggingErrorHander(Logger pLog) {
-		log = pLog == null ? PACKAGE.Log : pLog;
-	}
+  @Override
+  public void error(SAXParseException e) throws SAXException {
+    log.log(Level.SEVERE, e.getLocalizedMessage());
+    logFile();
+  }
 
-	@Override
-	public void error(SAXParseException e) throws SAXException {
-		log.log(Level.SEVERE, e.getLocalizedMessage());
-		logFile();
-	}
+  @Override
+  public void fatalError(SAXParseException e) throws SAXException {
+    log.log(Level.SEVERE, e.getLocalizedMessage());
+    logFile();
+  }
 
-	@Override
-	public void fatalError(SAXParseException e) throws SAXException {
-		log.log(Level.SEVERE, e.getLocalizedMessage());
-		logFile();
-	}
+  private String getFileContent() {
+    try {
+      return StreamTools.toString(getFileInputStream(), "UTF-8"); //$NON-NLS-1$
+    } catch (IOException e) {
+      return e.getLocalizedMessage();
+    }
+  }
 
-	private String getFileContent() {
-		try {
-			return StreamTools.toString(getFileInputStream(), "UTF-8"); //$NON-NLS-1$
-		} catch (IOException e) {
-			return e.getLocalizedMessage();
-		}
-	}
+  public Level getFileContentLogLevel() {
+    return Level.FINE;
+  }
 
-	public Level getFileContentLogLevel() {
-		return Level.FINE;
-	}
+  public InputStream getFileInputStream() {
+    return fileInputStream;
+  }
 
-	public InputStream getFileInputStream() {
-		return fileInputStream;
-	}
+  public void setFileInputStream(InputStream fileInputStream) {
+    this.fileInputStream = fileInputStream;
+  }
 
-	@SuppressWarnings("nls")
-	private void logFile() {
-		if (log.isLoggable(getFileContentLogLevel()) && fileInputStream != null) {
-			if (fileNumber != -1) {
-				log.log(getFileContentLogLevel(), "file number #" + fileNumber
-						+ " was logged above");
-			} else {
-				fileNumber = filesCounter++;
-				log.log(getFileContentLogLevel(), "file number #" + fileNumber
-						+ ", related to the error above:\n" + getFileContent());
-			}
-		}
-	}
+  @SuppressWarnings("nls")
+  private void logFile() {
+    if (log.isLoggable(getFileContentLogLevel()) && fileInputStream != null) {
+      if (fileNumber != -1) {
+        log.log(getFileContentLogLevel(), "file number #" + fileNumber
+            + " was logged above");
+      } else {
+        fileNumber = filesCounter++;
+        log.log(getFileContentLogLevel(), "file number #" + fileNumber
+            + ", related to the error above:\n" + getFileContent());
+      }
+    }
+  }
 
-	public void setFileInputStream(InputStream fileInputStream) {
-		this.fileInputStream = fileInputStream;
-	}
-
-	@Override
-	public void warning(SAXParseException e) throws SAXException {
-		log.log(Level.WARNING, e.getLocalizedMessage());
-	}
+  @Override
+  public void warning(SAXParseException e) throws SAXException {
+    log.log(Level.WARNING, e.getLocalizedMessage());
+  }
 }

@@ -33,11 +33,11 @@ import de.intarsys.tools.attribute.Attribute;
 
 public interface ISuspendResume {
 
-	public static final Attribute ATTR_SUSPENDED = new Attribute("suspended");
+  public static final Attribute ATTR_SUSPENDED = new Attribute("suspended");
 
-	public boolean isSuspended();
+  public boolean isSuspended();
 
-	public void resume();
+  public void resume();
 
-	public void suspend();
+  public void suspend();
 }

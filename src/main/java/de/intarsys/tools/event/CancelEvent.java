@@ -31,18 +31,17 @@ package de.intarsys.tools.event;
 
 /**
  * An event indicating the negatively acknowledged outcome of an execution.
- * 
  */
 public class CancelEvent extends Event {
-	public static final EventType ID = new EventType(CancelEvent.class
-			.getName());
+  public static final EventType ID = new EventType(CancelEvent.class
+      .getName());
 
-	public CancelEvent(Object source) {
-		super(source);
-	}
+  public CancelEvent(Object source) {
+    super(source);
+  }
 
-	@Override
-	public EventType getEventType() {
-		return ID;
-	}
+  @Override
+  public EventType getEventType() {
+    return ID;
+  }
 }

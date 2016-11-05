@@ -4,6 +4,6 @@ import java.util.List;
 
 public interface IDumpObject {
 
-	List<String> dump(String prefix, Object object, IDumpObject details);
+  List<String> dump(String prefix, Object object, IDumpObject details);
 
 }

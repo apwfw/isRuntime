@@ -33,18 +33,18 @@ package de.intarsys.tools.converter;
  * Convert any char[] to a {@link Canonical} format.
  */
 public class CanonicalFromCharArrayConverter implements
-		IConverter<char[], String> {
+    IConverter<char[], String> {
 
-	public String convert(char[] source) throws ConversionException {
-		return new String(source);
-	}
+  public String convert(char[] source) throws ConversionException {
+    return new String(source);
+  }
 
-	public Class<?> getSourceType() {
-		return char[].class;
-	}
+  public Class<?> getSourceType() {
+    return char[].class;
+  }
 
-	public Class<?> getTargetType() {
-		return Canonical.class;
-	}
+  public Class<?> getTargetType() {
+    return Canonical.class;
+  }
 
 }

@@ -34,15 +34,15 @@ package de.intarsys.tools.serialize;
  */
 abstract public class CommonSerializer implements ISerializer {
 
-	final private SerializationContext context;
+  final private SerializationContext context;
 
-	public CommonSerializer(SerializationContext context) {
-		super();
-		this.context = context;
-	}
+  public CommonSerializer(SerializationContext context) {
+    super();
+    this.context = context;
+  }
 
-	public SerializationContext getContext() {
-		return context;
-	}
+  public SerializationContext getContext() {
+    return context;
+  }
 
 }

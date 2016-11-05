@@ -31,33 +31,33 @@ package de.intarsys.tools.authenticate;
 
 public class NTCredential implements ICredential {
 
-	private final String domain;
-	private final char[] password;
-	private final String user;
-	private final String workstation;
+  private final String domain;
+  private final char[] password;
+  private final String user;
+  private final String workstation;
 
-	public NTCredential(String userName, char[] password, String workstation,
-			String domain) {
-		this.user = userName;
-		this.password = password;
-		this.workstation = workstation;
-		this.domain = domain;
-	}
+  public NTCredential(String userName, char[] password, String workstation,
+                      String domain) {
+    this.user = userName;
+    this.password = password;
+    this.workstation = workstation;
+    this.domain = domain;
+  }
 
-	public String getDomain() {
-		return domain;
-	}
+  public String getDomain() {
+    return domain;
+  }
 
-	public char[] getPassword() {
-		return password;
-	}
+  public char[] getPassword() {
+    return password;
+  }
 
-	public String getUser() {
-		return user;
-	}
+  public String getUser() {
+    return user;
+  }
 
-	public String getWorkstation() {
-		return workstation;
-	}
+  public String getWorkstation() {
+    return workstation;
+  }
 
 }

@@ -31,21 +31,20 @@ package de.intarsys.tools.preferences;
 
 /**
  * A {@link PrefValueHolder} implementation for integer typed values.
- * 
  */
 public class IntegerPrefValueHolder extends PrefValueHolder {
 
-	public IntegerPrefValueHolder(IPreferences preferences, String key,
-			int defaultValue) {
-		super(preferences, key, defaultValue);
-	}
+  public IntegerPrefValueHolder(IPreferences preferences, String key,
+                                int defaultValue) {
+    super(preferences, key, defaultValue);
+  }
 
-	public Object get() {
-		return getPreferences().getInt(getKey(), (Integer) getDefaultValue());
-	}
+  public Object get() {
+    return getPreferences().getInt(getKey(), (Integer) getDefaultValue());
+  }
 
-	public Object set(Object newValue) {
-		getPreferences().put(getKey(), (Integer) newValue);
-		return null;
-	}
+  public Object set(Object newValue) {
+    getPreferences().put(getKey(), (Integer) newValue);
+    return null;
+  }
 }

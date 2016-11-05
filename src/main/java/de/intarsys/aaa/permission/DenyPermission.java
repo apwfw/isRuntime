@@ -33,12 +33,11 @@ import de.intarsys.aaa.resource.IResource;
 
 /**
  * A permission that denies every access.
- * 
  */
 public class DenyPermission implements IPermission {
 
-	public boolean isAccessGranted(IResource resource) {
-		return false;
-	}
+  public boolean isAccessGranted(IResource resource) {
+    return false;
+  }
 
 }

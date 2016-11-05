@@ -32,15 +32,14 @@ package de.intarsys.tools.functor;
 
 /**
  * Echo the incoming arguments.
- * 
  */
 public class EchoFunctor extends CommonFunctor {
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.functor.IFunctor#perform(de.intarsys.tools.functor.IFunctorCall)
-	 */
-	public Object perform(IFunctorCall call) throws FunctorInvocationException {
-		return call.getArgs();
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.functor.IFunctor#perform(de.intarsys.tools.functor.IFunctorCall)
+   */
+  public Object perform(IFunctorCall call) throws FunctorInvocationException {
+    return call.getArgs();
+  }
 }

@@ -31,8 +31,8 @@ package de.intarsys.tools.crypto;
 
 abstract public class PBCryptdec extends Cryptdec {
 
-	public PBCryptdec(String id, byte[] iv, char[] password, byte[] salt) {
-		super(id, iv);
-	}
+  public PBCryptdec(String id, byte[] iv, char[] password, byte[] salt) {
+    super(id, iv);
+  }
 
 }

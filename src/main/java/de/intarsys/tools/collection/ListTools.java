@@ -34,64 +34,64 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * 
+ *
  */
 public class ListTools {
 
-	static public <T> List<T> collect(Iterator<T> it) {
-		List<T> result = new ArrayList<T>();
-		while (it.hasNext()) {
-			result.add(it.next());
-		}
-		return result;
-	}
+  /**
+   *
+   */
+  private ListTools() {
+    // tool class
+  }
 
-	static public <T> T first(List<T> list) {
-		if (list == null) {
-			return null;
-		}
-		if (list.size() == 0) {
-			return null;
-		}
-		return list.get(0);
-	}
+  static public <T> List<T> collect(Iterator<T> it) {
+    List<T> result = new ArrayList<T>();
+    while (it.hasNext()) {
+      result.add(it.next());
+    }
+    return result;
+  }
 
-	static public <T> T last(List<T> list) {
-		if (list == null) {
-			return null;
-		}
-		if (list.size() == 0) {
-			return null;
-		}
-		return list.get(list.size() - 1);
-	}
+  static public <T> T first(List<T> list) {
+    if (list == null) {
+      return null;
+    }
+    if (list.size() == 0) {
+      return null;
+    }
+    return list.get(0);
+  }
 
-	static public <T> List<T> with(T object) {
-		List result = new ArrayList();
-		result.add(object);
-		return result;
-	}
+  static public <T> T last(List<T> list) {
+    if (list == null) {
+      return null;
+    }
+    if (list.size() == 0) {
+      return null;
+    }
+    return list.get(list.size() - 1);
+  }
 
-	static public <T> List<T> with(T object1, T object2) {
-		List result = new ArrayList();
-		result.add(object1);
-		result.add(object2);
-		return result;
-	}
+  static public <T> List<T> with(T object) {
+    List result = new ArrayList();
+    result.add(object);
+    return result;
+  }
 
-	static public <T> List<T> with(T object1, T object2, T object3) {
-		List result = new ArrayList();
-		result.add(object1);
-		result.add(object2);
-		result.add(object3);
-		return result;
-	}
+  static public <T> List<T> with(T object1, T object2) {
+    List result = new ArrayList();
+    result.add(object1);
+    result.add(object2);
+    return result;
+  }
 
-	/**
-	 * 
-	 */
-	private ListTools() {
-		// tool class
-	}
+  static public <T> List<T> with(T object1, T object2, T object3) {
+    List result = new ArrayList();
+    result.add(object1);
+    result.add(object2);
+    result.add(object3);
+    return result;
+  }
 
 }

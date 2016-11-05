@@ -34,10 +34,10 @@ package de.intarsys.tools.preferences;
  */
 public interface IPreferencesSupport {
 
-	/**
-	 * The {@link IPreferences} for this object.
-	 * 
-	 * @return The {@link IPreferences} for this object.
-	 */
-	public IPreferences getPreferences();
+  /**
+   * The {@link IPreferences} for this object.
+   *
+   * @return The {@link IPreferences} for this object.
+   */
+  public IPreferences getPreferences();
 }

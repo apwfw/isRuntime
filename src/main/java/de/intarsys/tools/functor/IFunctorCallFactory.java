@@ -33,20 +33,18 @@ import de.intarsys.tools.reflect.ObjectCreationException;
 
 /**
  * A factory for {@link IFunctorCall} objects.
- * 
  */
 public interface IFunctorCallFactory {
 
-	/**
-	 * Create a new {@link IFunctorCall}.
-	 * 
-	 * @param functor
-	 * @param receiver
-	 * @param args
-	 * 
-	 * @return The new {@link IFunctorCall}
-	 * @throws ObjectCreationException
-	 */
-	public IFunctorCall createFunctorCall(IFunctor functor, Object receiver,
-			IArgs args) throws ObjectCreationException;
+  /**
+   * Create a new {@link IFunctorCall}.
+   *
+   * @param functor
+   * @param receiver
+   * @param args
+   * @return The new {@link IFunctorCall}
+   * @throws ObjectCreationException
+   */
+  public IFunctorCall createFunctorCall(IFunctor functor, Object receiver,
+                                        IArgs args) throws ObjectCreationException;
 }

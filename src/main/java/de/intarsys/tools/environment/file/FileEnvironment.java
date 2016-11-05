@@ -35,29 +35,29 @@ package de.intarsys.tools.environment.file;
  */
 public class FileEnvironment {
 
-	protected static IFileEnvironment sharedEnvironment = new StandardFileEnvironment();
+  protected static IFileEnvironment sharedEnvironment = new StandardFileEnvironment();
 
-	protected static ThreadLocal environment = new ThreadLocal() {
-		@Override
-		protected Object initialValue() {
-			return getShared();
-		}
-	};
+  protected static ThreadLocal environment = new ThreadLocal() {
+    @Override
+    protected Object initialValue() {
+      return getShared();
+    }
+  };
 
-	public static IFileEnvironment get() {
-		return (IFileEnvironment) environment.get();
-	}
+  public static IFileEnvironment get() {
+    return (IFileEnvironment) environment.get();
+  }
 
-	synchronized public static IFileEnvironment getShared() {
-		return sharedEnvironment;
-	}
+  synchronized public static IFileEnvironment getShared() {
+    return sharedEnvironment;
+  }
 
-	public static void set(IFileEnvironment cc) {
-		environment.set(cc);
-	}
+  synchronized public static void setShared(IFileEnvironment cc) {
+    sharedEnvironment = cc;
+  }
 
-	synchronized public static void setShared(IFileEnvironment cc) {
-		sharedEnvironment = cc;
-	}
+  public static void set(IFileEnvironment cc) {
+    environment.set(cc);
+  }
 
 }

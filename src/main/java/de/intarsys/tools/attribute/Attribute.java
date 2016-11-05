@@ -31,18 +31,17 @@ package de.intarsys.tools.attribute;
 
 /**
  * A generic object to be used as a key with {@link IAttributeSupport}.
- * 
  */
 final public class Attribute {
 
-	final private String name;
+  final private String name;
 
-	public Attribute(String name) {
-		this.name = name;
-	}
+  public Attribute(String name) {
+    this.name = name;
+  }
 
-	@Override
-	public String toString() {
-		return name;
-	}
+  @Override
+  public String toString() {
+    return name;
+  }
 }

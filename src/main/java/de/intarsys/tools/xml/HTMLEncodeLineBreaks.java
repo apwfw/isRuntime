@@ -38,61 +38,60 @@ import java.io.StringReader;
  * A reader that encodes literal line breaks to html tags.
  * <p>
  * "\r" are ignored, "\n" are encoded.
- * 
  */
 public class HTMLEncodeLineBreaks extends FilterReader {
-	/**
-	 * A local buffer for reading escaped character sequences
-	 */
-	private StringReader buffer = null;
+  /**
+   * A local buffer for reading escaped character sequences
+   */
+  private StringReader buffer = null;
 
-	public HTMLEncodeLineBreaks(Reader in) {
-		super(in);
-	}
+  public HTMLEncodeLineBreaks(Reader in) {
+    super(in);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.io.Reader#read()
-	 */
-	@Override
-	public int read() throws IOException {
-		int c;
-		if (buffer != null) {
-			c = buffer.read();
-			if (c == -1) {
-				buffer = null;
-			} else {
-				return c;
-			}
-		}
-		c = super.read();
-		if (c == '\n') {
-			buffer = new StringReader("<br>");
-		} else if (c == '\r') {
-			return read();
-		} else {
-			return c;
-		}
-		return buffer.read();
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.io.Reader#read()
+   */
+  @Override
+  public int read() throws IOException {
+    int c;
+    if (buffer != null) {
+      c = buffer.read();
+      if (c == -1) {
+        buffer = null;
+      } else {
+        return c;
+      }
+    }
+    c = super.read();
+    if (c == '\n') {
+      buffer = new StringReader("<br>");
+    } else if (c == '\r') {
+      return read();
+    } else {
+      return c;
+    }
+    return buffer.read();
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.io.Reader#read(char[], int, int)
-	 */
-	@Override
-	public int read(char[] cbuf, int off, int len) throws IOException {
-		int result = -1;
-		for (int i = off; i < (off + len);) {
-			int c = read();
-			if (c == -1) {
-				return result;
-			}
-			cbuf[i++] = (char) c;
-			result = i - off;
-		}
-		return len;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.io.Reader#read(char[], int, int)
+   */
+  @Override
+  public int read(char[] cbuf, int off, int len) throws IOException {
+    int result = -1;
+    for (int i = off; i < (off + len); ) {
+      int c = read();
+      if (c == -1) {
+        return result;
+      }
+      cbuf[i++] = (char) c;
+      result = i - off;
+    }
+    return len;
+  }
 }

@@ -32,13 +32,12 @@ package de.intarsys.tools.reader;
 /**
  * An interface describing the ability to provide information about the current
  * context into a data stream.
- * 
  */
 public interface ILocationProvider {
 
-	int getColumn();
+  int getColumn();
 
-	int getLine();
+  int getLine();
 
-	int getPosition();
+  int getPosition();
 }

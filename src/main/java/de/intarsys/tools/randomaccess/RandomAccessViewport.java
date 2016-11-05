@@ -33,120 +33,119 @@ import java.io.IOException;
 
 /**
  * A viewport in an existing {@link IRandomAccess}.
- * 
  */
 public class RandomAccessViewport extends RandomAccessFilter {
 
-	private final long viewOffset;
+  private final long viewOffset;
 
-	private long viewLength;
+  private long viewLength;
 
-	private long viewEnd;
+  private long viewEnd;
 
-	/**
-	 * Create a viewport to the existing {@link IRandomAccess} <code>ra</code>.
-	 * <p>
-	 * ATTENTION: This will not seek to <code>offset</code> in <code>ra</code>.
-	 * This means after creation before initial use you have to position the
-	 * {@link IRandomAccess} yourself using <code>seek</code>.
-	 * 
-	 * @param ra
-	 * @param offset
-	 * @param length
-	 * @throws IOException
-	 */
-	public RandomAccessViewport(IRandomAccess ra, long offset, long length)
-			throws IOException {
-		super(ra);
-		this.viewLength = length;
-		this.viewOffset = offset;
-		this.viewEnd = viewOffset + viewLength;
-	}
+  /**
+   * Create a viewport to the existing {@link IRandomAccess} <code>ra</code>.
+   * <p>
+   * ATTENTION: This will not seek to <code>offset</code> in <code>ra</code>.
+   * This means after creation before initial use you have to position the
+   * {@link IRandomAccess} yourself using <code>seek</code>.
+   *
+   * @param ra
+   * @param offset
+   * @param length
+   * @throws IOException
+   */
+  public RandomAccessViewport(IRandomAccess ra, long offset, long length)
+      throws IOException {
+    super(ra);
+    this.viewLength = length;
+    this.viewOffset = offset;
+    this.viewEnd = viewOffset + viewLength;
+  }
 
-	@Override
-	public long getLength() throws IOException {
-		long realLength = getRandom().getLength();
-		if (getViewLength() == -1) {
-			return realLength - getViewOffset();
-		}
-		return Math.min(getViewLength(), realLength - getViewOffset());
-	}
+  @Override
+  public long getLength() throws IOException {
+    long realLength = getRandom().getLength();
+    if (getViewLength() == -1) {
+      return realLength - getViewOffset();
+    }
+    return Math.min(getViewLength(), realLength - getViewOffset());
+  }
 
-	@Override
-	public long getOffset() throws IOException {
-		return getRandom().getOffset() - getViewOffset();
-	}
+  @Override
+  public void setLength(long newLength) throws IOException {
+    throw new IOException("not yet supported");
+  }
 
-	protected long getViewEnd() {
-		return viewEnd;
-	}
+  @Override
+  public long getOffset() throws IOException {
+    return getRandom().getOffset() - getViewOffset();
+  }
 
-	protected long getViewLength() {
-		return viewLength;
-	}
+  protected long getViewEnd() {
+    return viewEnd;
+  }
 
-	protected long getViewOffset() {
-		return viewOffset;
-	}
+  protected long getViewLength() {
+    return viewLength;
+  }
 
-	@Override
-	public boolean isReadOnly() {
-		return true;
-	}
+  protected long getViewOffset() {
+    return viewOffset;
+  }
 
-	@Override
-	public int read() throws IOException {
-		if (getViewLength() != -1 && getOffset() >= getViewEnd()) {
-			return -1;
-		}
-		return super.read();
-	}
+  @Override
+  public boolean isReadOnly() {
+    return true;
+  }
 
-	@Override
-	public int read(byte[] buffer) throws IOException {
-		return read(buffer, 0, buffer.length);
-	}
+  @Override
+  public int read() throws IOException {
+    if (getViewLength() != -1 && getOffset() >= getViewEnd()) {
+      return -1;
+    }
+    return super.read();
+  }
 
-	@Override
-	public int read(byte[] buffer, int start, int numBytes) throws IOException {
-		if (getViewLength() != -1 && getOffset() >= getViewEnd()) {
-			return -1;
-		}
-		if (getViewLength() != -1) {
-			numBytes = Math.min(numBytes, (int) (getViewEnd() - getOffset()));
-		}
-		return super.read(buffer, start, numBytes);
-	}
+  @Override
+  public int read(byte[] buffer) throws IOException {
+    return read(buffer, 0, buffer.length);
+  }
 
-	@Override
-	public void seek(long offset) throws IOException {
-		super.seek(getViewOffset() + offset);
-	}
+  @Override
+  public int read(byte[] buffer, int start, int numBytes) throws IOException {
+    if (getViewLength() != -1 && getOffset() >= getViewEnd()) {
+      return -1;
+    }
+    if (getViewLength() != -1) {
+      numBytes = Math.min(numBytes, (int) (getViewEnd() - getOffset()));
+    }
+    return super.read(buffer, start, numBytes);
+  }
 
-	@Override
-	public void seekBy(long delta) throws IOException {
-		super.seekBy(delta);
-	}
+  @Override
+  public void seek(long offset) throws IOException {
+    super.seek(getViewOffset() + offset);
+  }
 
-	@Override
-	public void setLength(long newLength) throws IOException {
-		throw new IOException("not yet supported");
-	}
+  @Override
+  public void seekBy(long delta) throws IOException {
+    super.seekBy(delta);
+  }
 
-	@Override
-	public void write(byte[] buffer) throws IOException {
-		super.write(buffer);
-	}
+  @Override
+  public void write(byte[] buffer) throws IOException {
+    super.write(buffer);
+  }
 
-	@Override
-	public void write(byte[] buffer, int start, int numBytes)
-			throws IOException {
-		super.write(buffer, start, numBytes);
-	}
+  @Override
+  public void write(byte[] buffer, int start, int numBytes)
+      throws IOException {
+    super.write(buffer, start, numBytes);
+  }
 
-	@Override
-	public void write(int b) throws IOException {
-		super.write(b);
-	}
+  @Override
+  public void write(int b) throws IOException {
+    super.write(b);
+  }
 
 }

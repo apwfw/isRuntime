@@ -36,29 +36,28 @@ import de.intarsys.tools.variable.VariableNamespaces;
 
 /**
  * Select {@link IVariableNamespace} from {@link IVariableNamespaces}.
- * 
  */
 public class VariableNamespacesResolver extends ContainerResolver {
 
-	private final IVariableNamespaces namespaces;
+  private final IVariableNamespaces namespaces;
 
-	public VariableNamespacesResolver() {
-		this(null);
-	}
+  public VariableNamespacesResolver() {
+    this(null);
+  }
 
-	public VariableNamespacesResolver(IVariableNamespaces namespaces) {
-		super();
-		this.namespaces = namespaces;
-	}
+  public VariableNamespacesResolver(IVariableNamespaces namespaces) {
+    super();
+    this.namespaces = namespaces;
+  }
 
-	@Override
-	protected Object basicEvaluate(String expression, IArgs args)
-			throws EvaluationException {
-		if (namespaces == null) {
-			return VariableNamespaces.get().getNamespace(expression);
-		} else {
-			return namespaces.getNamespace(expression);
-		}
-	}
+  @Override
+  protected Object basicEvaluate(String expression, IArgs args)
+      throws EvaluationException {
+    if (namespaces == null) {
+      return VariableNamespaces.get().getNamespace(expression);
+    } else {
+      return namespaces.getNamespace(expression);
+    }
+  }
 
 }

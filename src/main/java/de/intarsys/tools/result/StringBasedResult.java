@@ -37,25 +37,25 @@ import de.intarsys.tools.locator.StringLocator;
  */
 public class StringBasedResult extends StreamResult {
 
-	private String string;
+  private String string;
 
-	public StringBasedResult(String contentType, String string) {
-		super(contentType);
-		this.string = string;
-		setName("string"); //$NON-NLS-1$
-		setType("txt"); //$NON-NLS-1$
-	}
+  public StringBasedResult(String contentType, String string) {
+    super(contentType);
+    this.string = string;
+    setName("string"); //$NON-NLS-1$
+    setType("txt"); //$NON-NLS-1$
+  }
 
-	public ILocator getLocator() {
-		return new StringLocator(string, getName(), getType());
-	}
+  public ILocator getLocator() {
+    return new StringLocator(string, getName(), getType());
+  }
 
-	public String getString() {
-		return string;
-	}
+  public String getString() {
+    return string;
+  }
 
-	@Override
-	public String toString() {
-		return string;
-	}
+  @Override
+  public String toString() {
+    return string;
+  }
 }

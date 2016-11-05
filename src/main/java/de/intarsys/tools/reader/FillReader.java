@@ -35,80 +35,78 @@ import java.io.Reader;
 /**
  * A Helper reader that repeatedly returns the characters in a predefined
  * pattern until it is closed.
- * 
  */
 public class FillReader extends Reader {
-	/**
-	 * the pattern that is "read" all over.
-	 */
-	private String pattern;
+  /**
+   * the pattern that is "read" all over.
+   */
+  private String pattern;
 
-	/**
-	 * Flag if reader is closed.
-	 */
-	private boolean closed = false;
+  /**
+   * Flag if reader is closed.
+   */
+  private boolean closed = false;
 
-	/**
-	 * The position within the string
-	 */
-	private int pos = 0;
+  /**
+   * The position within the string
+   */
+  private int pos = 0;
 
-	/**
-	 * Create a FillReader on string.
-	 * 
-	 * @param pattern
-	 *            The string that is read all over again.
-	 */
-	public FillReader(String pattern) {
-		super();
-		if (pattern == null) {
-			throw new NullPointerException("pattern may not be null");
-		}
-		this.pattern = pattern;
-	}
+  /**
+   * Create a FillReader on string.
+   *
+   * @param pattern The string that is read all over again.
+   */
+  public FillReader(String pattern) {
+    super();
+    if (pattern == null) {
+      throw new NullPointerException("pattern may not be null");
+    }
+    this.pattern = pattern;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.io.Reader#close()
-	 */
-	public void close() throws IOException {
-		closed = true;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.io.Reader#close()
+   */
+  public void close() throws IOException {
+    closed = true;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.io.Reader#read(char[], int, int)
-	 */
-	public int read(char[] cbuf, int off, int len) throws IOException {
-		for (int i = off; i < (off + len); i++) {
-			int c = read();
-			if (c == -1) {
-				return off - i;
-			} else {
-				cbuf[i] = (char) c;
-			}
-		}
-		return len;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.io.Reader#read(char[], int, int)
+   */
+  public int read(char[] cbuf, int off, int len) throws IOException {
+    for (int i = off; i < (off + len); i++) {
+      int c = read();
+      if (c == -1) {
+        return off - i;
+      } else {
+        cbuf[i] = (char) c;
+      }
+    }
+    return len;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.io.Reader#read()
-	 */
-	public int read() throws IOException {
-		if (closed) {
-			return -1;
-		} else {
-			if (pos >= pattern.length()) {
-				if (pattern.length() == 0) {
-					return -1;
-				}
-				pos = 0;
-			}
-			return pattern.charAt(pos++);
-		}
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.io.Reader#read()
+   */
+  public int read() throws IOException {
+    if (closed) {
+      return -1;
+    } else {
+      if (pos >= pattern.length()) {
+        if (pattern.length() == 0) {
+          return -1;
+        }
+        pos = 0;
+      }
+      return pattern.charAt(pos++);
+    }
+  }
 }

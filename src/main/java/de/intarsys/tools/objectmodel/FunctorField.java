@@ -42,46 +42,46 @@ import de.intarsys.tools.reflect.FieldAccessException;
  */
 public class FunctorField extends Member implements IField {
 
-	private IFunctor getFunctor;
+  private IFunctor getFunctor;
 
-	private String name;
+  private String name;
 
-	private IFunctor setFunctor;
+  private IFunctor setFunctor;
 
-	public FunctorField(String name, IFunctor getFunctor, IFunctor setFunctor) {
-		this.name = name;
-		this.getFunctor = getFunctor;
-		this.setFunctor = setFunctor;
-	}
+  public FunctorField(String name, IFunctor getFunctor, IFunctor setFunctor) {
+    this.name = name;
+    this.getFunctor = getFunctor;
+    this.setFunctor = setFunctor;
+  }
 
-	public IClass getFieldType() {
-		return null;
-	}
+  public IClass getFieldType() {
+    return null;
+  }
 
-	public String getName() {
-		return name;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public Object getValue(Object receiver) throws FieldAccessException {
-		try {
-			IFunctorCall call = new FunctorCall(receiver, Args.create());
-			return getFunctor.perform(call);
-		} catch (FunctorInvocationException e) {
-			Throwable cause = (e.getCause() == null) ? e : e.getCause();
-			throw new FieldAccessException(getName(), cause);
-		}
-	}
+  public Object getValue(Object receiver) throws FieldAccessException {
+    try {
+      IFunctorCall call = new FunctorCall(receiver, Args.create());
+      return getFunctor.perform(call);
+    } catch (FunctorInvocationException e) {
+      Throwable cause = (e.getCause() == null) ? e : e.getCause();
+      throw new FieldAccessException(getName(), cause);
+    }
+  }
 
-	public Object setValue(Object receiver, Object value)
-			throws FieldAccessException {
-		try {
-			IArgs args = Args.createIndexed(value);
-			IFunctorCall call = new FunctorCall(receiver, args);
-			return setFunctor.perform(call);
-		} catch (FunctorInvocationException e) {
-			Throwable cause = (e.getCause() == null) ? e : e.getCause();
-			throw new FieldAccessException(getName(), cause);
-		}
-	}
+  public Object setValue(Object receiver, Object value)
+      throws FieldAccessException {
+    try {
+      IArgs args = Args.createIndexed(value);
+      IFunctorCall call = new FunctorCall(receiver, args);
+      return setFunctor.perform(call);
+    } catch (FunctorInvocationException e) {
+      Throwable cause = (e.getCause() == null) ? e : e.getCause();
+      throw new FieldAccessException(getName(), cause);
+    }
+  }
 
 }

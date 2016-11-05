@@ -32,37 +32,35 @@ package de.intarsys.tools.functor;
 /**
  * An object representing the actual call of an {@link IFunctor}. This may be
  * used to transport call context and state such as arguments etc.
- * 
  */
 public interface IFunctorCall {
 
-	/**
-	 * The arguments currently associated with the call.
-	 * 
-	 * @return The arguments currently associated with the call.
-	 */
-	public IArgs getArgs();
+  /**
+   * The arguments currently associated with the call.
+   *
+   * @return The arguments currently associated with the call.
+   */
+  public IArgs getArgs();
 
-	/**
-	 * The receiver for the behavior implemented.
-	 * 
-	 * @return The receiver for the behavior implemented.
-	 */
-	public Object getReceiver();
+  /**
+   * Assign an argument list for the call.
+   * <p>
+   * This is for example useful when handling with declarations modifying the
+   * original functor call.
+   */
+  public void setArgs(IArgs args);
 
-	/**
-	 * Assign an argument list for the call.
-	 * <p>
-	 * This is for example useful when handling with declarations modifying the
-	 * original functor call.
-	 */
-	public void setArgs(IArgs args);
+  /**
+   * The receiver for the behavior implemented.
+   *
+   * @return The receiver for the behavior implemented.
+   */
+  public Object getReceiver();
 
-	/**
-	 * Assign a new receiver.
-	 * 
-	 * @param receiver
-	 *            The new receiver
-	 */
-	public void setReceiver(Object receiver);
+  /**
+   * Assign a new receiver.
+   *
+   * @param receiver The new receiver
+   */
+  public void setReceiver(Object receiver);
 }

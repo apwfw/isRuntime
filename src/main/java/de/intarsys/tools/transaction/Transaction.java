@@ -44,155 +44,155 @@ import java.util.logging.Logger;
  */
 abstract public class Transaction implements ITransaction, Serializable {
 
-	private static int ID_COUNTER = 0;
+  private static int ID_COUNTER = 0;
 
-	static private Logger Log = PACKAGE.Log;
+  static private Logger Log = PACKAGE.Log;
 
-	final private List children = new ArrayList();
+  final private List children = new ArrayList();
 
-	final private String id = String.valueOf(ID_COUNTER++);
+  final private String id = String.valueOf(ID_COUNTER++);
 
-	final private List<IResource> resources = new ArrayList<IResource>();
+  final private List<IResource> resources = new ArrayList<IResource>();
 
-	protected Transaction() {
-		super();
-	}
+  protected Transaction() {
+    super();
+  }
 
-	protected void addTransaction(Transaction tx) {
-		children.add(tx);
-	}
+  protected void addTransaction(Transaction tx) {
+    children.add(tx);
+  }
 
-	public void commit() throws TransactionException {
-		List lcChildren = new ArrayList(children);
-		for (Iterator it = lcChildren.iterator(); it.hasNext();) {
-			Transaction child = (Transaction) it.next();
-			child.commit();
-		}
-		commitResources();
-		stop();
-	}
+  public void commit() throws TransactionException {
+    List lcChildren = new ArrayList(children);
+    for (Iterator it = lcChildren.iterator(); it.hasNext(); ) {
+      Transaction child = (Transaction) it.next();
+      child.commit();
+    }
+    commitResources();
+    stop();
+  }
 
-	protected void commitResources() throws TransactionException {
-		for (Iterator it = resources.iterator(); it.hasNext();) {
-			IResource resource = (IResource) it.next();
-			try {
-				resource.commit();
-			} catch (ResourceException e) {
-				throw new TransactionException(e);
-			}
-		}
-	}
+  protected void commitResources() throws TransactionException {
+    for (Iterator it = resources.iterator(); it.hasNext(); ) {
+      IResource resource = (IResource) it.next();
+      try {
+        resource.commit();
+      } catch (ResourceException e) {
+        throw new TransactionException(e);
+      }
+    }
+  }
 
-	public void commitResume() throws TransactionException {
-		List lcChildren = new ArrayList(children);
-		for (Iterator it = lcChildren.iterator(); it.hasNext();) {
-			Transaction child = (Transaction) it.next();
-			child.commitResume();
-		}
-		commitResources();
-	}
+  public void commitResume() throws TransactionException {
+    List lcChildren = new ArrayList(children);
+    for (Iterator it = lcChildren.iterator(); it.hasNext(); ) {
+      Transaction child = (Transaction) it.next();
+      child.commitResume();
+    }
+    commitResources();
+  }
 
-	protected Transaction createTransaction() {
-		return new SubTransaction(this);
-	}
+  protected Transaction createTransaction() {
+    return new SubTransaction(this);
+  }
 
-	public void delist(IResource resource) throws TransactionException {
-		if (!resources.remove(resource)) {
-			throw new TransactionException("resource not listed");
-		}
-		try {
-			resource.rollback();
-		} catch (ResourceException e) {
-			throw new TransactionException(e);
-		}
-	}
+  public void delist(IResource resource) throws TransactionException {
+    if (!resources.remove(resource)) {
+      throw new TransactionException("resource not listed");
+    }
+    try {
+      resource.rollback();
+    } catch (ResourceException e) {
+      throw new TransactionException(e);
+    }
+  }
 
-	public void enlist(IResource resource) throws TransactionException {
-		try {
-			resource.begin();
-		} catch (ResourceException e) {
-			throw new TransactionException(e);
-		}
-		resources.add(resource);
-	}
+  public void enlist(IResource resource) throws TransactionException {
+    try {
+      resource.begin();
+    } catch (ResourceException e) {
+      throw new TransactionException(e);
+    }
+    resources.add(resource);
+  }
 
-	public String getId() {
-		return id;
-	}
+  public String getId() {
+    return id;
+  }
 
-	protected <T extends IResource> T getResource(IResourceType<T> resourceType) {
-		for (IResource resource : resources) {
-			if (resource.getType() == resourceType) {
-				return (T) resource;
-			}
-		}
-		return null;
-	}
+  protected <T extends IResource> T getResource(IResourceType<T> resourceType) {
+    for (IResource resource : resources) {
+      if (resource.getType() == resourceType) {
+        return (T) resource;
+      }
+    }
+    return null;
+  }
 
-	protected void removeTransaction(Transaction tx) {
-		children.remove(tx);
-	}
+  protected void removeTransaction(Transaction tx) {
+    children.remove(tx);
+  }
 
-	protected void resume() {
-		if (getParent() != null) {
-			((Transaction) getParent()).resume();
-		}
-		for (Iterator it = resources.iterator(); it.hasNext();) {
-			IResource resource = (IResource) it.next();
-			resource.resume();
-		}
-		Log.log(Level.FINE, "transaction[" + getId() + "] resumed");
-	}
+  protected void resume() {
+    if (getParent() != null) {
+      ((Transaction) getParent()).resume();
+    }
+    for (Iterator it = resources.iterator(); it.hasNext(); ) {
+      IResource resource = (IResource) it.next();
+      resource.resume();
+    }
+    Log.log(Level.FINE, "transaction[" + getId() + "] resumed");
+  }
 
-	public void rollback() throws TransactionException {
-		List lcChildren = new ArrayList(children);
-		for (Iterator it = lcChildren.iterator(); it.hasNext();) {
-			Transaction child = (Transaction) it.next();
-			child.rollback();
-		}
-		rollbackResources();
-		stop();
-	}
+  public void rollback() throws TransactionException {
+    List lcChildren = new ArrayList(children);
+    for (Iterator it = lcChildren.iterator(); it.hasNext(); ) {
+      Transaction child = (Transaction) it.next();
+      child.rollback();
+    }
+    rollbackResources();
+    stop();
+  }
 
-	protected void rollbackResources() throws TransactionException {
-		for (Iterator it = resources.iterator(); it.hasNext();) {
-			IResource resource = (IResource) it.next();
-			try {
-				resource.rollback();
-			} catch (ResourceException e) {
-				throw new TransactionException(e);
-			}
-		}
-	}
+  protected void rollbackResources() throws TransactionException {
+    for (Iterator it = resources.iterator(); it.hasNext(); ) {
+      IResource resource = (IResource) it.next();
+      try {
+        resource.rollback();
+      } catch (ResourceException e) {
+        throw new TransactionException(e);
+      }
+    }
+  }
 
-	public void rollbackResume() throws TransactionException {
-		List lcChildren = new ArrayList(children);
-		for (Iterator it = lcChildren.iterator(); it.hasNext();) {
-			Transaction child = (Transaction) it.next();
-			child.rollbackResume();
-		}
-		rollbackResources();
-	}
+  public void rollbackResume() throws TransactionException {
+    List lcChildren = new ArrayList(children);
+    for (Iterator it = lcChildren.iterator(); it.hasNext(); ) {
+      Transaction child = (Transaction) it.next();
+      child.rollbackResume();
+    }
+    rollbackResources();
+  }
 
-	protected void start() {
-		Log.log(Level.FINE, "transaction[" + getId() + "] started");
-	}
+  protected void start() {
+    Log.log(Level.FINE, "transaction[" + getId() + "] started");
+  }
 
-	protected void stop() {
-		Log.log(Level.FINE, "transaction[" + getId() + "] stopped");
-	}
+  protected void stop() {
+    Log.log(Level.FINE, "transaction[" + getId() + "] stopped");
+  }
 
-	protected void suspend() {
-		Log.log(Level.FINE, "transaction[" + getId() + "] suspended");
-		List lcChildren = new ArrayList(children);
-		for (Iterator it = lcChildren.iterator(); it.hasNext();) {
-			Transaction child = (Transaction) it.next();
-			child.suspend();
-		}
-		for (Iterator it = resources.iterator(); it.hasNext();) {
-			IResource resource = (IResource) it.next();
-			resource.suspend();
-		}
-	}
+  protected void suspend() {
+    Log.log(Level.FINE, "transaction[" + getId() + "] suspended");
+    List lcChildren = new ArrayList(children);
+    for (Iterator it = lcChildren.iterator(); it.hasNext(); ) {
+      Transaction child = (Transaction) it.next();
+      child.suspend();
+    }
+    for (Iterator it = resources.iterator(); it.hasNext(); ) {
+      IResource resource = (IResource) it.next();
+      resource.suspend();
+    }
+  }
 
 }

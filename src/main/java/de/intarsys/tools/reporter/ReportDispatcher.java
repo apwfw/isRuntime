@@ -34,142 +34,142 @@ package de.intarsys.tools.reporter;
  */
 public class ReportDispatcher implements IReporterSupport, IReporter {
 
-	private final Object owner;
+  private final Object owner;
 
-	private IReporter[] reporters = new IReporter[2];
+  private IReporter[] reporters = new IReporter[2];
 
-	public ReportDispatcher(Object pOwner) {
-		super();
-		owner = pOwner;
-	}
+  public ReportDispatcher(Object pOwner) {
+    super();
+    owner = pOwner;
+  }
 
-	public synchronized void addReporter(IReporter newReporter) {
-		if (newReporter == null) {
-			throw new NullPointerException("reporter may not be null");
-		}
-		int length = reporters.length;
-		int i = 0;
-		while (i < length) {
-			if (reporters[i] == null) {
-				break;
-			}
-			i++;
-		}
-		if (i >= length) {
-			IReporter[] tempReporters = new IReporter[length + 4];
-			System.arraycopy(reporters, 0, tempReporters, 0, length);
-			reporters = tempReporters;
-		}
-		reporters[i] = newReporter;
-	}
+  public synchronized void addReporter(IReporter newReporter) {
+    if (newReporter == null) {
+      throw new NullPointerException("reporter may not be null");
+    }
+    int length = reporters.length;
+    int i = 0;
+    while (i < length) {
+      if (reporters[i] == null) {
+        break;
+      }
+      i++;
+    }
+    if (i >= length) {
+      IReporter[] tempReporters = new IReporter[length + 4];
+      System.arraycopy(reporters, 0, tempReporters, 0, length);
+      reporters = tempReporters;
+    }
+    reporters[i] = newReporter;
+  }
 
-	synchronized public void attach(IReporterSupport support) {
-		int length = reporters.length;
-		for (int i = 0; i < length; i++) {
-			support.addReporter(reporters[i]);
-		}
-	}
+  synchronized public void attach(IReporterSupport support) {
+    int length = reporters.length;
+    for (int i = 0; i < length; i++) {
+      support.addReporter(reporters[i]);
+    }
+  }
 
-	public synchronized void clear() {
-		reporters = new IReporter[4];
-	}
+  public synchronized void clear() {
+    reporters = new IReporter[4];
+  }
 
-	synchronized public void detach(IReporterSupport support) {
-		int length = reporters.length;
-		for (int i = 0; i < length; i++) {
-			support.removeReporter(reporters[i]);
-		}
-	}
+  synchronized public void detach(IReporterSupport support) {
+    int length = reporters.length;
+    for (int i = 0; i < length; i++) {
+      support.removeReporter(reporters[i]);
+    }
+  }
 
-	public Object getOwner() {
-		return owner;
-	}
+  public Object getOwner() {
+    return owner;
+  }
 
-	public synchronized boolean isEmpty() {
-		for (int i = 0; i < reporters.length; i++) {
-			if (reporters[i] != null) {
-				return false;
-			}
-		}
-		return true;
-	}
+  public synchronized boolean isEmpty() {
+    for (int i = 0; i < reporters.length; i++) {
+      if (reporters[i] != null) {
+        return false;
+      }
+    }
+    return true;
+  }
 
-	synchronized public void removeReporter(IReporter newReporter) {
-		int length = reporters.length;
-		int i = 0;
-		while (i < length) {
-			if (reporters[i] == newReporter) {
-				reporters[i] = null;
-				break;
-			}
-			i++;
-		}
-	}
+  synchronized public void removeReporter(IReporter newReporter) {
+    int length = reporters.length;
+    int i = 0;
+    while (i < length) {
+      if (reporters[i] == newReporter) {
+        reporters[i] = null;
+        break;
+      }
+      i++;
+    }
+  }
 
-	public void reportActivityEnd() {
-		int length = reporters.length;
-		for (int i = 0; i < length; i++) {
-			IReporter tempReporter = reporters[i];
-			if (tempReporter == null) {
-				continue;
-			}
-			tempReporter.reportActivityEnd();
-		}
-	}
+  public void reportActivityEnd() {
+    int length = reporters.length;
+    for (int i = 0; i < length; i++) {
+      IReporter tempReporter = reporters[i];
+      if (tempReporter == null) {
+        continue;
+      }
+      tempReporter.reportActivityEnd();
+    }
+  }
 
-	public void reportActivityStart(String message, int style) {
-		int length = reporters.length;
-		for (int i = 0; i < length; i++) {
-			IReporter tempReporter = reporters[i];
-			if (tempReporter == null) {
-				continue;
-			}
-			tempReporter.reportActivityStart(message, style);
-		}
-	}
+  public void reportActivityStart(String message, int style) {
+    int length = reporters.length;
+    for (int i = 0; i < length; i++) {
+      IReporter tempReporter = reporters[i];
+      if (tempReporter == null) {
+        continue;
+      }
+      tempReporter.reportActivityStart(message, style);
+    }
+  }
 
-	public void reportError(String title, String message, Throwable t, int style) {
-		int length = reporters.length;
-		for (int i = 0; i < length; i++) {
-			IReporter tempReporter = reporters[i];
-			if (tempReporter == null) {
-				continue;
-			}
-			tempReporter.reportError(title, message, t, style);
-		}
-	}
+  public void reportError(String title, String message, Throwable t, int style) {
+    int length = reporters.length;
+    for (int i = 0; i < length; i++) {
+      IReporter tempReporter = reporters[i];
+      if (tempReporter == null) {
+        continue;
+      }
+      tempReporter.reportError(title, message, t, style);
+    }
+  }
 
-	public void reportMessage(String title, String message, int style) {
-		int length = reporters.length;
-		for (int i = 0; i < length; i++) {
-			IReporter tempReporter = reporters[i];
-			if (tempReporter == null) {
-				continue;
-			}
-			tempReporter.reportMessage(title, message, style);
-		}
-	}
+  public void reportMessage(String title, String message, int style) {
+    int length = reporters.length;
+    for (int i = 0; i < length; i++) {
+      IReporter tempReporter = reporters[i];
+      if (tempReporter == null) {
+        continue;
+      }
+      tempReporter.reportMessage(title, message, style);
+    }
+  }
 
-	public void reportProgress(String message, int percent, int style) {
-		int length = reporters.length;
-		for (int i = 0; i < length; i++) {
-			IReporter tempReporter = reporters[i];
-			if (tempReporter == null) {
-				continue;
-			}
-			tempReporter.reportProgress(message, percent, style);
-		}
-	}
+  public void reportProgress(String message, int percent, int style) {
+    int length = reporters.length;
+    for (int i = 0; i < length; i++) {
+      IReporter tempReporter = reporters[i];
+      if (tempReporter == null) {
+        continue;
+      }
+      tempReporter.reportProgress(message, percent, style);
+    }
+  }
 
-	public void reportStatus(String message, int style) {
-		int length = reporters.length;
-		for (int i = 0; i < length; i++) {
-			IReporter tempReporter = reporters[i];
-			if (tempReporter == null) {
-				continue;
-			}
-			tempReporter.reportStatus(message, style);
-		}
-	}
+  public void reportStatus(String message, int style) {
+    int length = reporters.length;
+    for (int i = 0; i < length; i++) {
+      IReporter tempReporter = reporters[i];
+      if (tempReporter == null) {
+        continue;
+      }
+      tempReporter.reportStatus(message, style);
+    }
+  }
 
 }

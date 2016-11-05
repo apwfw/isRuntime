@@ -29,6 +29,9 @@
  */
 package de.intarsys.tools.installresource;
 
+import de.intarsys.tools.file.TempTools;
+import de.intarsys.tools.stream.StreamTools;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -40,9 +43,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
-import de.intarsys.tools.file.TempTools;
-import de.intarsys.tools.stream.StreamTools;
-
 /**
  * An abstraction to access a directory structure to be deployed along with the
  * application via classloader. Initially a ZIP file is searched. The ZIP is
@@ -50,55 +50,55 @@ import de.intarsys.tools.stream.StreamTools;
  */
 public class InstallZip extends Install {
 
-	public InstallZip(String path, String name, boolean platformDependent) {
-		super(path, name, platformDependent);
-	}
+  public InstallZip(String path, String name, boolean platformDependent) {
+    super(path, name, platformDependent);
+  }
 
-	protected void loadEntry(File parent, ZipFile zipFile, ZipEntry entry)
-			throws IOException, FileNotFoundException {
-		InputStream is = null;
-		FileOutputStream os = null;
-		String entryName = entry.getName();
-		File entryFile = new File(parent, entryName);
-		if (entry.isDirectory()) {
-			entryFile.mkdirs();
-		} else {
-			File entryDir = entryFile.getParentFile();
-			if (entryDir != null && !entryDir.exists()) {
-				entryDir.mkdirs();
-			}
-			is = zipFile.getInputStream(entry);
-			os = new FileOutputStream(entryFile);
-			StreamTools.copyStream(is, os);
-		}
-	}
+  protected void loadEntry(File parent, ZipFile zipFile, ZipEntry entry)
+      throws IOException, FileNotFoundException {
+    InputStream is = null;
+    FileOutputStream os = null;
+    String entryName = entry.getName();
+    File entryFile = new File(parent, entryName);
+    if (entry.isDirectory()) {
+      entryFile.mkdirs();
+    } else {
+      File entryDir = entryFile.getParentFile();
+      if (entryDir != null && !entryDir.exists()) {
+        entryDir.mkdirs();
+      }
+      is = zipFile.getInputStream(entry);
+      os = new FileOutputStream(entryFile);
+      StreamTools.copyStream(is, os);
+    }
+  }
 
-	@Override
-	protected File loadURL(URL url) throws IOException {
-		// create temporary zip file
-		File file = TempTools.createTempFile("file", getName());
-		copy(url, file);
-		deleteOnExit(file);
-		// fill new temporary directory
-		File dir = TempTools.createTempDir("dir", getName());
-		loadZip(file, dir);
-		return dir;
-	}
+  @Override
+  protected File loadURL(URL url) throws IOException {
+    // create temporary zip file
+    File file = TempTools.createTempFile("file", getName());
+    copy(url, file);
+    deleteOnExit(file);
+    // fill new temporary directory
+    File dir = TempTools.createTempDir("dir", getName());
+    loadZip(file, dir);
+    return dir;
+  }
 
-	protected void loadZip(File zip, File parent) throws ZipException,
-			IOException {
-		ZipFile zipFile = null;
-		try {
-			zipFile = new ZipFile(zip);
-			Enumeration entries = zipFile.entries();
-			while (entries.hasMoreElements()) {
-				ZipEntry entry = (ZipEntry) entries.nextElement();
-				loadEntry(parent, zipFile, entry);
-			}
-		} finally {
-			if (zipFile != null) {
-				zipFile.close();
-			}
-		}
-	}
+  protected void loadZip(File zip, File parent) throws ZipException,
+      IOException {
+    ZipFile zipFile = null;
+    try {
+      zipFile = new ZipFile(zip);
+      Enumeration entries = zipFile.entries();
+      while (entries.hasMoreElements()) {
+        ZipEntry entry = (ZipEntry) entries.nextElement();
+        loadEntry(parent, zipFile, entry);
+      }
+    } finally {
+      if (zipFile != null) {
+        zipFile.close();
+      }
+    }
+  }
 }

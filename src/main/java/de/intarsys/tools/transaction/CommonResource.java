@@ -33,57 +33,57 @@ import java.io.Serializable;
 
 /**
  * A common implementation for the {@link IResource} abstraction.
- * 
+ *
  * @param <R>
  * @param <T>
  */
 abstract public class CommonResource<R extends IResource, T extends IResourceType<R>>
-		implements IResource, Serializable {
+    implements IResource, Serializable {
 
-	final private T type;
+  final private T type;
 
-	final private R parent;
+  final private R parent;
 
-	private boolean active = false;
+  private boolean active = false;
 
-	protected CommonResource(T type, R parent) {
-		super();
-		this.type = type;
-		this.parent = parent;
-	}
+  protected CommonResource(T type, R parent) {
+    super();
+    this.type = type;
+    this.parent = parent;
+  }
 
-	public void begin() throws ResourceException {
-		setActive(true);
-	}
+  public void begin() throws ResourceException {
+    setActive(true);
+  }
 
-	public void commit() throws ResourceException {
-	}
+  public void commit() throws ResourceException {
+  }
 
-	public R getParent() {
-		return parent;
-	}
+  public R getParent() {
+    return parent;
+  }
 
-	public T getType() {
-		return type;
-	}
+  public T getType() {
+    return type;
+  }
 
-	protected boolean isActive() {
-		return active;
-	}
+  protected boolean isActive() {
+    return active;
+  }
 
-	public void resume() {
-		setActive(true);
-	}
+  protected void setActive(boolean active) {
+    this.active = active;
+  }
 
-	public void rollback() throws ResourceException {
-	}
+  public void resume() {
+    setActive(true);
+  }
 
-	protected void setActive(boolean active) {
-		this.active = active;
-	}
+  public void rollback() throws ResourceException {
+  }
 
-	public void suspend() {
-		setActive(false);
-	}
+  public void suspend() {
+    setActive(false);
+  }
 
 }

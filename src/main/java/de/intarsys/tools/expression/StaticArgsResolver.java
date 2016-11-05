@@ -33,35 +33,34 @@ import de.intarsys.tools.functor.IArgs;
 
 /**
  * An {@link IStringEvaluator} accessing statically provided argument values.
- * 
  */
 public class StaticArgsResolver extends ContainerResolver {
 
-	private static final Object NA = new Object();
+  private static final Object NA = new Object();
 
-	private IArgs args;
+  private IArgs args;
 
-	public StaticArgsResolver(IArgs args) {
-		super();
-		this.args = args;
-	}
+  public StaticArgsResolver(IArgs args) {
+    super();
+    this.args = args;
+  }
 
-	@Override
-	protected Object basicEvaluate(String expression, IArgs pArgs)
-			throws EvaluationException {
-		Object result = args.get(expression, NA);
-		if (result != NA) {
-			return result;
-		}
-		try {
-			int index = Integer.parseInt(expression);
-			result = args.get(index, NA);
-			if (result != NA) {
-				return result;
-			}
-		} catch (NumberFormatException e) {
-			//
-		}
-		throw new EvaluationException("can't evaluate '" + expression + "'"); //$NON-NLS-1$ //$NON-NLS-2$
-	}
+  @Override
+  protected Object basicEvaluate(String expression, IArgs pArgs)
+      throws EvaluationException {
+    Object result = args.get(expression, NA);
+    if (result != NA) {
+      return result;
+    }
+    try {
+      int index = Integer.parseInt(expression);
+      result = args.get(index, NA);
+      if (result != NA) {
+        return result;
+      }
+    } catch (NumberFormatException e) {
+      //
+    }
+    throw new EvaluationException("can't evaluate '" + expression + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+  }
 }

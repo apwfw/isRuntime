@@ -34,18 +34,15 @@ package de.intarsys.tools.functor;
  */
 public interface IFunctorHandler {
 
-	/**
-	 * Perform the encapsulated business logic for <code>functor</code>
-	 * 
-	 * @param functor
-	 * @param call
-	 *            The call context
-	 * @return The behavior execution result.
-	 * 
-	 * @throws FunctorInvocationException
-	 *             An exception that raised while executing the business logic
-	 *             will be wrapped in a FunctorInvocationException.
-	 */
-	public Object perform(IFunctor functor, IFunctorCall call)
-			throws FunctorInvocationException;
+  /**
+   * Perform the encapsulated business logic for <code>functor</code>
+   *
+   * @param functor
+   * @param call    The call context
+   * @return The behavior execution result.
+   * @throws FunctorInvocationException An exception that raised while executing the business logic
+   *                                    will be wrapped in a FunctorInvocationException.
+   */
+  public Object perform(IFunctor functor, IFunctorCall call)
+      throws FunctorInvocationException;
 }

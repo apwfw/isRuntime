@@ -31,20 +31,20 @@ package de.intarsys.tools.dom;
 
 public class ElementSerializationException extends Exception {
 
-	public ElementSerializationException() {
-		super();
-	}
+  public ElementSerializationException() {
+    super();
+  }
 
-	public ElementSerializationException(String message, Throwable cause) {
-		super(message, cause);
-	}
+  public ElementSerializationException(String message, Throwable cause) {
+    super(message, cause);
+  }
 
-	public ElementSerializationException(String message) {
-		super(message);
-	}
+  public ElementSerializationException(String message) {
+    super(message);
+  }
 
-	public ElementSerializationException(Throwable cause) {
-		super(cause);
-	}
+  public ElementSerializationException(Throwable cause) {
+    super(cause);
+  }
 
 }

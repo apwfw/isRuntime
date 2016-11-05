@@ -37,25 +37,25 @@ import de.intarsys.tools.locator.ILocator;
  */
 public class ByteBasedResult extends StreamResult {
 
-	private byte[] bytes;
+  private byte[] bytes;
 
-	public ByteBasedResult(String contentType, byte[] bytes) {
-		super(contentType);
-		setName("binary"); //$NON-NLS-1$
-		setType("dat"); //$NON-NLS-1$
-	}
+  public ByteBasedResult(String contentType, byte[] bytes) {
+    super(contentType);
+    setName("binary"); //$NON-NLS-1$
+    setType("dat"); //$NON-NLS-1$
+  }
 
-	public byte[] getBytes() {
-		return bytes;
-	}
+  public byte[] getBytes() {
+    return bytes;
+  }
 
-	public ILocator getLocator() {
-		return new ByteArrayLocator(bytes, getName(), getType());
-	}
+  public ILocator getLocator() {
+    return new ByteArrayLocator(bytes, getName(), getType());
+  }
 
-	@Override
-	public String toString() {
-		return new String(bytes);
-	}
+  @Override
+  public String toString() {
+    return new String(bytes);
+  }
 
 }

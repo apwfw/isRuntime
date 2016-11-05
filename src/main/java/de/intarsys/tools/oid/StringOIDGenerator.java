@@ -32,41 +32,37 @@ package de.intarsys.tools.oid;
 /**
  * Create an OID unique to the running VM. Multiple {@link StringOIDGenerator}
  * instances create different OIDs.
- * 
  */
 public class StringOIDGenerator extends CommonOIDGenerator {
-	private static int COUNTER = 0;
+  private static int COUNTER = 0;
 
-	final private int myId = COUNTER++;
+  final private int myId = COUNTER++;
+  final private String prefix;
+  final private String suffix;
+  private long lastMillis = 0;
 
-	private long lastMillis = 0;
+  /**
+   *
+   */
+  public StringOIDGenerator(String prefix, String suffix) {
+    super();
+    this.prefix = prefix;
+    this.suffix = suffix;
+  }
 
-	final private String prefix;
-
-	final private String suffix;
-
-	/**
-	 * 
-	 */
-	public StringOIDGenerator(String prefix, String suffix) {
-		super();
-		this.prefix = prefix;
-		this.suffix = suffix;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.oid.OIDGenerator#createOID()
-	 */
-	public Object createOID() {
-		long millis = System.currentTimeMillis();
-		synchronized (this) {
-			while (millis <= lastMillis) {
-				millis++;
-			}
-			lastMillis = millis;
-		}
-		return prefix + "_" + myId + "_" + millis + "_" + suffix;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.oid.OIDGenerator#createOID()
+   */
+  public Object createOID() {
+    long millis = System.currentTimeMillis();
+    synchronized (this) {
+      while (millis <= lastMillis) {
+        millis++;
+      }
+      lastMillis = millis;
+    }
+    return prefix + "_" + myId + "_" + millis + "_" + suffix;
+  }
 }

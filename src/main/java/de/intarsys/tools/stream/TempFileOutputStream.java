@@ -29,96 +29,101 @@
  */
 package de.intarsys.tools.stream;
 
+import de.intarsys.tools.file.FileTools;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-
-import de.intarsys.tools.file.FileTools;
 
 /**
  * A stream wrapper that defers writing to the final destination until the
  * stream is closed. The output is written to a temporary file in the
  * destinations directory. When the stream is closed, the temp file is copied to
  * the destination and deleted.
- * 
  */
 public class TempFileOutputStream extends OutputStream {
-	/** The final destination for the output */
-	private File destination;
+  /**
+   * The final destination for the output
+   */
+  private File destination;
 
-	/** The temporary file to use. */
-	private File tempFile;
+  /**
+   * The temporary file to use.
+   */
+  private File tempFile;
 
-	/** The temporary output stream */
-	private FileOutputStream tempOutput;
+  /**
+   * The temporary output stream
+   */
+  private FileOutputStream tempOutput;
 
-	public TempFileOutputStream(File destination) throws IOException {
-		this(destination, "tmp", "tmp");
-	}
+  public TempFileOutputStream(File destination) throws IOException {
+    this(destination, "tmp", "tmp");
+  }
 
-	public TempFileOutputStream(File destination, String prefix, String suffix)
-			throws IOException {
-		super();
-		this.destination = destination;
-		tempFile = File.createTempFile(prefix, suffix,
-				destination.getParentFile());
-		tempOutput = new FileOutputStream(tempFile);
-	}
+  public TempFileOutputStream(File destination, String prefix, String suffix)
+      throws IOException {
+    super();
+    this.destination = destination;
+    tempFile = File.createTempFile(prefix, suffix,
+        destination.getParentFile());
+    tempOutput = new FileOutputStream(tempFile);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.io.OutputStream#close()
-	 */
-	@Override
-	public void close() throws IOException {
-		super.close();
-		try {
-			tempOutput.close();
-			FileTools.copyBinaryFile(tempFile, destination);
-		} finally {
-			tempFile.delete();
-		}
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.io.OutputStream#close()
+   */
+  @Override
+  public void close() throws IOException {
+    super.close();
+    try {
+      tempOutput.close();
+      FileTools.copyBinaryFile(tempFile, destination);
+    } finally {
+      tempFile.delete();
+    }
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.io.OutputStream#flush()
-	 */
-	@Override
-	public void flush() throws IOException {
-		tempOutput.flush();
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.io.OutputStream#flush()
+   */
+  @Override
+  public void flush() throws IOException {
+    tempOutput.flush();
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.io.OutputStream#write(byte[])
-	 */
-	@Override
-	public void write(byte[] b) throws IOException {
-		tempOutput.write(b);
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.io.OutputStream#write(byte[])
+   */
+  @Override
+  public void write(byte[] b) throws IOException {
+    tempOutput.write(b);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.io.OutputStream#write(byte[], int, int)
-	 */
-	@Override
-	public void write(byte[] b, int off, int len) throws IOException {
-		tempOutput.write(b, off, len);
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.io.OutputStream#write(byte[], int, int)
+   */
+  @Override
+  public void write(byte[] b, int off, int len) throws IOException {
+    tempOutput.write(b, off, len);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.io.OutputStream#write(int)
-	 */
-	@Override
-	public void write(int b) throws IOException {
-		tempOutput.write(b);
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.io.OutputStream#write(int)
+   */
+  @Override
+  public void write(int b) throws IOException {
+    tempOutput.write(b);
+  }
 }

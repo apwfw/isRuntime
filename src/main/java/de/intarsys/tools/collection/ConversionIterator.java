@@ -34,44 +34,41 @@ import java.util.Iterator;
 /**
  * Abstract iterator implementation allowing the conversion from a source
  * iterator's output elements to the desired target elements.
- * 
+ *
+ * @param <S> The source object type.
+ * @param <T> The target object type.
  * @author TPI
- * 
- * @param <S>
- *            The source object type.
- * @param <T>
- *            The target object type.
  */
 public abstract class ConversionIterator<S, T> implements Iterator<T> {
 
-	private Iterator<S> baseIterator;
+  private Iterator<S> baseIterator;
 
-	protected ConversionIterator(Iterator<S> baseIterator) {
-		super();
-		this.baseIterator = baseIterator;
-	}
+  protected ConversionIterator(Iterator<S> baseIterator) {
+    super();
+    this.baseIterator = baseIterator;
+  }
 
-	protected abstract T createTargetObject(S sourceObject);
+  protected abstract T createTargetObject(S sourceObject);
 
-	public Iterator<S> getBaseIterator() {
-		return baseIterator;
-	}
+  public Iterator<S> getBaseIterator() {
+    return baseIterator;
+  }
 
-	@Override
-	public boolean hasNext() {
-		return baseIterator.hasNext();
-	}
+  @Override
+  public boolean hasNext() {
+    return baseIterator.hasNext();
+  }
 
-	@Override
-	public T next() {
-		S nextCandidate = baseIterator.next();
-		T targetObject = createTargetObject(nextCandidate);
-		return targetObject;
-	}
+  @Override
+  public T next() {
+    S nextCandidate = baseIterator.next();
+    T targetObject = createTargetObject(nextCandidate);
+    return targetObject;
+  }
 
-	@Override
-	public void remove() {
-		baseIterator.remove();
-	}
+  @Override
+  public void remove() {
+    baseIterator.remove();
+  }
 
 }

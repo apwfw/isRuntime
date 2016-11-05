@@ -38,23 +38,23 @@ import de.intarsys.tools.converter.IConverter;
  * Convert any {@link Attachment} to a {@link Canonical} format.
  */
 public class CanonicalFromAttachmentConverter implements
-		IConverter<Attachment, Object> {
+    IConverter<Attachment, Object> {
 
-	public CanonicalFromAttachmentConverter() {
-		super();
-		ConverterRegistry.get().registerConverter(this);
-	}
+  public CanonicalFromAttachmentConverter() {
+    super();
+    ConverterRegistry.get().registerConverter(this);
+  }
 
-	public Object convert(Attachment source) throws ConversionException {
-		return source.getAttached();
-	}
+  public Object convert(Attachment source) throws ConversionException {
+    return source.getAttached();
+  }
 
-	public Class<?> getSourceType() {
-		return Attachment.class;
-	}
+  public Class<?> getSourceType() {
+    return Attachment.class;
+  }
 
-	public Class<?> getTargetType() {
-		return Canonical.class;
-	}
+  public Class<?> getTargetType() {
+    return Canonical.class;
+  }
 
 }

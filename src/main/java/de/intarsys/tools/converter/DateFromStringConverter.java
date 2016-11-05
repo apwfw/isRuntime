@@ -36,20 +36,20 @@ import java.util.Date;
  */
 public class DateFromStringConverter implements IConverter<String, Date> {
 
-	public Date convert(String source) throws ConversionException {
-		try {
-			return new Date((long) Double.parseDouble(source));
-		} catch (Exception e) {
-			throw new ConversionException(e);
-		}
-	}
+  public Date convert(String source) throws ConversionException {
+    try {
+      return new Date((long) Double.parseDouble(source));
+    } catch (Exception e) {
+      throw new ConversionException(e);
+    }
+  }
 
-	public Class<?> getSourceType() {
-		return String.class;
-	}
+  public Class<?> getSourceType() {
+    return String.class;
+  }
 
-	public Class<?> getTargetType() {
-		return Date.class;
-	}
+  public Class<?> getTargetType() {
+    return Date.class;
+  }
 
 }

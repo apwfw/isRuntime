@@ -5,27 +5,26 @@ import java.util.Map;
 
 public class MemoryLogRegistry {
 
-	final private static MemoryLogRegistry ACTIVE = new MemoryLogRegistry();
+  final private static MemoryLogRegistry ACTIVE = new MemoryLogRegistry();
+  final private Map<String, MemoryLogHandler> handlers = new HashMap<String, MemoryLogHandler>();
 
-	public static MemoryLogRegistry get() {
-		return ACTIVE;
-	}
+  public static MemoryLogRegistry get() {
+    return ACTIVE;
+  }
 
-	final private Map<String, MemoryLogHandler> handlers = new HashMap<String, MemoryLogHandler>();
+  public MemoryLogHandler[] getHandlers() {
+    return (MemoryLogHandler[]) handlers.values().toArray();
+  }
 
-	public MemoryLogHandler[] getHandlers() {
-		return (MemoryLogHandler[]) handlers.values().toArray();
-	}
+  public MemoryLogHandler lookup(String id) {
+    return handlers.get(id);
+  }
 
-	public MemoryLogHandler lookup(String id) {
-		return handlers.get(id);
-	}
+  public void register(MemoryLogHandler handler) {
+    handlers.put(handler.getId(), handler);
+  }
 
-	public void register(MemoryLogHandler handler) {
-		handlers.put(handler.getId(), handler);
-	}
-
-	public void unregister(MemoryLogHandler handler) {
-		handlers.remove(handler.getId());
-	}
+  public void unregister(MemoryLogHandler handler) {
+    handlers.remove(handler.getId());
+  }
 }

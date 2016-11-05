@@ -39,16 +39,16 @@ import de.intarsys.tools.functor.IArgs;
  */
 public class ConstantResolver implements IStringEvaluator {
 
-	final private Object value;
+  final private Object value;
 
-	public ConstantResolver(Object value) {
-		super();
-		this.value = value;
-	}
+  public ConstantResolver(Object value) {
+    super();
+    this.value = value;
+  }
 
-	public Object evaluate(String expression, IArgs args)
-			throws EvaluationException {
-		return value;
-	}
+  public Object evaluate(String expression, IArgs args)
+      throws EvaluationException {
+    return value;
+  }
 
 }

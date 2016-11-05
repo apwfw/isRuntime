@@ -31,29 +31,30 @@ package de.intarsys.tools.event;
 
 /**
  * An event indicating the creation of a new instance by a factory.
- * 
  */
 public class CreatedEvent extends Event {
-	public static final EventType ID = new EventType(CreatedEvent.class
-			.getName());
+  public static final EventType ID = new EventType(CreatedEvent.class
+      .getName());
 
-	/** The instance created by a factory */
-	private Object instance;
+  /**
+   * The instance created by a factory
+   */
+  private Object instance;
 
-	public CreatedEvent(Object source) {
-		super(source);
-	}
+  public CreatedEvent(Object source) {
+    super(source);
+  }
 
-	public Object getInstance() {
-		return instance;
-	}
+  public Object getInstance() {
+    return instance;
+  }
 
-	@Override
-	public EventType getEventType() {
-		return ID;
-	}
+  public void setInstance(Object instance) {
+    this.instance = instance;
+  }
 
-	public void setInstance(Object instance) {
-		this.instance = instance;
-	}
+  @Override
+  public EventType getEventType() {
+    return ID;
+  }
 }

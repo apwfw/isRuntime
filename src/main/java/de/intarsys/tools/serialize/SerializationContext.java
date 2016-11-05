@@ -35,7 +35,7 @@ package de.intarsys.tools.serialize;
  */
 abstract public class SerializationContext {
 
-	public SerializationContext() {
-		super();
-	}
+  public SerializationContext() {
+    super();
+  }
 }

@@ -35,17 +35,15 @@ import de.intarsys.tools.functor.IArgs;
  * An object able to access a method within a delegate
  */
 public interface IMethodHandler {
-	/**
-	 * Execute the implementation associated with this method in the context of
-	 * the <code>receiver</code> and return the result.
-	 * 
-	 * @param receiver
-	 *            The object implementing the method.
-	 * @param args
-	 *            The arguments for the invocation.
-	 * @return The result of the invocation.
-	 * @throws MethodException
-	 */
-	public Object invoke(Object receiver, IArgs args)
-			throws MethodInvocationException;
+  /**
+   * Execute the implementation associated with this method in the context of
+   * the <code>receiver</code> and return the result.
+   *
+   * @param receiver The object implementing the method.
+   * @param args     The arguments for the invocation.
+   * @return The result of the invocation.
+   * @throws MethodException
+   */
+  public Object invoke(Object receiver, IArgs args)
+      throws MethodInvocationException;
 }

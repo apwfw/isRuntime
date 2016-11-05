@@ -35,6 +35,6 @@ import de.intarsys.tools.reflect.IMethodHandler;
  * The abstraction of a "method" or "function" within an {@link IClass}.
  */
 public interface IMethod extends IMember, IReturnTypeInfo, ISignatureInfo,
-		IMethodHandler {
+    IMethodHandler {
 
 }

@@ -33,56 +33,55 @@ package de.intarsys.tools.monitor;
  * A monitor for watching the memory usage in the application.
  */
 public class MemoryMonitor extends Monitor {
-	public MemoryMonitor() {
-		super();
-	}
+  public MemoryMonitor() {
+    super();
+  }
 
-	/**
-	 * Create a MemoryMonitor
-	 * 
-	 * @param name
-	 *            monitor name
-	 */
-	public MemoryMonitor(String name) {
-		super(name);
-	}
+  /**
+   * Create a MemoryMonitor
+   *
+   * @param name monitor name
+   */
+  public MemoryMonitor(String name) {
+    super(name);
+  }
 
-	/*
-	 * @see de.intarsys.tools.monitor.Monitor#createMonitorTrace()
-	 */
-	@Override
-	protected MemoryMonitorTrace createMonitorTrace() {
-		return new MemoryMonitorTrace(this);
-	}
+  /*
+   * @see de.intarsys.tools.monitor.Monitor#createMonitorTrace()
+   */
+  @Override
+  protected MemoryMonitorTrace createMonitorTrace() {
+    return new MemoryMonitorTrace(this);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.intarsys.tools.monitor.Monitor#doCalculation(de.intarsys.tools.monitor
-	 * .IMonitorTrace)
-	 */
-	@Override
-	protected void doCalculation(MonitorTrace trace) {
-		if (trace.getStart() < statistic.min) {
-			statistic.min = trace.getStart();
-		}
-		if (trace.getStop() < statistic.min) {
-			statistic.min = trace.getStop();
-		}
+  /*
+   * (non-Javadoc)
+   *
+   * @see
+   * de.intarsys.tools.monitor.Monitor#doCalculation(de.intarsys.tools.monitor
+   * .IMonitorTrace)
+   */
+  @Override
+  protected void doCalculation(MonitorTrace trace) {
+    if (trace.getStart() < statistic.min) {
+      statistic.min = trace.getStart();
+    }
+    if (trace.getStop() < statistic.min) {
+      statistic.min = trace.getStop();
+    }
 
-		if (trace.getStart() > statistic.max) {
-			statistic.max = trace.getStart();
-		}
-		if (trace.getStop() > statistic.max) {
-			statistic.max = trace.getStop();
-		}
+    if (trace.getStart() > statistic.max) {
+      statistic.max = trace.getStart();
+    }
+    if (trace.getStop() > statistic.max) {
+      statistic.max = trace.getStop();
+    }
 
-		statistic.total = last - first;
+    statistic.total = last - first;
 
-		statistic.avg = ((statistic.avg * statistic.count) + trace.getStop())
-				/ (statistic.count + 1);
+    statistic.avg = ((statistic.avg * statistic.count) + trace.getStop())
+        / (statistic.count + 1);
 
-		statistic.count++;
-	}
+    statistic.count++;
+  }
 }

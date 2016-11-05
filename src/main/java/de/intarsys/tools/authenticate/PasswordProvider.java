@@ -31,20 +31,19 @@ package de.intarsys.tools.authenticate;
 
 /**
  * A VM singleton for accessing a {@link IPasswordProvider}.
- * 
  */
 public class PasswordProvider {
 
-	private static IPasswordProvider ACTIVE;
+  private static IPasswordProvider ACTIVE;
 
-	static public IPasswordProvider get() {
-		return ACTIVE;
-	}
+  private PasswordProvider() {
+  }
 
-	static public void set(IPasswordProvider active) {
-		ACTIVE = active;
-	}
+  static public IPasswordProvider get() {
+    return ACTIVE;
+  }
 
-	private PasswordProvider() {
-	}
+  static public void set(IPasswordProvider active) {
+    ACTIVE = active;
+  }
 }

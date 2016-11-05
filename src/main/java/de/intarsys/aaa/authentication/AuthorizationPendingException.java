@@ -31,23 +31,22 @@ package de.intarsys.aaa.authentication;
 
 /**
  * Authentication exception when user is available but not yet accepted.
- * 
  */
 public class AuthorizationPendingException extends AuthenticationException {
 
-	public AuthorizationPendingException() {
-	}
+  public AuthorizationPendingException() {
+  }
 
-	public AuthorizationPendingException(String message) {
-		super(message);
-	}
+  public AuthorizationPendingException(String message) {
+    super(message);
+  }
 
-	public AuthorizationPendingException(String message, Throwable cause) {
-		super(message, cause);
-	}
+  public AuthorizationPendingException(String message, Throwable cause) {
+    super(message, cause);
+  }
 
-	public AuthorizationPendingException(Throwable cause) {
-		super(cause);
-	}
+  public AuthorizationPendingException(Throwable cause) {
+    super(cause);
+  }
 
 }

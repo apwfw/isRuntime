@@ -35,17 +35,14 @@ package de.intarsys.tools.locator;
  * children.
  */
 public interface ILocatorNameFilter {
-	/**
-	 * This method returns true if the {@link ILocator} with name
-	 * <code>name</code> within <code>parent</code> should be accepted.
-	 * 
-	 * @param parent
-	 *            The parent locator.
-	 * @param name
-	 *            The name of the locator within the parent.
-	 * 
-	 * @return <code>true</code> if locator should be included in the result
-	 *         list.
-	 */
-	public boolean accept(ILocator parent, String name);
+  /**
+   * This method returns true if the {@link ILocator} with name
+   * <code>name</code> within <code>parent</code> should be accepted.
+   *
+   * @param parent The parent locator.
+   * @param name   The name of the locator within the parent.
+   * @return <code>true</code> if locator should be included in the result
+   * list.
+   */
+  public boolean accept(ILocator parent, String name);
 }

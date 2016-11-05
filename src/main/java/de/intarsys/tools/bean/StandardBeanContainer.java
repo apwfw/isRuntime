@@ -36,48 +36,47 @@ import java.util.Map;
 
 /**
  * The {@link IBeanContainer} standard implementation
- * 
  */
 public class StandardBeanContainer implements IBeanContainer {
 
-	final private Map<String, Object> beanMap = new HashMap<String, Object>();
+  final private Map<String, Object> beanMap = new HashMap<String, Object>();
 
-	final private List<Object> beanList = new ArrayList<Object>();
+  final private List<Object> beanList = new ArrayList<Object>();
 
-	synchronized public <T> T lookupBean(String id, Class<T> expectedClass) {
-		Object bean = beanMap.get(id);
-		if (bean instanceof IBeanProxy) {
-			IBeanProxy lazy = (IBeanProxy) bean;
-			return (T) lazy.getObject();
-		}
-		return (T) bean;
-	}
+  synchronized public <T> T lookupBean(String id, Class<T> expectedClass) {
+    Object bean = beanMap.get(id);
+    if (bean instanceof IBeanProxy) {
+      IBeanProxy lazy = (IBeanProxy) bean;
+      return (T) lazy.getObject();
+    }
+    return (T) bean;
+  }
 
-	@Override
-	synchronized public <T> List<T> lookupBeans(Class<T> expectedClass) {
-		List<T> beans = new ArrayList<T>(5);
-		for (Object bean : beanList) {
-			if (bean instanceof IBeanProxy) {
-				IBeanProxy lazy = (IBeanProxy) bean;
-				Object object = lazy.getObject();
-				if (expectedClass.isInstance(object)) {
-					beans.add((T) object);
-				}
-			} else if (expectedClass.isInstance(bean)) {
-				beans.add((T) bean);
-			}
-		}
-		return beans;
-	}
+  @Override
+  synchronized public <T> List<T> lookupBeans(Class<T> expectedClass) {
+    List<T> beans = new ArrayList<T>(5);
+    for (Object bean : beanList) {
+      if (bean instanceof IBeanProxy) {
+        IBeanProxy lazy = (IBeanProxy) bean;
+        Object object = lazy.getObject();
+        if (expectedClass.isInstance(object)) {
+          beans.add((T) object);
+        }
+      } else if (expectedClass.isInstance(bean)) {
+        beans.add((T) bean);
+      }
+    }
+    return beans;
+  }
 
-	synchronized public void registerBean(String id, Object object) {
-		beanList.add(object);
-		beanMap.put(id, object);
-	}
+  synchronized public void registerBean(String id, Object object) {
+    beanList.add(object);
+    beanMap.put(id, object);
+  }
 
-	synchronized public void unregisterBean(String id) {
-		Object bean = beanMap.remove(id);
-		beanList.remove(bean);
-	}
+  synchronized public void unregisterBean(String id) {
+    Object bean = beanMap.remove(id);
+    beanList.remove(bean);
+  }
 
 }

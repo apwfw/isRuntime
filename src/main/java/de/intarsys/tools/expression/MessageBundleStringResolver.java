@@ -34,19 +34,18 @@ import de.intarsys.tools.message.MessageBundle;
 
 /**
  * An {@link IStringEvaluator} accessing messages in a bundle.
- * 
  */
 public class MessageBundleStringResolver implements IStringEvaluator {
 
-	private MessageBundle bundle;
+  private MessageBundle bundle;
 
-	public MessageBundleStringResolver(MessageBundle bundle) {
-		super();
-		this.bundle = bundle;
-	}
+  public MessageBundleStringResolver(MessageBundle bundle) {
+    super();
+    this.bundle = bundle;
+  }
 
-	public Object evaluate(String expression, IArgs pArgs)
-			throws EvaluationException {
-		return bundle.getString(expression);
-	}
+  public Object evaluate(String expression, IArgs pArgs)
+      throws EvaluationException {
+    return bundle.getString(expression);
+  }
 }

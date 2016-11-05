@@ -35,15 +35,13 @@ import de.intarsys.tools.functor.IArgs;
  * An object supporting reflective access to its methods.
  */
 public interface IInvocationSupport {
-	/**
-	 * Make a reflective call to the method <code>name</code>.
-	 * 
-	 * @param name
-	 *            The name of the method to call.
-	 * @param args
-	 *            The arguments for the invocation.
-	 * @return The result of the invocation.
-	 * @throws MethodException
-	 */
-	public Object invoke(String name, IArgs args) throws MethodException;
+  /**
+   * Make a reflective call to the method <code>name</code>.
+   *
+   * @param name The name of the method to call.
+   * @param args The arguments for the invocation.
+   * @return The result of the invocation.
+   * @throws MethodException
+   */
+  public Object invoke(String name, IArgs args) throws MethodException;
 }

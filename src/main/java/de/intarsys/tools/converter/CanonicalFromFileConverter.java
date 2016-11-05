@@ -36,16 +36,16 @@ import java.io.File;
  */
 public class CanonicalFromFileConverter implements IConverter<File, String> {
 
-	public String convert(File source) throws ConversionException {
-		return source.getAbsolutePath();
-	}
+  public String convert(File source) throws ConversionException {
+    return source.getAbsolutePath();
+  }
 
-	public Class<?> getSourceType() {
-		return File.class;
-	}
+  public Class<?> getSourceType() {
+    return File.class;
+  }
 
-	public Class<?> getTargetType() {
-		return Canonical.class;
-	}
+  public Class<?> getTargetType() {
+    return Canonical.class;
+  }
 
 }

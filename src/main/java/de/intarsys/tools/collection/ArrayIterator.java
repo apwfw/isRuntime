@@ -36,36 +36,34 @@ import java.util.Iterator;
  */
 public class ArrayIterator implements Iterator {
 
-	final private Object[] array;
+  final private Object[] array;
+  final private int length;
+  private int index = 0;
 
-	private int index = 0;
+  public ArrayIterator(Object[] array) {
+    super();
+    this.array = array;
+    this.length = array.length;
+  }
 
-	final private int length;
+  public ArrayIterator(Object[] array, int length) {
+    super();
+    this.array = array;
+    this.length = length;
+  }
 
-	public ArrayIterator(Object[] array) {
-		super();
-		this.array = array;
-		this.length = array.length;
-	}
+  public boolean hasNext() {
+    return length > index;
+  }
 
-	public ArrayIterator(Object[] array, int length) {
-		super();
-		this.array = array;
-		this.length = length;
-	}
+  public Object next() {
+    Object result = array[index];
+    index++;
+    return result;
+  }
 
-	public boolean hasNext() {
-		return length > index;
-	}
-
-	public Object next() {
-		Object result = array[index];
-		index++;
-		return result;
-	}
-
-	public void remove() {
-		throw new UnsupportedOperationException(
-				"can not remove from array iterator");
-	}
+  public void remove() {
+    throw new UnsupportedOperationException(
+        "can not remove from array iterator");
+  }
 }

@@ -31,18 +31,17 @@ package de.intarsys.tools.event;
 
 /**
  * An event indicating that a component is resumed.
- * 
  */
 public class ResumedEvent extends Event {
-	public static final EventType ID = new EventType(ResumedEvent.class
-			.getName());
+  public static final EventType ID = new EventType(ResumedEvent.class
+      .getName());
 
-	public ResumedEvent(Object source) {
-		super(source);
-	}
+  public ResumedEvent(Object source) {
+    super(source);
+  }
 
-	@Override
-	public EventType getEventType() {
-		return ID;
-	}
+  @Override
+  public EventType getEventType() {
+    return ID;
+  }
 }

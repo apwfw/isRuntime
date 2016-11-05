@@ -36,16 +36,16 @@ import java.util.Date;
  */
 public class DateFromNumberConverter implements IConverter<Number, Date> {
 
-	public Date convert(Number source) throws ConversionException {
-		return new Date(source.longValue());
-	}
+  public Date convert(Number source) throws ConversionException {
+    return new Date(source.longValue());
+  }
 
-	public Class<?> getSourceType() {
-		return Number.class;
-	}
+  public Class<?> getSourceType() {
+    return Number.class;
+  }
 
-	public Class<?> getTargetType() {
-		return Date.class;
-	}
+  public Class<?> getTargetType() {
+    return Date.class;
+  }
 
 }

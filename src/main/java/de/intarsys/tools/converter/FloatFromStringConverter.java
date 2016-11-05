@@ -34,20 +34,20 @@ package de.intarsys.tools.converter;
  */
 public class FloatFromStringConverter implements IConverter<String, Float> {
 
-	public Float convert(String source) throws ConversionException {
-		try {
-			return (float) Double.parseDouble(source);
-		} catch (Exception e) {
-			throw new ConversionException(e);
-		}
-	}
+  public Float convert(String source) throws ConversionException {
+    try {
+      return (float) Double.parseDouble(source);
+    } catch (Exception e) {
+      throw new ConversionException(e);
+    }
+  }
 
-	public Class<?> getSourceType() {
-		return String.class;
-	}
+  public Class<?> getSourceType() {
+    return String.class;
+  }
 
-	public Class<?> getTargetType() {
-		return Float.class;
-	}
+  public Class<?> getTargetType() {
+    return Float.class;
+  }
 
 }

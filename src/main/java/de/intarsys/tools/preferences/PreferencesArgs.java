@@ -1,5 +1,9 @@
 package de.intarsys.tools.preferences;
 
+import de.intarsys.tools.collection.ConversionIterator;
+import de.intarsys.tools.functor.ArgTools;
+import de.intarsys.tools.functor.IArgs;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -8,173 +12,170 @@ import java.util.List;
 import java.util.Set;
 import java.util.prefs.BackingStoreException;
 
-import de.intarsys.tools.collection.ConversionIterator;
-import de.intarsys.tools.functor.ArgTools;
-import de.intarsys.tools.functor.IArgs;
-
 public class PreferencesArgs implements IArgs {
 
-	class Binding implements IBinding {
-		private String name;
+  private static final String UNDEFINED = new String();
+  final private IPreferences preferences;
 
-		public Binding(String name) {
-			super();
-			this.name = name;
-		}
+  public PreferencesArgs(IPreferences preferences) {
+    super();
+    this.preferences = preferences;
+  }
 
-		@Override
-		public String getName() {
-			return name;
-		}
+  public IBinding add(Object object) {
+    throw new UnsupportedOperationException(
+        "can not write to PreferencesArgs");
+  }
 
-		@Override
-		public Object getValue() {
-			return PreferencesArgs.this.get(name);
-		}
+  @Override
+  public Iterator<IBinding> bindings() {
+    return new ConversionIterator<String, IBinding>(names().iterator()) {
+      @Override
+      protected IArgs.IBinding createTargetObject(String name) {
+        return new Binding(name);
+      }
 
-		@Override
-		public boolean isDefined() {
-			return PreferencesArgs.this.isDefined(name);
-		}
+      ;
+    };
+  }
 
-		@Override
-		public void setValue(Object value) {
-			PreferencesArgs.this.put(name, value);
-		}
-	}
+  public void clear() {
+    throw new UnsupportedOperationException(
+        "can not write to PreferencesArgs");
+  }
 
-	private static final String UNDEFINED = new String();
+  @Override
+  public IArgs copy() {
+    return new PreferencesArgs(preferences);
+  }
 
-	final private IPreferences preferences;
+  @Override
+  public IBinding declare(String name) {
+    return new Binding(name);
+  }
 
-	public PreferencesArgs(IPreferences preferences) {
-		super();
-		this.preferences = preferences;
-	}
+  public Object get(int index) {
+    return get(String.valueOf(index));
+  }
 
-	public IBinding add(Object object) {
-		throw new UnsupportedOperationException(
-				"can not write to PreferencesArgs");
-	}
+  public Object get(int index, Object defaultValue) {
+    return defaultValue;
+  }
 
-	@Override
-	public Iterator<IBinding> bindings() {
-		return new ConversionIterator<String, IBinding>(names().iterator()) {
-			@Override
-			protected IArgs.IBinding createTargetObject(String name) {
-				return new Binding(name);
-			};
-		};
-	}
+  public Object get(String name) {
+    try {
+      if (preferences.nodeExists(name)) {
+        IPreferences childNode = preferences.node(name);
+        return new PreferencesArgs(childNode);
+      }
+      return preferences.get(name, null);
+    } catch (BackingStoreException e) {
+      return null;
+    }
+  }
 
-	public void clear() {
-		throw new UnsupportedOperationException(
-				"can not write to PreferencesArgs");
-	}
+  public Object get(String name, Object defaultValue) {
+    try {
+      if (preferences.nodeExists(name)) {
+        IPreferences childNode = preferences.node(name);
+        return new PreferencesArgs(childNode);
+      }
+      Object result = preferences.get(name, null);
+      if (result == null) {
+        return defaultValue;
+      }
+      return result;
+    } catch (BackingStoreException e) {
+      return null;
+    }
+  }
 
-	@Override
-	public IArgs copy() {
-		return new PreferencesArgs(preferences);
-	}
+  public boolean isDefined(String name) {
+    return preferences.get(name, UNDEFINED) != UNDEFINED;
+  }
 
-	@Override
-	public IBinding declare(String name) {
-		return new Binding(name);
-	}
+  public boolean isIndexed() {
+    return false;
+  }
 
-	public Object get(int index) {
-		return get(String.valueOf(index));
-	}
+  public boolean isNamed() {
+    return true;
+  }
 
-	public Object get(int index, Object defaultValue) {
-		return defaultValue;
-	}
+  public Set names() {
+    try {
+      List children = new ArrayList(Arrays.asList(preferences
+          .childrenNames()));
+      List keys = Arrays.asList(preferences.keys());
+      children.addAll(keys);
+      return new HashSet(children);
+    } catch (BackingStoreException e) {
+      return new HashSet();
+    }
+  }
 
-	public Object get(String name) {
-		try {
-			if (preferences.nodeExists(name)) {
-				IPreferences childNode = preferences.node(name);
-				return new PreferencesArgs(childNode);
-			}
-			return preferences.get(name, null);
-		} catch (BackingStoreException e) {
-			return null;
-		}
-	}
+  public IBinding put(int index, Object value)
+      throws UnsupportedOperationException {
+    throw new UnsupportedOperationException(
+        "can not write to PreferencesArgs");
+  }
 
-	public Object get(String name, Object defaultValue) {
-		try {
-			if (preferences.nodeExists(name)) {
-				IPreferences childNode = preferences.node(name);
-				return new PreferencesArgs(childNode);
-			}
-			Object result = preferences.get(name, null);
-			if (result == null) {
-				return defaultValue;
-			}
-			return result;
-		} catch (BackingStoreException e) {
-			return null;
-		}
-	}
+  public IBinding put(String name, Object value)
+      throws UnsupportedOperationException {
+    throw new UnsupportedOperationException(
+        "can not write to PreferencesArgs");
+  }
 
-	public boolean isDefined(String name) {
-		return preferences.get(name, UNDEFINED) != UNDEFINED;
-	}
+  public int size() {
+    try {
+      return preferences.childrenNames().length
+          + preferences.keys().length;
+    } catch (BackingStoreException e) {
+      return 0;
+    }
+  }
 
-	public boolean isIndexed() {
-		return false;
-	}
+  @Override
+  public String toString() {
+    return ArgTools.toString(this, "[p]");
+  }
 
-	public boolean isNamed() {
-		return true;
-	}
+  public void undefine(int index) throws UnsupportedOperationException {
+    throw new UnsupportedOperationException(
+        "can not write to PreferencesArgs");
+  }
 
-	public Set names() {
-		try {
-			List children = new ArrayList(Arrays.asList(preferences
-					.childrenNames()));
-			List keys = Arrays.asList(preferences.keys());
-			children.addAll(keys);
-			return new HashSet(children);
-		} catch (BackingStoreException e) {
-			return new HashSet();
-		}
-	}
+  public void undefine(String name) throws UnsupportedOperationException {
+    throw new UnsupportedOperationException(
+        "can not write to PreferencesArgs");
+  }
 
-	public IBinding put(int index, Object value)
-			throws UnsupportedOperationException {
-		throw new UnsupportedOperationException(
-				"can not write to PreferencesArgs");
-	}
+  class Binding implements IBinding {
+    private String name;
 
-	public IBinding put(String name, Object value)
-			throws UnsupportedOperationException {
-		throw new UnsupportedOperationException(
-				"can not write to PreferencesArgs");
-	}
+    public Binding(String name) {
+      super();
+      this.name = name;
+    }
 
-	public int size() {
-		try {
-			return preferences.childrenNames().length
-					+ preferences.keys().length;
-		} catch (BackingStoreException e) {
-			return 0;
-		}
-	}
+    @Override
+    public String getName() {
+      return name;
+    }
 
-	@Override
-	public String toString() {
-		return ArgTools.toString(this, "[p]");
-	}
+    @Override
+    public Object getValue() {
+      return PreferencesArgs.this.get(name);
+    }
 
-	public void undefine(int index) throws UnsupportedOperationException {
-		throw new UnsupportedOperationException(
-				"can not write to PreferencesArgs");
-	}
+    @Override
+    public void setValue(Object value) {
+      PreferencesArgs.this.put(name, value);
+    }
 
-	public void undefine(String name) throws UnsupportedOperationException {
-		throw new UnsupportedOperationException(
-				"can not write to PreferencesArgs");
-	}
+    @Override
+    public boolean isDefined() {
+      return PreferencesArgs.this.isDefined(name);
+    }
+  }
 }

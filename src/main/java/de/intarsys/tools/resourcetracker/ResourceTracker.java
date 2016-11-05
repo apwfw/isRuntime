@@ -43,84 +43,82 @@ import java.lang.ref.ReferenceQueue;
  */
 abstract public class ResourceTracker {
 
-	private IResourceReference[] references;
+  final private ResourceFinalizer finalizer;
+  private IResourceReference[] references;
+  private int next = 0;
 
-	private int next = 0;
+  public ResourceTracker() {
+    this(500);
+  }
 
-	final private ResourceFinalizer finalizer;
+  public ResourceTracker(int size) {
+    super();
+    this.references = new IResourceReference[size];
+    this.finalizer = ResourceFinalizer.get();
+  }
 
-	public ResourceTracker() {
-		this(500);
-	}
+  public ResourceTracker(ResourceFinalizer finalizer) {
+    this(finalizer, 500);
+  }
 
-	public ResourceTracker(int size) {
-		super();
-		this.references = new IResourceReference[size];
-		this.finalizer = ResourceFinalizer.get();
-	}
+  public ResourceTracker(ResourceFinalizer finalizer, int size) {
+    super();
+    this.references = new IResourceReference[size];
+    this.finalizer = finalizer;
+  }
 
-	public ResourceTracker(ResourceFinalizer finalizer) {
-		this(finalizer, 500);
-	}
+  protected synchronized IResourceReference add(IResourceReference ref) {
+    finalizer.ensureStarted();
+    if (next >= references.length) {
+      // ooops - maybe finalizer thread is starving. help!
+      System.gc();
+      finalizer.drainQueue();
+      if (next >= references.length) {
+        IResourceReference[] newReferences = new IResourceReference[references.length << 1];
+        System.arraycopy(references, 0, newReferences, 0,
+            references.length);
+        references = newReferences;
+      }
+    }
+    references[next++] = ref;
+    return ref;
+  }
 
-	public ResourceTracker(ResourceFinalizer finalizer, int size) {
-		super();
-		this.references = new IResourceReference[size];
-		this.finalizer = finalizer;
-	}
+  abstract protected void basicDispose(Object resource);
 
-	protected synchronized IResourceReference add(IResourceReference ref) {
-		finalizer.ensureStarted();
-		if (next >= references.length) {
-			// ooops - maybe finalizer thread is starving. help!
-			System.gc();
-			finalizer.drainQueue();
-			if (next >= references.length) {
-				IResourceReference[] newReferences = new IResourceReference[references.length << 1];
-				System.arraycopy(references, 0, newReferences, 0,
-						references.length);
-				references = newReferences;
-			}
-		}
-		references[next++] = ref;
-		return ref;
-	}
+  protected void dispose(IResourceReference ref) {
+    remove(ref);
+    if (ref.getResource() != null) {
+      basicDispose(ref.getResource());
+    }
+  }
 
-	abstract protected void basicDispose(Object resource);
+  protected ReferenceQueue getQueue() {
+    return finalizer.getQueue();
+  }
 
-	protected void dispose(IResourceReference ref) {
-		remove(ref);
-		if (ref.getResource() != null) {
-			basicDispose(ref.getResource());
-		}
-	}
+  synchronized protected void remove(IResourceReference ref) {
+    int length = next;
+    for (int i = 0; i < length; i++) {
+      if (references[i] == ref) {
+        next--;
+        references[i] = references[next];
+        references[next] = null;
+        break;
+      }
+    }
+    // System.out.println("tracker removed instance, now " + next);
+  }
 
-	protected ReferenceQueue getQueue() {
-		return finalizer.getQueue();
-	}
+  public IResourceReference trackPhantom(Object container, Object resource) {
+    return add(new PhantomResourceReference(container, resource, this));
+  }
 
-	synchronized protected void remove(IResourceReference ref) {
-		int length = next;
-		for (int i = 0; i < length; i++) {
-			if (references[i] == ref) {
-				next--;
-				references[i] = references[next];
-				references[next] = null;
-				break;
-			}
-		}
-		// System.out.println("tracker removed instance, now " + next);
-	}
+  public IResourceReference trackSoft(Object container, Object resource) {
+    return add(new SoftResourceReference(container, resource, this));
+  }
 
-	public IResourceReference trackPhantom(Object container, Object resource) {
-		return add(new PhantomResourceReference(container, resource, this));
-	}
-
-	public IResourceReference trackSoft(Object container, Object resource) {
-		return add(new SoftResourceReference(container, resource, this));
-	}
-
-	public IResourceReference trackWeak(Object container, Object resource) {
-		return add(new WeakResourceReference(container, resource, this));
-	}
+  public IResourceReference trackWeak(Object container, Object resource) {
+    return add(new WeakResourceReference(container, resource, this));
+  }
 }

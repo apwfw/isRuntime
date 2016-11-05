@@ -37,51 +37,51 @@ import de.intarsys.tools.event.INotificationListener;
  */
 public class TaskStep<R> extends AbstractFutureTask<R> {
 
-	final private TaskSequence sequence;
+  final private TaskSequence sequence;
 
-	final private Runnable task;
+  final private Runnable task;
 
-	final private int percent;
+  final private int percent;
 
-	private INotificationListener listenSubTask = new INotificationListener() {
+  private INotificationListener listenSubTask = new INotificationListener() {
 
-		public void handleEvent(Event event) {
-			onSubTaskChanged(event.getSource());
-		}
+    public void handleEvent(Event event) {
+      onSubTaskChanged(event.getSource());
+    }
 
-	};
+  };
 
-	private int start;
+  private int start;
 
-	public TaskStep(TaskSequence sequence, Runnable task, int percent) {
-		super();
-		this.sequence = sequence;
-		this.task = task;
-		this.percent = percent;
-		// task.addNotificationListener(AttributeChangedEvent.ID,
-		// listenSubTask);
-	}
+  public TaskStep(TaskSequence sequence, Runnable task, int percent) {
+    super();
+    this.sequence = sequence;
+    this.task = task;
+    this.percent = percent;
+    // task.addNotificationListener(AttributeChangedEvent.ID,
+    // listenSubTask);
+  }
 
-	@Override
-	protected R compute() throws Exception {
-		// start = sequence.getWorkCurrent();
-		task.run();
-		return null;
-		// return task.get();
-	}
+  @Override
+  protected R compute() throws Exception {
+    // start = sequence.getWorkCurrent();
+    task.run();
+    return null;
+    // return task.get();
+  }
 
-	public int getPercent() {
-		return percent;
-	}
+  public int getPercent() {
+    return percent;
+  }
 
-	public TaskSequence getSequence() {
-		return sequence;
-	}
+  public TaskSequence getSequence() {
+    return sequence;
+  }
 
-	protected void onSubTaskChanged(Object task) {
-		// int taskPart = (int) (task.getProgress() * ((float) getPercent() /
-		// 100));
-		// sequence.setWorkCurrent(task.getWorkMessage(), start + taskPart);
-	}
+  protected void onSubTaskChanged(Object task) {
+    // int taskPart = (int) (task.getProgress() * ((float) getPercent() /
+    // 100));
+    // sequence.setWorkCurrent(task.getWorkMessage(), start + taskPart);
+  }
 
 }

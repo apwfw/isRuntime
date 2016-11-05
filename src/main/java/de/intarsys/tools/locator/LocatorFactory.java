@@ -35,14 +35,14 @@ package de.intarsys.tools.locator;
  */
 public class LocatorFactory {
 
-	private static ILocatorFactory ACTIVE = new FileLocatorFactory();
+  private static ILocatorFactory ACTIVE = new FileLocatorFactory();
 
-	public static ILocatorFactory get() {
-		return ACTIVE;
-	}
+  public static ILocatorFactory get() {
+    return ACTIVE;
+  }
 
-	public static void set(ILocatorFactory factory) {
-		ACTIVE = factory;
-	}
+  public static void set(ILocatorFactory factory) {
+    ACTIVE = factory;
+  }
 
 }

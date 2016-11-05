@@ -31,15 +31,15 @@ package de.intarsys.tools.locking;
 
 public class NullLock extends AbstractLock {
 
-	public NullLock(Object object) {
-		super(object);
-	}
+  public NullLock(Object object) {
+    super(object);
+  }
 
-	public boolean acquire(Object owner, ILockLevel level) {
-		return true;
-	}
+  public boolean acquire(Object owner, ILockLevel level) {
+    return true;
+  }
 
-	public void release(Object owner) {
-	}
+  public void release(Object owner) {
+  }
 
 }

@@ -1,41 +1,41 @@
 package de.intarsys.tools.locator;
 
-import java.io.IOException;
-
 import de.intarsys.tools.file.FileTools;
+
+import java.io.IOException;
 
 public class RenamedLocator extends DelegatingLocator {
 
-	private String name;
+  private String name;
 
-	public RenamedLocator(ILocator delegate) {
-		super(delegate);
-		this.name = delegate.getFullName();
-	}
+  public RenamedLocator(ILocator delegate) {
+    super(delegate);
+    this.name = delegate.getFullName();
+  }
 
-	public RenamedLocator(ILocator delegate, String fullName) {
-		super(delegate);
-		this.name = fullName;
-	}
+  public RenamedLocator(ILocator delegate, String fullName) {
+    super(delegate);
+    this.name = fullName;
+  }
 
-	@Override
-	public String getFullName() {
-		return name;
-	}
+  @Override
+  public String getFullName() {
+    return name;
+  }
 
-	@Override
-	public String getLocalName() {
-		return FileTools.getBaseName(name);
-	}
+  @Override
+  public String getLocalName() {
+    return FileTools.getBaseName(name);
+  }
 
-	@Override
-	public String getTypedName() {
-		return FileTools.getFileName(name);
-	}
+  @Override
+  public String getTypedName() {
+    return FileTools.getFileName(name);
+  }
 
-	@Override
-	public void rename(String newName) throws IOException {
-		this.name = newName;
-	}
+  @Override
+  public void rename(String newName) throws IOException {
+    this.name = newName;
+  }
 
 }

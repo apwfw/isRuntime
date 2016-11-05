@@ -29,6 +29,9 @@
  */
 package de.intarsys.tools.locator;
 
+import de.intarsys.tools.file.FileTools;
+import de.intarsys.tools.randomaccess.IRandomAccess;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,247 +40,244 @@ import java.io.Reader;
 import java.io.Writer;
 import java.net.URL;
 
-import de.intarsys.tools.file.FileTools;
-import de.intarsys.tools.randomaccess.IRandomAccess;
-
 /**
  * A "non persistent" locator. This is used as a placeholder where an
  * {@link ILocator} is necessary but no real location is yet defined.
  */
 public class TransientLocator extends CommonLocator {
-	private boolean alwaysUnchanged;
+  private boolean alwaysUnchanged;
 
-	private String localName;
+  private String localName;
 
-	private String type;
+  private String type;
 
-	public TransientLocator(String name, String type) {
-		if ((name == null) || (type == null)) {
-			throw new NullPointerException(
-					"name and type may not be null for TransientLocator");
-		}
-		this.localName = name;
-		this.type = canonical(type);
-	}
+  public TransientLocator(String name, String type) {
+    if ((name == null) || (type == null)) {
+      throw new NullPointerException(
+          "name and type may not be null for TransientLocator");
+    }
+    this.localName = name;
+    this.type = canonical(type);
+  }
 
-	private String canonical(String name) {
-		return name.trim().toLowerCase();
-	}
+  private String canonical(String name) {
+    return name.trim().toLowerCase();
+  }
 
-	@Override
-	public void delete() throws IOException {
-		// nothing to do...
-	}
+  @Override
+  public void delete() throws IOException {
+    // nothing to do...
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#exists()
-	 */
-	public boolean exists() {
-		return false;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#exists()
+   */
+  public boolean exists() {
+    return false;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getChild(java.lang.String)
-	 */
-	public ILocator getChild(String name) {
-		return null;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getChild(java.lang.String)
+   */
+  public ILocator getChild(String name) {
+    return null;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getFullName()
-	 */
-	public String getFullName() {
-		return localName + "." + type;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getFullName()
+   */
+  public String getFullName() {
+    return localName + "." + type;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getInputStream()
-	 */
-	public InputStream getInputStream() throws IOException {
-		throw new FileNotFoundException("transient locator");
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getInputStream()
+   */
+  public InputStream getInputStream() throws IOException {
+    throw new FileNotFoundException("transient locator");
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getLocalName()
-	 */
-	public String getLocalName() {
-		return localName;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getLocalName()
+   */
+  public String getLocalName() {
+    return localName;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getOutputStream()
-	 */
-	public OutputStream getOutputStream() throws IOException {
-		throw new FileNotFoundException("transient locator");
-	}
+  public void setLocalName(String name) {
+    this.localName = name;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getParent()
-	 */
-	public ILocator getParent() {
-		return null;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getOutputStream()
+   */
+  public OutputStream getOutputStream() throws IOException {
+    throw new FileNotFoundException("transient locator");
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getRandomAccess()
-	 */
-	public IRandomAccess getRandomAccess() throws IOException {
-		throw new FileNotFoundException("transient locator");
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getParent()
+   */
+  public ILocator getParent() {
+    return null;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getReader()
-	 */
-	public Reader getReader() throws IOException {
-		throw new FileNotFoundException("transient locator");
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getRandomAccess()
+   */
+  public IRandomAccess getRandomAccess() throws IOException {
+    throw new FileNotFoundException("transient locator");
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getReader(java.lang.String)
-	 */
-	public Reader getReader(String encoding) throws IOException {
-		throw new FileNotFoundException("transient locator");
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getReader()
+   */
+  public Reader getReader() throws IOException {
+    throw new FileNotFoundException("transient locator");
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getType()
-	 */
-	public String getType() {
-		return type;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getReader(java.lang.String)
+   */
+  public Reader getReader(String encoding) throws IOException {
+    throw new FileNotFoundException("transient locator");
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getTypedName()
-	 */
-	public String getTypedName() {
-		return localName + "." + type;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getType()
+   */
+  public String getType() {
+    return type;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getWriter()
-	 */
-	public Writer getWriter() throws IOException {
-		throw new FileNotFoundException("transient locator");
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getTypedName()
+   */
+  public String getTypedName() {
+    return localName + "." + type;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getWriter(java.lang.String)
-	 */
-	public Writer getWriter(String encoding) throws IOException {
-		throw new FileNotFoundException("transient locator");
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getWriter()
+   */
+  public Writer getWriter() throws IOException {
+    throw new FileNotFoundException("transient locator");
+  }
 
-	public boolean isAlwaysUnchanged() {
-		return alwaysUnchanged;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getWriter(java.lang.String)
+   */
+  public Writer getWriter(String encoding) throws IOException {
+    throw new FileNotFoundException("transient locator");
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#isDirectory()
-	 */
-	public boolean isDirectory() {
-		return false;
-	}
+  public boolean isAlwaysUnchanged() {
+    return alwaysUnchanged;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.component.ISynchronizable#isOutOfSynch()
-	 */
-	public boolean isOutOfSynch() {
-		return false;
-	}
+  public void setAlwaysUnchanged(boolean paramAlwaysUnchanged) {
+    alwaysUnchanged = paramAlwaysUnchanged;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#isReadOnly()
-	 */
-	@Override
-	public boolean isReadOnly() {
-		return true;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#isDirectory()
+   */
+  public boolean isDirectory() {
+    return false;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.component.ISynchronizable#isSynchSynchronous()
-	 */
-	public boolean isSynchSynchronous() {
-		return false;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.component.ISynchronizable#isOutOfSynch()
+   */
+  public boolean isOutOfSynch() {
+    return false;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.intarsys.tools.locator.ILocator#listLocators(de.intarsys.tools.locator
-	 * .ILocatorNameFilter)
-	 */
-	public ILocator[] listLocators(ILocatorNameFilter filter)
-			throws IOException {
-		return new ILocator[0];
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#isReadOnly()
+   */
+  @Override
+  public boolean isReadOnly() {
+    return true;
+  }
 
-	@Override
-	public void rename(String newName) throws IOException {
-		localName = FileTools.getBaseName(newName);
-		type = FileTools.getExtension(newName);
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.component.ISynchronizable#isSynchSynchronous()
+   */
+  public boolean isSynchSynchronous() {
+    return false;
+  }
 
-	public void setAlwaysUnchanged(boolean paramAlwaysUnchanged) {
-		alwaysUnchanged = paramAlwaysUnchanged;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see
+   * de.intarsys.tools.locator.ILocator#listLocators(de.intarsys.tools.locator
+   * .ILocatorNameFilter)
+   */
+  public ILocator[] listLocators(ILocatorNameFilter filter)
+      throws IOException {
+    return new ILocator[0];
+  }
 
-	public void setLocalName(String name) {
-		this.localName = name;
-	}
+  @Override
+  public void rename(String newName) throws IOException {
+    localName = FileTools.getBaseName(newName);
+    type = FileTools.getExtension(newName);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.component.ISynchronizable#synch()
-	 */
-	public void synch() {
-		// no op
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.component.ISynchronizable#synch()
+   */
+  public void synch() {
+    // no op
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#toURL()
-	 */
-	public URL toURL() {
-		return null;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#toURL()
+   */
+  public URL toURL() {
+    return null;
+  }
 
 }

@@ -33,7 +33,7 @@ import java.util.EventListener;
 
 /**
  * Called to inform a listener about an event occurrence.
- * 
+ * <p>
  * <p>
  * INotificationListener may be attached via
  * <code>INotificationSupport.addNotificationListener</code> to express
@@ -42,11 +42,10 @@ import java.util.EventListener;
  * </p>
  */
 public interface INotificationListener extends EventListener {
-	/**
-	 * Called when an event occurs.
-	 * 
-	 * @param event
-	 *            The event object giving detail information about the context.
-	 */
-	public void handleEvent(Event event);
+  /**
+   * Called when an event occurs.
+   *
+   * @param event The event object giving detail information about the context.
+   */
+  public void handleEvent(Event event);
 }

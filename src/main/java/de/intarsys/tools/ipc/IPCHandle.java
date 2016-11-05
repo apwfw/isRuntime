@@ -31,15 +31,15 @@ package de.intarsys.tools.ipc;
 
 public class IPCHandle extends IPCObject {
 
-	final private String value;
+  final private String value;
 
-	public IPCHandle(String value) {
-		super();
-		this.value = value;
-	}
+  public IPCHandle(String value) {
+    super();
+    this.value = value;
+  }
 
-	public String getValue() {
-		return value;
-	}
+  public String getValue() {
+    return value;
+  }
 
 }

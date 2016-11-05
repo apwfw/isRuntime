@@ -38,16 +38,16 @@ import de.intarsys.tools.locator.LocatorTools;
  */
 public class LocatorFromArgsConverter implements IConverter<IArgs, ILocator> {
 
-	public ILocator convert(IArgs source) throws ConversionException {
-		return LocatorTools.createLocator(source, null, null);
-	}
+  public ILocator convert(IArgs source) throws ConversionException {
+    return LocatorTools.createLocator(source, null, null);
+  }
 
-	public Class<?> getSourceType() {
-		return IArgs.class;
-	}
+  public Class<?> getSourceType() {
+    return IArgs.class;
+  }
 
-	public Class<?> getTargetType() {
-		return ILocator.class;
-	}
+  public Class<?> getTargetType() {
+    return ILocator.class;
+  }
 
 }

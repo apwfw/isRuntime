@@ -33,7 +33,7 @@ import java.io.IOException;
 
 public interface IDigestCodec {
 
-	public IDigest decode(byte[] bytes) throws IOException;
+  public IDigest decode(byte[] bytes) throws IOException;
 
-	public byte[] encode(IDigest digest) throws IOException;
+  public byte[] encode(IDigest digest) throws IOException;
 }

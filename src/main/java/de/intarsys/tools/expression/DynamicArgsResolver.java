@@ -34,32 +34,31 @@ import de.intarsys.tools.functor.IArgs;
 /**
  * An {@link IStringEvaluator} accessing the current argument values for
  * resolving expressions.
- * 
  */
 public class DynamicArgsResolver extends ContainerResolver {
 
-	private static final Object NA = new Object();
+  private static final Object NA = new Object();
 
-	public DynamicArgsResolver() {
-		super();
-	}
+  public DynamicArgsResolver() {
+    super();
+  }
 
-	@Override
-	protected Object basicEvaluate(String expression, IArgs pArgs)
-			throws EvaluationException {
-		Object result = pArgs.get(expression, NA);
-		if (result != NA) {
-			return result;
-		}
-		try {
-			int index = Integer.parseInt(expression);
-			result = pArgs.get(index, NA);
-			if (result != NA) {
-				return result;
-			}
-		} catch (NumberFormatException e) {
-			//
-		}
-		throw new EvaluationException("can't evaluate '" + expression + "'"); //$NON-NLS-1$ //$NON-NLS-2$
-	}
+  @Override
+  protected Object basicEvaluate(String expression, IArgs pArgs)
+      throws EvaluationException {
+    Object result = pArgs.get(expression, NA);
+    if (result != NA) {
+      return result;
+    }
+    try {
+      int index = Integer.parseInt(expression);
+      result = pArgs.get(index, NA);
+      if (result != NA) {
+        return result;
+      }
+    } catch (NumberFormatException e) {
+      //
+    }
+    throw new EvaluationException("can't evaluate '" + expression + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+  }
 }

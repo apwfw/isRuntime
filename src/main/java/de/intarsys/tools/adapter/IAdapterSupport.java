@@ -40,7 +40,7 @@ package de.intarsys.tools.adapter;
  * A generic implementation of this method could use the {@link IAdapterOutlet}
  * singleton to delegate adapter creation to a registered
  * {@link IAdapterFactory}.
- * 
+ * <p>
  * <pre>
  * public &lt;T&gt; T getAdapter(Class&lt;T&gt; clazz) {
  * 	return AdapterOutlet.get().getAdapter(this, clazz);
@@ -49,15 +49,15 @@ package de.intarsys.tools.adapter;
  */
 public interface IAdapterSupport {
 
-	/**
-	 * Return an object of type <code>clazz</code> that represents the receiver.
-	 * <p>
-	 * This method should return <code>null</code> if adaption is not possible.
-	 * 
-	 * @param <T>
-	 * @param clazz
-	 * @return Return an object of type <code>clazz</code> that represents the
-	 *         receiver.
-	 */
-	public <T> T getAdapter(Class<T> clazz);
+  /**
+   * Return an object of type <code>clazz</code> that represents the receiver.
+   * <p>
+   * This method should return <code>null</code> if adaption is not possible.
+   *
+   * @param <T>
+   * @param clazz
+   * @return Return an object of type <code>clazz</code> that represents the
+   * receiver.
+   */
+  public <T> T getAdapter(Class<T> clazz);
 }

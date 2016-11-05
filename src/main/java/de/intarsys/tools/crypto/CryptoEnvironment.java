@@ -29,212 +29,208 @@
  */
 package de.intarsys.tools.crypto;
 
+import de.intarsys.tools.encoding.Base64;
+import de.intarsys.tools.exception.ExceptionTools;
+import de.intarsys.tools.string.StringTools;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.intarsys.tools.encoding.Base64;
-import de.intarsys.tools.exception.ExceptionTools;
-import de.intarsys.tools.string.StringTools;
-
 /**
  * A tool class for handling en/decryption
- * 
  */
 public class CryptoEnvironment {
 
-	final private static CryptoEnvironment ACTIVE = new CryptoEnvironment();
+  final private static CryptoEnvironment ACTIVE = new CryptoEnvironment();
+  private Map<String, ICryptdec> cryptdecs = new HashMap<String, ICryptdec>();
+  private ICryptdec defaultCryptdecEncrypt;
+  private ICryptdec defaultCryptdecDecrypt;
 
-	static public CryptoEnvironment get() {
-		return ACTIVE;
-	}
+  private CryptoEnvironment() {
+  }
 
-	private Map<String, ICryptdec> cryptdecs = new HashMap<String, ICryptdec>();
+  static public CryptoEnvironment get() {
+    return ACTIVE;
+  }
 
-	private ICryptdec defaultCryptdecEncrypt;
+  /**
+   * Decrypt a byte array which was previously encrypted using
+   * <code>encrypt</code>. For decryption the default {@link ICryptdec} is
+   * used.
+   *
+   * @param bytes
+   * @return The decrypted representation of <code>bytes</code>
+   * @throws IOException
+   */
+  public byte[] decrypt(byte[] bytes) throws IOException {
+    if (defaultCryptdecDecrypt == null) {
+      throw new IllegalStateException("default cryptdec not defined");
+    }
+    return defaultCryptdecDecrypt.decrypt(bytes);
+  }
 
-	private ICryptdec defaultCryptdecDecrypt;
+  public String decryptEncoded(String value) throws IOException {
+    return decryptEncoded(value, defaultCryptdecDecrypt);
+  }
 
-	private CryptoEnvironment() {
-	}
+  public String decryptEncoded(String value, ICryptdec cryptdec)
+      throws IOException {
+    try {
+      String[] parts = value.split("#");
+      String tempValue;
+      ICryptdec tempCryptdec;
+      if (parts.length == 1) {
+        tempCryptdec = cryptdec;
+        tempValue = parts[0];
+      } else {
+        tempCryptdec = lookupCryptdec(parts[0]);
+        tempValue = parts[1];
+      }
+      if (tempCryptdec == null) {
+        throw new IOException("unknown encryption scheme");
+      }
+      if (StringTools.isEmpty(tempValue)) {
+        return tempValue;
+      }
+      byte[] bytes = Base64.decode(StringTools.toByteArray(tempValue));
+      byte[] decrypted = tempCryptdec.decrypt(bytes);
+      return new String(decrypted, "UTF8");
+    } catch (UnsupportedEncodingException e) {
+      throw ExceptionTools.createIOException(e.getMessage(), e);
+    }
+  }
 
-	/**
-	 * Decrypt a byte array which was previously encrypted using
-	 * <code>encrypt</code>. For decryption the default {@link ICryptdec} is
-	 * used.
-	 * 
-	 * @param bytes
-	 * @return The decrypted representation of <code>bytes</code>
-	 * @throws IOException
-	 */
-	public byte[] decrypt(byte[] bytes) throws IOException {
-		if (defaultCryptdecDecrypt == null) {
-			throw new IllegalStateException("default cryptdec not defined");
-		}
-		return defaultCryptdecDecrypt.decrypt(bytes);
-	}
+  /**
+   * Decrypt a string which was previously encrypted using
+   * <code>encrypt</code>. Provided the same salt and passphrase are used for
+   * initialization, this method returns the original unencrypted input.
+   *
+   * @param value
+   * @return The decrypted representation of <code>value</code>
+   * @throws IOException
+   */
+  public String decryptRaw(String value) throws IOException {
+    try {
+      if (StringTools.isEmpty(value)) {
+        return value;
+      }
+      byte[] bytes = Base64.decode(StringTools.toByteArray(value));
+      byte[] decrypted = decrypt(bytes);
+      return new String(decrypted, "UTF8");
+    } catch (UnsupportedEncodingException e) {
+      throw ExceptionTools.createIOException(e.getMessage(), e);
+    }
+  }
 
-	public String decryptEncoded(String value) throws IOException {
-		return decryptEncoded(value, defaultCryptdecDecrypt);
-	}
+  /**
+   * Encrypt a clear text array of bytes. The result is the plain encrypted
+   * byte array.
+   *
+   * @param bytes
+   * @return The encrypted representation of <code>bytes</code>
+   * @throws IOException
+   */
+  public byte[] encrypt(byte[] bytes) throws IOException {
+    if (defaultCryptdecEncrypt == null) {
+      throw new IllegalStateException("default cryptdec not defined");
+    }
+    return defaultCryptdecEncrypt.encrypt(bytes);
+  }
 
-	public String decryptEncoded(String value, ICryptdec cryptdec)
-			throws IOException {
-		try {
-			String[] parts = value.split("#");
-			String tempValue;
-			ICryptdec tempCryptdec;
-			if (parts.length == 1) {
-				tempCryptdec = cryptdec;
-				tempValue = parts[0];
-			} else {
-				tempCryptdec = lookupCryptdec(parts[0]);
-				tempValue = parts[1];
-			}
-			if (tempCryptdec == null) {
-				throw new IOException("unknown encryption scheme");
-			}
-			if (StringTools.isEmpty(tempValue)) {
-				return tempValue;
-			}
-			byte[] bytes = Base64.decode(StringTools.toByteArray(tempValue));
-			byte[] decrypted = tempCryptdec.decrypt(bytes);
-			return new String(decrypted, "UTF8");
-		} catch (UnsupportedEncodingException e) {
-			throw ExceptionTools.createIOException(e.getMessage(), e);
-		}
-	}
+  public String encryptEncoded(char[] value) throws IOException {
+    if (defaultCryptdecEncrypt == null) {
+      throw new IllegalStateException("default cryptdec not defined");
+    }
+    return encryptEncoded(value, defaultCryptdecEncrypt);
+  }
 
-	/**
-	 * Decrypt a string which was previously encrypted using
-	 * <code>encrypt</code>. Provided the same salt and passphrase are used for
-	 * initialization, this method returns the original unencrypted input.
-	 * 
-	 * @param value
-	 * @return The decrypted representation of <code>value</code>
-	 * @throws IOException
-	 */
-	public String decryptRaw(String value) throws IOException {
-		try {
-			if (StringTools.isEmpty(value)) {
-				return value;
-			}
-			byte[] bytes = Base64.decode(StringTools.toByteArray(value));
-			byte[] decrypted = decrypt(bytes);
-			return new String(decrypted, "UTF8");
-		} catch (UnsupportedEncodingException e) {
-			throw ExceptionTools.createIOException(e.getMessage(), e);
-		}
-	}
+  public String encryptEncoded(char[] value, ICryptdec cryptdec)
+      throws IOException {
+    try {
+      if (cryptdec == null) {
+        throw new NullPointerException("cryptdec not defined");
+      }
+      byte[] bytes = new String(value).getBytes("UTF8");
+      byte[] encrypted = encrypt(bytes);
+      return cryptdec.getId() + "#"
+          + new String(Base64.encode(encrypted));
+    } catch (UnsupportedEncodingException e) {
+      throw ExceptionTools.createIOException(e.getMessage(), e);
+    }
+  }
 
-	/**
-	 * Encrypt a clear text array of bytes. The result is the plain encrypted
-	 * byte array.
-	 * 
-	 * @param bytes
-	 * @return The encrypted representation of <code>bytes</code>
-	 * @throws IOException
-	 */
-	public byte[] encrypt(byte[] bytes) throws IOException {
-		if (defaultCryptdecEncrypt == null) {
-			throw new IllegalStateException("default cryptdec not defined");
-		}
-		return defaultCryptdecEncrypt.encrypt(bytes);
-	}
+  public String encryptEncoded(String value) throws IOException {
+    if (defaultCryptdecEncrypt == null) {
+      throw new IllegalStateException("default cryptdec not defined");
+    }
+    return encryptEncoded(value, defaultCryptdecEncrypt);
+  }
 
-	public String encryptEncoded(char[] value) throws IOException {
-		if (defaultCryptdecEncrypt == null) {
-			throw new IllegalStateException("default cryptdec not defined");
-		}
-		return encryptEncoded(value, defaultCryptdecEncrypt);
-	}
+  public String encryptEncoded(String value, ICryptdec cryptdec)
+      throws IOException {
+    try {
+      if (cryptdec == null) {
+        throw new NullPointerException("cryptdec not defined");
+      }
+      byte[] bytes = value.getBytes("UTF8");
+      byte[] encrypted = encrypt(bytes);
+      return cryptdec.getId() + "#"
+          + new String(Base64.encode(encrypted));
+    } catch (UnsupportedEncodingException e) {
+      throw ExceptionTools.createIOException(e.getMessage(), e);
+    }
+  }
 
-	public String encryptEncoded(char[] value, ICryptdec cryptdec)
-			throws IOException {
-		try {
-			if (cryptdec == null) {
-				throw new NullPointerException("cryptdec not defined");
-			}
-			byte[] bytes = new String(value).getBytes("UTF8");
-			byte[] encrypted = encrypt(bytes);
-			return cryptdec.getId() + "#"
-					+ new String(Base64.encode(encrypted));
-		} catch (UnsupportedEncodingException e) {
-			throw ExceptionTools.createIOException(e.getMessage(), e);
-		}
-	}
+  /**
+   * Encrypt a clear text array of chars. The result is a Base64 encoded
+   * string version of the encrypted UTF-8 encoded input bytes.
+   *
+   * @param value
+   * @return An encrypted, invertible representation of <code>value</code>
+   * @throws IOException
+   */
+  public String encryptRaw(String value) throws IOException {
+    try {
+      byte[] bytes = value.getBytes("UTF8");
+      byte[] encrypted = encrypt(bytes);
+      return new String(Base64.encode(encrypted));
+    } catch (UnsupportedEncodingException e) {
+      throw ExceptionTools.createIOException(e.getMessage(), e);
+    }
+  }
 
-	public String encryptEncoded(String value) throws IOException {
-		if (defaultCryptdecEncrypt == null) {
-			throw new IllegalStateException("default cryptdec not defined");
-		}
-		return encryptEncoded(value, defaultCryptdecEncrypt);
-	}
+  public ICryptdec getDefaultCryptdecDecrypt() {
+    return defaultCryptdecDecrypt;
+  }
 
-	public String encryptEncoded(String value, ICryptdec cryptdec)
-			throws IOException {
-		try {
-			if (cryptdec == null) {
-				throw new NullPointerException("cryptdec not defined");
-			}
-			byte[] bytes = value.getBytes("UTF8");
-			byte[] encrypted = encrypt(bytes);
-			return cryptdec.getId() + "#"
-					+ new String(Base64.encode(encrypted));
-		} catch (UnsupportedEncodingException e) {
-			throw ExceptionTools.createIOException(e.getMessage(), e);
-		}
-	}
+  public void setDefaultCryptdecDecrypt(ICryptdec defaultCryptdec) {
+    if (this.defaultCryptdecDecrypt != null) {
+      throw new IllegalStateException("can't redefine cryptdecs");
+    }
+    this.defaultCryptdecDecrypt = defaultCryptdec;
+  }
 
-	/**
-	 * Encrypt a clear text array of chars. The result is a Base64 encoded
-	 * string version of the encrypted UTF-8 encoded input bytes.
-	 * 
-	 * @param value
-	 * @return An encrypted, invertible representation of <code>value</code>
-	 * @throws IOException
-	 */
-	public String encryptRaw(String value) throws IOException {
-		try {
-			byte[] bytes = value.getBytes("UTF8");
-			byte[] encrypted = encrypt(bytes);
-			return new String(Base64.encode(encrypted));
-		} catch (UnsupportedEncodingException e) {
-			throw ExceptionTools.createIOException(e.getMessage(), e);
-		}
-	}
+  public ICryptdec getDefaultCryptdecEncrypt() {
+    return defaultCryptdecEncrypt;
+  }
 
-	public ICryptdec getDefaultCryptdecDecrypt() {
-		return defaultCryptdecDecrypt;
-	}
+  public void setDefaultCryptdecEncrypt(ICryptdec defaultCryptdec) {
+    if (this.defaultCryptdecEncrypt != null) {
+      throw new IllegalStateException("can't redefine cryptdecs");
+    }
+    this.defaultCryptdecEncrypt = defaultCryptdec;
+  }
 
-	public ICryptdec getDefaultCryptdecEncrypt() {
-		return defaultCryptdecEncrypt;
-	}
+  public ICryptdec lookupCryptdec(String id) {
+    return cryptdecs.get(id);
+  }
 
-	public ICryptdec lookupCryptdec(String id) {
-		return cryptdecs.get(id);
-	}
-
-	public void registerCryptdec(ICryptdec cryptdec) {
-		if (cryptdecs.containsKey(cryptdec.getId())) {
-			throw new IllegalStateException("can't redefine cryptdecs");
-		}
-		cryptdecs.put(cryptdec.getId(), cryptdec);
-	}
-
-	public void setDefaultCryptdecDecrypt(ICryptdec defaultCryptdec) {
-		if (this.defaultCryptdecDecrypt != null) {
-			throw new IllegalStateException("can't redefine cryptdecs");
-		}
-		this.defaultCryptdecDecrypt = defaultCryptdec;
-	}
-
-	public void setDefaultCryptdecEncrypt(ICryptdec defaultCryptdec) {
-		if (this.defaultCryptdecEncrypt != null) {
-			throw new IllegalStateException("can't redefine cryptdecs");
-		}
-		this.defaultCryptdecEncrypt = defaultCryptdec;
-	}
+  public void registerCryptdec(ICryptdec cryptdec) {
+    if (cryptdecs.containsKey(cryptdec.getId())) {
+      throw new IllegalStateException("can't redefine cryptdecs");
+    }
+    cryptdecs.put(cryptdec.getId(), cryptdec);
+  }
 }

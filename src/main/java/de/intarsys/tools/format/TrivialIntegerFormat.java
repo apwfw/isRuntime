@@ -37,49 +37,49 @@ import java.text.ParsePosition;
  * A thread safe, quite trivial formatter for integer numbers
  */
 public class TrivialIntegerFormat extends Format {
-	/**
-	 * The default instance
-	 * 
-	 * @return The default instance
-	 */
-	public static TrivialIntegerFormat getInstance() {
-		return new TrivialIntegerFormat();
-	}
+  /**
+   * Create a TrivialIntegerFormat
+   */
+  public TrivialIntegerFormat() {
+    super();
+  }
 
-	/**
-	 * Create a TrivialIntegerFormat
-	 */
-	public TrivialIntegerFormat() {
-		super();
-	}
+  /**
+   * The default instance
+   *
+   * @return The default instance
+   */
+  public static TrivialIntegerFormat getInstance() {
+    return new TrivialIntegerFormat();
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.text.Format#format(java.lang.Object, java.lang.StringBuffer,
-	 *      java.text.FieldPosition)
-	 */
-	@Override
-	public StringBuffer format(Object obj, StringBuffer toAppendTo,
-			FieldPosition pos) {
-		if (obj instanceof Long) {
-			toAppendTo.append(((Long) obj).longValue());
-		} else if (obj instanceof Integer) {
-			toAppendTo.append(((Integer) obj).intValue());
-		} else {
-			return toAppendTo.append("<formatting error>");
-		}
-		return toAppendTo;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.text.Format#format(java.lang.Object, java.lang.StringBuffer,
+   *      java.text.FieldPosition)
+   */
+  @Override
+  public StringBuffer format(Object obj, StringBuffer toAppendTo,
+                             FieldPosition pos) {
+    if (obj instanceof Long) {
+      toAppendTo.append(((Long) obj).longValue());
+    } else if (obj instanceof Integer) {
+      toAppendTo.append(((Integer) obj).intValue());
+    } else {
+      return toAppendTo.append("<formatting error>");
+    }
+    return toAppendTo;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.text.Format#parseObject(java.lang.String,
-	 *      java.text.ParsePosition)
-	 */
-	@Override
-	public Object parseObject(String source, ParsePosition status) {
-		return null;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.text.Format#parseObject(java.lang.String,
+   *      java.text.ParsePosition)
+   */
+  @Override
+  public Object parseObject(String source, ParsePosition status) {
+    return null;
+  }
 }

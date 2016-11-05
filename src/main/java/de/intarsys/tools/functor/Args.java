@@ -29,6 +29,8 @@
  */
 package de.intarsys.tools.functor;
 
+import de.intarsys.tools.collection.ArrayIterator;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,354 +39,348 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import de.intarsys.tools.collection.ArrayIterator;
-
 /**
  * A concrete generic implementation for {@link IArgs}.
- * 
  */
 public class Args implements IArgs {
 
-	static class Binding implements IBinding {
-		protected String name;
-		protected Object value;
+  static final private Binding[] EMPTY = new Binding[0];
+  private static final Object UNDEFINED = new Object();
+  private Binding[] entries = EMPTY;
+  private int ptr = 0;
 
-		protected Binding(String name) {
-			super();
-			this.name = name;
-			this.value = UNDEFINED;
-		}
+  public Args() {
+    super();
+  }
 
-		protected Binding(String name, Object value) {
-			super();
-			this.name = name;
-			this.value = value;
-		}
+  public Args(Args pArgs) {
+    super();
+    if (pArgs == null) {
+      return;
+    }
+    ptr = pArgs.ptr;
+    if (ptr > 0) {
+      entries = new Binding[ptr];
+      for (int i = 0; i < ptr; i++) {
+        Binding tempEntry = pArgs.entries[i];
+        Object value = tempEntry.value;
+        if (value instanceof IArgs) {
+          entries[i] = new Binding(tempEntry.name,
+              ((IArgs) value).copy());
+        } else {
+          entries[i] = new Binding(tempEntry.name, value);
+        }
+      }
+    }
+  }
 
-		@Override
-		public String getName() {
-			return name;
-		}
+  public Args(List values) {
+    super();
+    ptr = values.size();
+    entries = new Binding[ptr];
+    for (int i = 0; i < ptr; i++) {
+      entries[i] = new Binding(null, values.get(i));
+    }
+  }
 
-		@Override
-		public Object getValue() {
-			return value == UNDEFINED ? null : value;
-		}
+  public Args(Map values) {
+    super();
+    ptr = values.size();
+    entries = new Binding[ptr];
+    int i = 0;
+    for (Iterator it = values.entrySet().iterator(); it.hasNext(); ) {
+      Map.Entry entry = (Map.Entry) it.next();
+      String name = (String) entry.getKey();
+      Object value = entry.getValue();
+      entries[i++] = new Binding(name, value);
+    }
+  }
 
-		@Override
-		public boolean isDefined() {
-			return value != UNDEFINED;
-		}
+  public Args(Object[] values) {
+    super();
+    if (values != null) {
+      // its common for values to be null, for example in java reflection
+      // code -> support it
+      ptr = values.length;
+      entries = new Binding[ptr];
+      for (int i = 0; i < ptr; i++) {
+        entries[i] = new Binding(null, values[i]);
+      }
+    }
+  }
 
-		@Override
-		public void setValue(Object pValue) {
-			value = pValue;
-		}
+  public static Args create() {
+    return new Args();
+  }
 
-		@Override
-		public String toString() {
-			return "" + name + ":" + value;
-		}
-	}
+  public static Args createIndexed(Object p1) {
+    List list = new ArrayList();
+    list.add(p1);
+    return new Args(list);
+  }
 
-	static final private Binding[] EMPTY = new Binding[0];
+  public static Args createIndexed(Object p1, Object p2) {
+    List list = new ArrayList();
+    list.add(p1);
+    list.add(p2);
+    return new Args(list);
+  }
 
-	private static final Object UNDEFINED = new Object();
+  public static Args createIndexed(Object p1, Object p2, Object p3) {
+    List list = new ArrayList();
+    list.add(p1);
+    list.add(p2);
+    list.add(p3);
+    return new Args(list);
+  }
 
-	public static Args create() {
-		return new Args();
-	}
+  public static Args createNamed(String key, Object value) {
+    Map map = new HashMap();
+    map.put(key, value);
+    return new Args(map);
+  }
 
-	public static Args createIndexed(Object p1) {
-		List list = new ArrayList();
-		list.add(p1);
-		return new Args(list);
-	}
+  public static Args createNamed(String key1, Object value1, String key2,
+                                 Object value2) {
+    Map map = new HashMap();
+    map.put(key1, value1);
+    map.put(key2, value2);
+    return new Args(map);
+  }
 
-	public static Args createIndexed(Object p1, Object p2) {
-		List list = new ArrayList();
-		list.add(p1);
-		list.add(p2);
-		return new Args(list);
-	}
+  public IBinding add(Object object) {
+    ensureCapacity(ptr);
+    Binding tempBinding = new Binding(null, object);
+    entries[ptr++] = tempBinding;
+    return tempBinding;
+  }
 
-	public static Args createIndexed(Object p1, Object p2, Object p3) {
-		List list = new ArrayList();
-		list.add(p1);
-		list.add(p2);
-		list.add(p3);
-		return new Args(list);
-	}
+  @Override
+  public Iterator<IBinding> bindings() {
+    return new ArrayIterator(entries, ptr);
+  }
 
-	public static Args createNamed(String key, Object value) {
-		Map map = new HashMap();
-		map.put(key, value);
-		return new Args(map);
-	}
+  public void clear() {
+    for (int i = 0; i < ptr; i++) {
+      entries[i] = null;
+    }
+    ptr = 0;
+  }
 
-	public static Args createNamed(String key1, Object value1, String key2,
-			Object value2) {
-		Map map = new HashMap();
-		map.put(key1, value1);
-		map.put(key2, value2);
-		return new Args(map);
-	}
+  @Override
+  public IArgs copy() {
+    return new Args(this);
+  }
 
-	private Binding[] entries = EMPTY;
+  @Override
+  public IBinding declare(String name) {
+    Binding tempBinding;
+    // first check all bindings if already available
+    for (int i = 0; i < ptr; i++) {
+      tempBinding = entries[i];
+      if (name.equals(tempBinding.name)) {
+        return tempBinding;
+      }
+    }
+    // try to bind get the unnamed binding
+    for (int i = 0; i < ptr; i++) {
+      tempBinding = entries[i];
+      if (tempBinding.name == null) {
+        tempBinding.name = name;
+        return tempBinding;
+      }
+    }
+    // add new entry
+    ensureCapacity(ptr);
+    tempBinding = new Binding(name);
+    entries[ptr++] = tempBinding;
+    return tempBinding;
+  }
 
-	private int ptr = 0;
+  protected void ensureCapacity(int min) {
+    if (min >= entries.length) {
+      Binding[] newEntries = new Binding[min + 4];
+      System.arraycopy(entries, 0, newEntries, 0, entries.length);
+      entries = newEntries;
+    }
+  }
 
-	public Args() {
-		super();
-	}
+  public Object get(int index) {
+    if (index < 0 || (index >= ptr)) {
+      return null;
+    }
+    if (entries[index].isDefined()) {
+      return entries[index].value;
+    } else {
+      return null;
+    }
+  }
 
-	public Args(Args pArgs) {
-		super();
-		if (pArgs == null) {
-			return;
-		}
-		ptr = pArgs.ptr;
-		if (ptr > 0) {
-			entries = new Binding[ptr];
-			for (int i = 0; i < ptr; i++) {
-				Binding tempEntry = pArgs.entries[i];
-				Object value = tempEntry.value;
-				if (value instanceof IArgs) {
-					entries[i] = new Binding(tempEntry.name,
-							((IArgs) value).copy());
-				} else {
-					entries[i] = new Binding(tempEntry.name, value);
-				}
-			}
-		}
-	}
+  public Object get(int index, Object defaultValue) {
+    if (index < 0 || (index >= ptr)) {
+      return defaultValue;
+    }
+    if (entries[index].isDefined()) {
+      return entries[index].value;
+    } else {
+      return defaultValue;
+    }
+  }
 
-	public Args(List values) {
-		super();
-		ptr = values.size();
-		entries = new Binding[ptr];
-		for (int i = 0; i < ptr; i++) {
-			entries[i] = new Binding(null, values.get(i));
-		}
-	}
+  public Object get(String name) {
+    for (int i = 0; i < ptr; i++) {
+      Binding entry = entries[i];
+      if (name.equals(entry.name) && entry.isDefined()) {
+        return entry.value;
+      }
+    }
+    return null;
+  }
 
-	public Args(Map values) {
-		super();
-		ptr = values.size();
-		entries = new Binding[ptr];
-		int i = 0;
-		for (Iterator it = values.entrySet().iterator(); it.hasNext();) {
-			Map.Entry entry = (Map.Entry) it.next();
-			String name = (String) entry.getKey();
-			Object value = entry.getValue();
-			entries[i++] = new Binding(name, value);
-		}
-	}
+  public Object get(String name, Object defaultValue) {
+    for (int i = 0; i < ptr; i++) {
+      Binding entry = entries[i];
+      if (name.equals(entry.name) && entry.isDefined()) {
+        return entry.value;
+      }
+    }
+    return defaultValue;
+  }
 
-	public Args(Object[] values) {
-		super();
-		if (values != null) {
-			// its common for values to be null, for example in java reflection
-			// code -> support it
-			ptr = values.length;
-			entries = new Binding[ptr];
-			for (int i = 0; i < ptr; i++) {
-				entries[i] = new Binding(null, values[i]);
-			}
-		}
-	}
+  public boolean isDefined(String name) {
+    for (int i = 0; i < ptr; i++) {
+      Binding entry = entries[i];
+      if (name.equals(entry.name)) {
+        return entry.isDefined();
+      }
+    }
+    return false;
+  }
 
-	public IBinding add(Object object) {
-		ensureCapacity(ptr);
-		Binding tempBinding = new Binding(null, object);
-		entries[ptr++] = tempBinding;
-		return tempBinding;
-	}
+  public boolean isIndexed() {
+    return true;
+  }
 
-	@Override
-	public Iterator<IBinding> bindings() {
-		return new ArrayIterator(entries, ptr);
-	}
+  public boolean isNamed() {
+    for (int i = 0; i < ptr; i++) {
+      Binding entry = entries[i];
+      if (entry.name != null) {
+        return true;
+      }
+    }
+    return false;
+  }
 
-	public void clear() {
-		for (int i = 0; i < ptr; i++) {
-			entries[i] = null;
-		}
-		ptr = 0;
-	}
+  public Set names() {
+    Set result = new HashSet();
+    for (int i = 0; i < ptr; i++) {
+      Binding entry = entries[i];
+      if (entry.name != null) {
+        result.add(entry.name);
+      }
+    }
+    return result;
+  }
 
-	@Override
-	public IArgs copy() {
-		return new Args(this);
-	}
+  public IBinding put(int index, Object value) {
+    Binding tempBinding;
+    if (index >= ptr) {
+      ensureCapacity(index);
+      for (int i = ptr; i < index; i++) {
+        entries[i] = new Binding(null);
+      }
+      tempBinding = new Binding(null, value);
+      entries[index] = tempBinding;
+      ptr = index + 1;
+    } else {
+      tempBinding = entries[index];
+      entries[index].setValue(value);
+    }
+    return tempBinding;
+  }
 
-	@Override
-	public IBinding declare(String name) {
-		Binding tempBinding;
-		// first check all bindings if already available
-		for (int i = 0; i < ptr; i++) {
-			tempBinding = entries[i];
-			if (name.equals(tempBinding.name)) {
-				return tempBinding;
-			}
-		}
-		// try to bind get the unnamed binding
-		for (int i = 0; i < ptr; i++) {
-			tempBinding = entries[i];
-			if (tempBinding.name == null) {
-				tempBinding.name = name;
-				return tempBinding;
-			}
-		}
-		// add new entry
-		ensureCapacity(ptr);
-		tempBinding = new Binding(name);
-		entries[ptr++] = tempBinding;
-		return tempBinding;
-	}
+  public IBinding put(String name, Object value) {
+    Binding tempBinding;
+    for (int i = 0; i < ptr; i++) {
+      Binding entry = entries[i];
+      if (name.equals(entry.name)) {
+        tempBinding = entry;
+        entry.setValue(value);
+        return tempBinding;
+      }
+    }
+    ensureCapacity(ptr);
+    tempBinding = new Binding(name, value);
+    entries[ptr++] = tempBinding;
+    return tempBinding;
+  }
 
-	protected void ensureCapacity(int min) {
-		if (min >= entries.length) {
-			Binding[] newEntries = new Binding[min + 4];
-			System.arraycopy(entries, 0, newEntries, 0, entries.length);
-			entries = newEntries;
-		}
-	}
+  public int size() {
+    return ptr;
+  }
 
-	public Object get(int index) {
-		if (index < 0 || (index >= ptr)) {
-			return null;
-		}
-		if (entries[index].isDefined()) {
-			return entries[index].value;
-		} else {
-			return null;
-		}
-	}
+  @Override
+  public String toString() {
+    return ArgTools.toString(this, "");
+  }
 
-	public Object get(int index, Object defaultValue) {
-		if (index < 0 || (index >= ptr)) {
-			return defaultValue;
-		}
-		if (entries[index].isDefined()) {
-			return entries[index].value;
-		} else {
-			return defaultValue;
-		}
-	}
+  public void undefine(int index) {
+    if (index < ptr) {
+      entries[index].setValue(UNDEFINED);
+    }
+  }
 
-	public Object get(String name) {
-		for (int i = 0; i < ptr; i++) {
-			Binding entry = entries[i];
-			if (name.equals(entry.name) && entry.isDefined()) {
-				return entry.value;
-			}
-		}
-		return null;
-	}
+  public void undefine(String name) {
+    Binding tempBinding;
+    for (int i = 0; i < ptr; i++) {
+      Binding entry = entries[i];
+      if (name.equals(entry.name)) {
+        tempBinding = entry;
+        entry.setValue(UNDEFINED);
+      }
+    }
+  }
 
-	public Object get(String name, Object defaultValue) {
-		for (int i = 0; i < ptr; i++) {
-			Binding entry = entries[i];
-			if (name.equals(entry.name) && entry.isDefined()) {
-				return entry.value;
-			}
-		}
-		return defaultValue;
-	}
+  static class Binding implements IBinding {
+    protected String name;
+    protected Object value;
 
-	public boolean isDefined(String name) {
-		for (int i = 0; i < ptr; i++) {
-			Binding entry = entries[i];
-			if (name.equals(entry.name)) {
-				return entry.isDefined();
-			}
-		}
-		return false;
-	}
+    protected Binding(String name) {
+      super();
+      this.name = name;
+      this.value = UNDEFINED;
+    }
 
-	public boolean isIndexed() {
-		return true;
-	}
+    protected Binding(String name, Object value) {
+      super();
+      this.name = name;
+      this.value = value;
+    }
 
-	public boolean isNamed() {
-		for (int i = 0; i < ptr; i++) {
-			Binding entry = entries[i];
-			if (entry.name != null) {
-				return true;
-			}
-		}
-		return false;
-	}
+    @Override
+    public String getName() {
+      return name;
+    }
 
-	public Set names() {
-		Set result = new HashSet();
-		for (int i = 0; i < ptr; i++) {
-			Binding entry = entries[i];
-			if (entry.name != null) {
-				result.add(entry.name);
-			}
-		}
-		return result;
-	}
+    @Override
+    public Object getValue() {
+      return value == UNDEFINED ? null : value;
+    }
 
-	public IBinding put(int index, Object value) {
-		Binding tempBinding;
-		if (index >= ptr) {
-			ensureCapacity(index);
-			for (int i = ptr; i < index; i++) {
-				entries[i] = new Binding(null);
-			}
-			tempBinding = new Binding(null, value);
-			entries[index] = tempBinding;
-			ptr = index + 1;
-		} else {
-			tempBinding = entries[index];
-			entries[index].setValue(value);
-		}
-		return tempBinding;
-	}
+    @Override
+    public void setValue(Object pValue) {
+      value = pValue;
+    }
 
-	public IBinding put(String name, Object value) {
-		Binding tempBinding;
-		for (int i = 0; i < ptr; i++) {
-			Binding entry = entries[i];
-			if (name.equals(entry.name)) {
-				tempBinding = entry;
-				entry.setValue(value);
-				return tempBinding;
-			}
-		}
-		ensureCapacity(ptr);
-		tempBinding = new Binding(name, value);
-		entries[ptr++] = tempBinding;
-		return tempBinding;
-	}
+    @Override
+    public boolean isDefined() {
+      return value != UNDEFINED;
+    }
 
-	public int size() {
-		return ptr;
-	}
-
-	@Override
-	public String toString() {
-		return ArgTools.toString(this, "");
-	}
-
-	public void undefine(int index) {
-		if (index < ptr) {
-			entries[index].setValue(UNDEFINED);
-		}
-	}
-
-	public void undefine(String name) {
-		Binding tempBinding;
-		for (int i = 0; i < ptr; i++) {
-			Binding entry = entries[i];
-			if (name.equals(entry.name)) {
-				tempBinding = entry;
-				entry.setValue(UNDEFINED);
-			}
-		}
-	}
+    @Override
+    public String toString() {
+      return "" + name + ":" + value;
+    }
+  }
 
 }

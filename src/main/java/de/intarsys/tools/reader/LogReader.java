@@ -39,73 +39,67 @@ import java.io.Writer;
  * <p>
  * The reader is piped in the reading process, any characters read are written
  * to an associated writer object.
- * 
+ * <p>
  * <pre>
  * Client -&gt; LogReader -&gt; Reader -&gt; Source
  *            |
  *            v
  *           Writer
  * </pre>
- * 
+ * <p>
  * todo make closing of associated writer configurable
  */
 public class LogReader extends FilterReader {
-	Writer log;
+  Writer log;
 
-	public LogReader(Reader in, Writer w) {
-		super(in);
-		setLog(w);
-	}
+  public LogReader(Reader in, Writer w) {
+    super(in);
+    setLog(w);
+  }
 
-	@Override
-	public void close() throws IOException {
-		super.close();
-		if (getLog() != null) {
-			getLog().close();
-		}
-	}
+  @Override
+  public void close() throws IOException {
+    super.close();
+    if (getLog() != null) {
+      getLog().close();
+    }
+  }
 
-	public java.io.Writer getLog() {
-		return log;
-	}
+  public java.io.Writer getLog() {
+    return log;
+  }
 
-	@Override
-	public int read() throws java.io.IOException {
-		int b = super.read();
-		if ((b > -1) && (log != null)) {
-			log.write(b);
-		}
-		return b;
-	}
+  public void setLog(java.io.Writer newLog) {
+    log = newLog;
+  }
 
-	/**
-	 * Read characters into a portion of an array. This method will block until
-	 * some input is available, an I/O error occurs, or the end of the stream is
-	 * reached.
-	 * 
-	 * @param cbuf
-	 *            Destination buffer
-	 * @param off
-	 *            Offset at which to start storing characters
-	 * @param len
-	 *            Maximum number of characters to read
-	 * 
-	 * @return The number of characters read, or -1 if the end of the stream has
-	 *         been reached
-	 * 
-	 * @exception IOException
-	 *                If an I/O error occurs
-	 */
-	@Override
-	public int read(char[] cbuf, int off, int len) throws IOException {
-		int bytes = super.read(cbuf, off, len);
-		if ((bytes > -1) && (log != null)) {
-			log.write(cbuf, off, bytes);
-		}
-		return bytes;
-	}
+  @Override
+  public int read() throws java.io.IOException {
+    int b = super.read();
+    if ((b > -1) && (log != null)) {
+      log.write(b);
+    }
+    return b;
+  }
 
-	public void setLog(java.io.Writer newLog) {
-		log = newLog;
-	}
+  /**
+   * Read characters into a portion of an array. This method will block until
+   * some input is available, an I/O error occurs, or the end of the stream is
+   * reached.
+   *
+   * @param cbuf Destination buffer
+   * @param off  Offset at which to start storing characters
+   * @param len  Maximum number of characters to read
+   * @return The number of characters read, or -1 if the end of the stream has
+   * been reached
+   * @throws IOException If an I/O error occurs
+   */
+  @Override
+  public int read(char[] cbuf, int off, int len) throws IOException {
+    int bytes = super.read(cbuf, off, len);
+    if ((bytes > -1) && (log != null)) {
+      log.write(cbuf, off, bytes);
+    }
+    return bytes;
+  }
 }

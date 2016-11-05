@@ -33,14 +33,13 @@ import java.util.List;
 
 /**
  * An object that natively supports attachments.
- * 
  */
 public interface IAttachmentSupport {
 
-	/**
-	 * The attachment list for this object.
-	 * 
-	 * @return The attachment list for this object.
-	 */
-	public List<Attachment> getAttachments();
+  /**
+   * The attachment list for this object.
+   *
+   * @return The attachment list for this object.
+   */
+  public List<Attachment> getAttachments();
 }

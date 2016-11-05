@@ -33,16 +33,15 @@ import java.util.List;
 
 /**
  * A registry for {@link IResource} instances
- * 
  */
 public interface IResourceRegistry {
 
-	public List<IResource> getResources();
+  public List<IResource> getResources();
 
-	public IResource lookupResource(String id);
+  public IResource lookupResource(String id);
 
-	public void registerResource(IResource resource);
+  public void registerResource(IResource resource);
 
-	public void unregisterResource(IResource resource);
+  public void unregisterResource(IResource resource);
 
 }

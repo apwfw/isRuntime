@@ -34,18 +34,18 @@ package de.intarsys.tools.component;
  * physical representation, for example a file system.
  */
 public interface ISynchronizable {
-	/**
-	 * <code>true</code> if the component is out of synch.
-	 * 
-	 * @return <code>true</code> if the component is out of synch.
-	 */
-	public boolean isOutOfSynch();
+  /**
+   * <code>true</code> if the component is out of synch.
+   *
+   * @return <code>true</code> if the component is out of synch.
+   */
+  public boolean isOutOfSynch();
 
-	/**
-	 * Perform a synchronization with the components physical resources.
-	 * <p>
-	 * In case of a scheduled synchronization this may be called by an external
-	 * daemon.
-	 */
-	public void synch();
+  /**
+   * Perform a synchronization with the components physical resources.
+   * <p>
+   * In case of a scheduled synchronization this may be called by an external
+   * daemon.
+   */
+  public void synch();
 }

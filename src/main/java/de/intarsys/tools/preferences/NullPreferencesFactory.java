@@ -34,13 +34,13 @@ package de.intarsys.tools.preferences;
  */
 public class NullPreferencesFactory implements IPreferencesFactory {
 
-	private static NullPreferences prefs = new NullPreferences();
+  private static NullPreferences prefs = new NullPreferences();
 
-	public IPreferences getMain() {
-		return prefs;
-	}
+  public IPreferences getMain() {
+    return prefs;
+  }
 
-	public IPreferences getRoot() {
-		return prefs;
-	}
+  public IPreferences getRoot() {
+    return prefs;
+  }
 }

@@ -34,39 +34,39 @@ import java.util.List;
 
 public class NamedRange implements IRange {
 
-	private EnumRange value;
+  private EnumRange value;
 
-	public NamedRange(EnumRange value) {
-		super();
-		this.value = value;
-	}
+  public NamedRange(EnumRange value) {
+    super();
+    this.value = value;
+  }
 
-	@Override
-	public List<Integer> getIndices(int current, int count) {
-		List<Integer> indices = new ArrayList<Integer>();
-		if (getValue() == EnumRange.ALL) {
-			for (int i = 0; i < count; i++) {
-				indices.add(i);
-			}
-		} else if (getValue() == EnumRange.FIRST) {
-			indices.add(0);
-		} else if (getValue() == EnumRange.LAST) {
-			indices.add(count - 1);
-		} else if (getValue() == EnumRange.CURRENT) {
-			if (current > -1) {
-				indices.add(current);
-			}
-		} else {
-			// default is all
-			for (int i = 0; i < count; i++) {
-				indices.add(i);
-			}
-		}
-		return indices;
-	}
+  @Override
+  public List<Integer> getIndices(int current, int count) {
+    List<Integer> indices = new ArrayList<Integer>();
+    if (getValue() == EnumRange.ALL) {
+      for (int i = 0; i < count; i++) {
+        indices.add(i);
+      }
+    } else if (getValue() == EnumRange.FIRST) {
+      indices.add(0);
+    } else if (getValue() == EnumRange.LAST) {
+      indices.add(count - 1);
+    } else if (getValue() == EnumRange.CURRENT) {
+      if (current > -1) {
+        indices.add(current);
+      }
+    } else {
+      // default is all
+      for (int i = 0; i < count; i++) {
+        indices.add(i);
+      }
+    }
+    return indices;
+  }
 
-	public EnumRange getValue() {
-		return value;
-	}
+  public EnumRange getValue() {
+    return value;
+  }
 
 }

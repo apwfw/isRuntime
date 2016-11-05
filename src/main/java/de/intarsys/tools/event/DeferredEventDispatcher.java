@@ -13,53 +13,52 @@ import java.util.List;
  * <p>
  * Events are forwarded upon "flush" to all listeners in the thread of the
  * caller.
- * 
  */
 public class DeferredEventDispatcher implements INotificationListener,
-		INotificationSupport {
+    INotificationSupport {
 
-	final private List<Event> events = new ArrayList<Event>();
+  final private List<Event> events = new ArrayList<Event>();
 
-	final private EventDispatcher dispatcher;
+  final private EventDispatcher dispatcher;
 
-	final private Object lock = new Object();
+  final private Object lock = new Object();
 
-	public DeferredEventDispatcher(EventDispatcher dispatcher) {
-		this.dispatcher = dispatcher;
-	}
+  public DeferredEventDispatcher(EventDispatcher dispatcher) {
+    this.dispatcher = dispatcher;
+  }
 
-	public DeferredEventDispatcher(Object owner) {
-		this.dispatcher = new EventDispatcher(owner);
-	}
+  public DeferredEventDispatcher(Object owner) {
+    this.dispatcher = new EventDispatcher(owner);
+  }
 
-	public void addNotificationListener(EventType type,
-			INotificationListener listener) {
-		dispatcher.addNotificationListener(type, listener);
-	}
+  public void addNotificationListener(EventType type,
+                                      INotificationListener listener) {
+    dispatcher.addNotificationListener(type, listener);
+  }
 
-	public void flush() {
-		List<Event> tempEvents;
-		synchronized (lock) {
-			tempEvents = new ArrayList<Event>(events);
-			events.clear();
-		}
-		for (Event event : tempEvents) {
-			dispatcher.handleEvent(event);
-		}
-	}
+  public void flush() {
+    List<Event> tempEvents;
+    synchronized (lock) {
+      tempEvents = new ArrayList<Event>(events);
+      events.clear();
+    }
+    for (Event event : tempEvents) {
+      dispatcher.handleEvent(event);
+    }
+  }
 
-	public void handleEvent(Event event) {
-		synchronized (lock) {
-			events.add(event);
-		}
-	}
+  public void handleEvent(Event event) {
+    synchronized (lock) {
+      events.add(event);
+    }
+  }
 
-	public boolean hasListener() {
-		return dispatcher.hasListener();
-	}
+  public boolean hasListener() {
+    return dispatcher.hasListener();
+  }
 
-	public void removeNotificationListener(EventType type,
-			INotificationListener listener) {
-		dispatcher.removeNotificationListener(type, listener);
-	}
+  public void removeNotificationListener(EventType type,
+                                         INotificationListener listener) {
+    dispatcher.removeNotificationListener(type, listener);
+  }
 }

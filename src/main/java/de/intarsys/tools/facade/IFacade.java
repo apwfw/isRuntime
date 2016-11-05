@@ -31,15 +31,14 @@ package de.intarsys.tools.facade;
 
 /**
  * An object hiding the real implementation object
- * 
  */
 public interface IFacade {
 
-	/**
-	 * The implementation behind the facade.
-	 * 
-	 * @return The implementation behind the facade.
-	 */
-	public Object getImpl();
+  /**
+   * The implementation behind the facade.
+   *
+   * @return The implementation behind the facade.
+   */
+  public Object getImpl();
 
 }

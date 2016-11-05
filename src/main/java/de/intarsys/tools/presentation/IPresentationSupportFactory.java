@@ -34,14 +34,13 @@ package de.intarsys.tools.presentation;
  */
 public interface IPresentationSupportFactory {
 
-	/**
-	 * Create a {@link IPresentationSupport} instance that can be used to
-	 * present <code>object</code>.
-	 * 
-	 * @param object
-	 *            The object to be presented.
-	 * @return Create a {@link IPresentationSupport} instance that can be used
-	 *         to present <code>object</code>.
-	 */
-	public IPresentationSupport createPresentationSupport(Object object);
+  /**
+   * Create a {@link IPresentationSupport} instance that can be used to
+   * present <code>object</code>.
+   *
+   * @param object The object to be presented.
+   * @return Create a {@link IPresentationSupport} instance that can be used
+   * to present <code>object</code>.
+   */
+  public IPresentationSupport createPresentationSupport(Object object);
 }

@@ -32,35 +32,35 @@ package de.intarsys.tools.attachment;
 import de.intarsys.tools.string.StringTools;
 
 /**
- * 
+ *
  */
 public class Attachment {
 
-	static {
-		new CanonicalFromAttachmentConverter();
-	}
+  static {
+    new CanonicalFromAttachmentConverter();
+  }
 
-	final private String key;
+  final private String key;
 
-	final private Object attached;
+  final private Object attached;
 
-	public Attachment(String key, Object attached) {
-		super();
-		this.key = key;
-		this.attached = attached;
-	}
+  public Attachment(String key, Object attached) {
+    super();
+    this.key = key;
+    this.attached = attached;
+  }
 
-	public Object getAttached() {
-		return attached;
-	}
+  public Object getAttached() {
+    return attached;
+  }
 
-	public String getKey() {
-		return key;
-	}
+  public String getKey() {
+    return key;
+  }
 
-	@Override
-	public String toString() {
-		return "Attachment " + key + " (" + StringTools.safeString(attached)
-				+ ")";
-	}
+  @Override
+  public String toString() {
+    return "Attachment " + key + " (" + StringTools.safeString(attached)
+        + ")";
+  }
 }

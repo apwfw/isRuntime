@@ -29,12 +29,6 @@
  */
 package de.intarsys.tools.transaction.file;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import de.intarsys.tools.file.FileTools;
 import de.intarsys.tools.functor.Args;
 import de.intarsys.tools.functor.FunctorCall;
@@ -45,76 +39,81 @@ import de.intarsys.tools.transaction.CommonResource;
 import de.intarsys.tools.transaction.IResource;
 import de.intarsys.tools.transaction.ResourceException;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * This {@link IResource} manages changes on the file system.
- * 
  */
 public class FileSystemResource extends CommonResource {
 
-	private List<IFunctor> rollbackActions = new ArrayList<IFunctor>();
+  private List<IFunctor> rollbackActions = new ArrayList<IFunctor>();
 
-	protected FileSystemResource(FileSystemResourceType type,
-			FileSystemResource parent) {
-		super(type, parent);
-	}
+  protected FileSystemResource(FileSystemResourceType type,
+                               FileSystemResource parent) {
+    super(type, parent);
+  }
 
-	@Override
-	public void commit() throws ResourceException {
-		rollbackActions.clear();
-	}
+  @Override
+  public void commit() throws ResourceException {
+    rollbackActions.clear();
+  }
 
-	public void onRollback(IFunctor rollback) {
-		if (!isActive()) {
-			return;
-		}
-		rollbackActions.add(rollback);
-	}
+  public void onRollback(IFunctor rollback) {
+    if (!isActive()) {
+      return;
+    }
+    rollbackActions.add(rollback);
+  }
 
-	public void onRollbackDelete(final File file) {
-		if (file == null || !isActive()) {
-			return;
-		}
-		onRollback(new IFunctor() {
-			public Object perform(IFunctorCall call)
-					throws FunctorInvocationException {
-				file.delete();
-				return null;
-			}
-		});
-	}
+  public void onRollbackDelete(final File file) {
+    if (file == null || !isActive()) {
+      return;
+    }
+    onRollback(new IFunctor() {
+      public Object perform(IFunctorCall call)
+          throws FunctorInvocationException {
+        file.delete();
+        return null;
+      }
+    });
+  }
 
-	public void onRollbackMove(final File source, final File destination) {
-		if (source == null || destination == null || source.equals(destination)
-				|| !isActive()) {
-			return;
-		}
-		onRollback(new IFunctor() {
-			public Object perform(IFunctorCall call)
-					throws FunctorInvocationException {
-				try {
-					FileTools.copyFile(source, destination);
-				} catch (IOException e) {
-					throw new FunctorInvocationException(e);
-				}
-				source.delete();
-				return null;
-			}
-		});
-	}
+  public void onRollbackMove(final File source, final File destination) {
+    if (source == null || destination == null || source.equals(destination)
+        || !isActive()) {
+      return;
+    }
+    onRollback(new IFunctor() {
+      public Object perform(IFunctorCall call)
+          throws FunctorInvocationException {
+        try {
+          FileTools.copyFile(source, destination);
+        } catch (IOException e) {
+          throw new FunctorInvocationException(e);
+        }
+        source.delete();
+        return null;
+      }
+    });
+  }
 
-	@Override
-	public void rollback() throws ResourceException {
-		List<IFunctor> tempUndos = new ArrayList<IFunctor>(rollbackActions);
-		Collections.reverse(tempUndos);
-		for (IFunctor action : tempUndos) {
-			IFunctorCall call = new FunctorCall(this, Args.create());
-			try {
-				action.perform(call);
-			} catch (FunctorInvocationException e) {
-				throw new ResourceException(e);
-			}
-		}
-		rollbackActions.clear();
-	}
+  @Override
+  public void rollback() throws ResourceException {
+    List<IFunctor> tempUndos = new ArrayList<IFunctor>(rollbackActions);
+    Collections.reverse(tempUndos);
+    for (IFunctor action : tempUndos) {
+      IFunctorCall call = new FunctorCall(this, Args.create());
+      try {
+        action.perform(call);
+      } catch (FunctorInvocationException e) {
+        throw new ResourceException(e);
+      }
+    }
+    rollbackActions.clear();
+  }
 
 }

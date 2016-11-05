@@ -31,6 +31,6 @@ package de.intarsys.tools.mime;
 
 public interface IMimeTypeSupport {
 
-	public String getContentType();
+  public String getContentType();
 
 }

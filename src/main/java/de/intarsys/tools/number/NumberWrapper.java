@@ -36,67 +36,66 @@ import java.util.Set;
 /**
  * An abstract class for the implementation of objects that may occur in the
  * definition of a number string.
- * 
  */
 public abstract class NumberWrapper implements Iterable, Set {
-	/**
-	 * NumberWrapper constructor comment.
-	 */
-	public NumberWrapper() {
-		super();
-	}
+  /**
+   * NumberWrapper constructor comment.
+   */
+  public NumberWrapper() {
+    super();
+  }
 
-	public void clear() {
-		throw new UnsupportedOperationException(
-				"Clear operation not supported!");
-	}
+  public void clear() {
+    throw new UnsupportedOperationException(
+        "Clear operation not supported!");
+  }
 
-	public boolean containsAll(Collection arg0) {
-		Iterator iter = arg0.iterator();
-		while (iter.hasNext()) {
-			Object element = iter.next();
-			if (!contains(element)) {
-				return false;
-			}
-		}
-		return true;
-	}
+  public boolean containsAll(Collection arg0) {
+    Iterator iter = arg0.iterator();
+    while (iter.hasNext()) {
+      Object element = iter.next();
+      if (!contains(element)) {
+        return false;
+      }
+    }
+    return true;
+  }
 
-	protected Number getFirst() {
-		if (!isEmpty()) {
-			return (Number) iterator().next();
-		}
-		return null;
-	}
+  protected Number getFirst() {
+    if (!isEmpty()) {
+      return (Number) iterator().next();
+    }
+    return null;
+  }
 
-	protected abstract double getMax();
+  protected abstract double getMax();
 
-	protected abstract double getMin();
+  protected abstract double getMin();
 
-	abstract public NumberWrapper increment(int i);
+  abstract public NumberWrapper increment(int i);
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.Collection#remove(java.lang.Object)
-	 */
-	public boolean remove(Object o) {
-		throw new UnsupportedOperationException(
-				"Remove operation not supported!");
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.util.Collection#remove(java.lang.Object)
+   */
+  public boolean remove(Object o) {
+    throw new UnsupportedOperationException(
+        "Remove operation not supported!");
+  }
 
-	public boolean removeAll(Collection arg0) {
-		throw new UnsupportedOperationException(
-				"RemoveAll operation not supported!");
-	}
+  public boolean removeAll(Collection arg0) {
+    throw new UnsupportedOperationException(
+        "RemoveAll operation not supported!");
+  }
 
-	public boolean retainAll(Collection arg0) {
-		throw new UnsupportedOperationException(
-				"RetainAll operation not supported!");
-	}
+  public boolean retainAll(Collection arg0) {
+    throw new UnsupportedOperationException(
+        "RetainAll operation not supported!");
+  }
 
-	public Object[] toArray(Object[] arg0) {
-		return toArray();
-	}
+  public Object[] toArray(Object[] arg0) {
+    return toArray();
+  }
 
 }

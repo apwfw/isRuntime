@@ -33,63 +33,63 @@ package de.intarsys.tools.event;
  * An event representing an objects state change.
  */
 public class AttributeChangedEvent extends Event {
-	public static final EventType ID = new EventType(
-			AttributeChangedEvent.class.getName());
+  public static final EventType ID = new EventType(
+      AttributeChangedEvent.class.getName());
 
-	private Object attribute;
+  private Object attribute;
 
-	private Object oldValue;
+  private Object oldValue;
 
-	private Object newValue;
+  private Object newValue;
 
-	public AttributeChangedEvent(Object source, Object attribute,
-			Object oldValue, Object newValue) {
-		super(source);
-		this.attribute = attribute;
-		this.oldValue = oldValue;
-		this.newValue = newValue;
-	}
+  public AttributeChangedEvent(Object source, Object attribute,
+                               Object oldValue, Object newValue) {
+    super(source);
+    this.attribute = attribute;
+    this.oldValue = oldValue;
+    this.newValue = newValue;
+  }
 
-	/**
-	 * The attribute slot that has changed.
-	 * 
-	 * @return The attribute slot that has changed.
-	 */
-	public Object getAttribute() {
-		return attribute;
-	}
+  /**
+   * The attribute slot that has changed.
+   *
+   * @return The attribute slot that has changed.
+   */
+  public Object getAttribute() {
+    return attribute;
+  }
 
-	@Override
-	public EventType getEventType() {
-		return ID;
-	}
+  @Override
+  public EventType getEventType() {
+    return ID;
+  }
 
-	/**
-	 * The new value of the attribute.
-	 * 
-	 * @return The new value of the attribute.
-	 */
-	public Object getNewValue() {
-		return newValue;
-	}
+  /**
+   * The new value of the attribute.
+   *
+   * @return The new value of the attribute.
+   */
+  public Object getNewValue() {
+    return newValue;
+  }
 
-	/**
-	 * The previous value of the attribute.
-	 * 
-	 * @return The previous value of the attribute.
-	 */
-	public Object getOldValue() {
-		return oldValue;
-	}
+  /**
+   * The previous value of the attribute.
+   *
+   * @return The previous value of the attribute.
+   */
+  public Object getOldValue() {
+    return oldValue;
+  }
 
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("attribute '");
-		sb.append(attribute);
-		sb.append("' changed on '");
-		sb.append(getSource());
-		sb.append("'");
-		return sb.toString();
-	}
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("attribute '");
+    sb.append(attribute);
+    sb.append("' changed on '");
+    sb.append(getSource());
+    sb.append("'");
+    return sb.toString();
+  }
 }

@@ -31,9 +31,9 @@ package de.intarsys.tools.variable;
 
 public interface IVariableNamespaces {
 
-	public String[] getNames();
+  public String[] getNames();
 
-	public IVariableNamespace getNamespace(String id);
+  public IVariableNamespace getNamespace(String id);
 
-	public void setNamespace(String id, IVariableNamespace namespace);
+  public void setNamespace(String id, IVariableNamespace namespace);
 }

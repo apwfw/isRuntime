@@ -34,14 +34,12 @@ package de.intarsys.tools.facade;
  */
 public interface IFacadeFactory {
 
-	/**
-	 * The {@link IFacade} associated with <code>object</code>.
-	 * 
-	 * @param object
-	 *            The object whose {@link IFacade} is to be created.
-	 * 
-	 * @return The {@link IFacade} associated with <code>object</code>.
-	 */
-	public IFacade createFacade(Object object);
+  /**
+   * The {@link IFacade} associated with <code>object</code>.
+   *
+   * @param object The object whose {@link IFacade} is to be created.
+   * @return The {@link IFacade} associated with <code>object</code>.
+   */
+  public IFacade createFacade(Object object);
 
 }

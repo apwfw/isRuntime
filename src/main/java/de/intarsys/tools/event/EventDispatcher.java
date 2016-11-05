@@ -38,162 +38,161 @@ import java.util.List;
  * <p>
  * Events are fowarded immediately on "handleEvent" to all listeners in the
  * thread of the caller.
- * 
  */
 public class EventDispatcher implements INotificationSupport,
-		INotificationListener, Serializable {
+    INotificationListener, Serializable {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	private final Object owner;
+  private final Object owner;
 
-	private EventType[] types = new EventType[4];
+  private EventType[] types = new EventType[4];
 
-	private INotificationListener[] listeners = new INotificationListener[4];
+  private INotificationListener[] listeners = new INotificationListener[4];
 
-	public EventDispatcher(Object pOwner) {
-		super();
-		owner = pOwner;
-	}
+  public EventDispatcher(Object pOwner) {
+    super();
+    owner = pOwner;
+  }
 
-	public synchronized void addNotificationListener(EventType type,
-			INotificationListener listener) {
-		if (listener == null) {
-			throw new NullPointerException("listener may not be null");
-		}
-		int length = listeners.length;
-		int i = 0;
-		while (i < length) {
-			if (listeners[i] == null) {
-				break;
-			}
-			i++;
-		}
-		if (i >= length) {
-			INotificationListener[] tempListeners = new INotificationListener[length + 4];
-			System.arraycopy(listeners, 0, tempListeners, 0, length);
-			listeners = tempListeners;
-			EventType[] tempIds = new EventType[length + 4];
-			System.arraycopy(types, 0, tempIds, 0, length);
-			types = tempIds;
-		}
-		types[i] = type;
-		listeners[i] = listener;
-	}
+  public synchronized void addNotificationListener(EventType type,
+                                                   INotificationListener listener) {
+    if (listener == null) {
+      throw new NullPointerException("listener may not be null");
+    }
+    int length = listeners.length;
+    int i = 0;
+    while (i < length) {
+      if (listeners[i] == null) {
+        break;
+      }
+      i++;
+    }
+    if (i >= length) {
+      INotificationListener[] tempListeners = new INotificationListener[length + 4];
+      System.arraycopy(listeners, 0, tempListeners, 0, length);
+      listeners = tempListeners;
+      EventType[] tempIds = new EventType[length + 4];
+      System.arraycopy(types, 0, tempIds, 0, length);
+      types = tempIds;
+    }
+    types[i] = type;
+    listeners[i] = listener;
+  }
 
-	synchronized public void attach(INotificationSupport support) {
-		int length = listeners.length;
-		for (int i = 0; i < length; i++) {
-			EventType tempType = types[i];
-			if (tempType != null) {
-				support.addNotificationListener(tempType, listeners[i]);
-			}
-		}
-	}
+  synchronized public void attach(INotificationSupport support) {
+    int length = listeners.length;
+    for (int i = 0; i < length; i++) {
+      EventType tempType = types[i];
+      if (tempType != null) {
+        support.addNotificationListener(tempType, listeners[i]);
+      }
+    }
+  }
 
-	public synchronized void clear() {
-		types = new EventType[4];
-		listeners = new INotificationListener[4];
-	}
+  public synchronized void clear() {
+    types = new EventType[4];
+    listeners = new INotificationListener[4];
+  }
 
-	synchronized public void detach(INotificationSupport support) {
-		int length = listeners.length;
-		for (int i = 0; i < length; i++) {
-			EventType tempType = types[i];
-			if (tempType != null) {
-				support.removeNotificationListener(tempType, listeners[i]);
-			}
-		}
-	}
+  synchronized public void detach(INotificationSupport support) {
+    int length = listeners.length;
+    for (int i = 0; i < length; i++) {
+      EventType tempType = types[i];
+      if (tempType != null) {
+        support.removeNotificationListener(tempType, listeners[i]);
+      }
+    }
+  }
 
-	synchronized public INotificationListener[] getListeners() {
-		List<INotificationListener> tempListeners = new ArrayList<INotificationListener>();
-		for (int i = 0; i < listeners.length; i++) {
-			if (listeners[i] != null) {
-				tempListeners.add(listeners[i]);
-			}
-		}
-		return tempListeners.toArray(new INotificationListener[tempListeners
-				.size()]);
-	}
+  synchronized public INotificationListener[] getListeners() {
+    List<INotificationListener> tempListeners = new ArrayList<INotificationListener>();
+    for (int i = 0; i < listeners.length; i++) {
+      if (listeners[i] != null) {
+        tempListeners.add(listeners[i]);
+      }
+    }
+    return tempListeners.toArray(new INotificationListener[tempListeners
+        .size()]);
+  }
 
-	public Object getOwner() {
-		return owner;
-	}
+  public Object getOwner() {
+    return owner;
+  }
 
-	synchronized public EventType[] getTypes() {
-		List<EventType> temp = new ArrayList<EventType>();
-		for (int i = 0; i < types.length; i++) {
-			if (types[i] != null) {
-				temp.add(types[i]);
-			}
-		}
-		return (EventType[]) temp.toArray();
-	}
+  synchronized public EventType[] getTypes() {
+    List<EventType> temp = new ArrayList<EventType>();
+    for (int i = 0; i < types.length; i++) {
+      if (types[i] != null) {
+        temp.add(types[i]);
+      }
+    }
+    return (EventType[]) temp.toArray();
+  }
 
-	public void handleEvent(Event event) {
-		Object typeId = event.getEventType();
-		int length = listeners.length;
-		for (int i = 0; i < length; i++) {
-			Object id = types[i];
-			if (id != typeId && id != EventType.ALWAYS) {
-				continue;
-			}
-			listeners[i].handleEvent(event);
-		}
-	}
+  public void handleEvent(Event event) {
+    Object typeId = event.getEventType();
+    int length = listeners.length;
+    for (int i = 0; i < length; i++) {
+      Object id = types[i];
+      if (id != typeId && id != EventType.ALWAYS) {
+        continue;
+      }
+      listeners[i].handleEvent(event);
+    }
+  }
 
-	public boolean hasListener() {
-		return !isEmpty();
-	}
+  public boolean hasListener() {
+    return !isEmpty();
+  }
 
-	protected boolean hasListener(EventType type, INotificationListener listener) {
-		int length = listeners.length;
-		int i = 0;
-		while (i < length) {
-			if (types[i] == type && listeners[i] == listener) {
-				return true;
-			}
-			i++;
-		}
-		return false;
-	}
+  protected boolean hasListener(EventType type, INotificationListener listener) {
+    int length = listeners.length;
+    int i = 0;
+    while (i < length) {
+      if (types[i] == type && listeners[i] == listener) {
+        return true;
+      }
+      i++;
+    }
+    return false;
+  }
 
-	public synchronized boolean isEmpty() {
-		for (int i = 0; i < listeners.length; i++) {
-			if (listeners[i] != null) {
-				return false;
-			}
-		}
-		return true;
-	}
+  public synchronized boolean isEmpty() {
+    for (int i = 0; i < listeners.length; i++) {
+      if (listeners[i] != null) {
+        return false;
+      }
+    }
+    return true;
+  }
 
-	public synchronized void removeNotificationListener(EventType type,
-			INotificationListener listener) {
-		int length = listeners.length;
-		int i = 0;
-		while (i < length) {
-			if (types[i] == type && listeners[i] == listener) {
-				types[i] = null;
-				listeners[i] = null;
-				break;
-			}
-			i++;
-		}
-	}
+  public synchronized void removeNotificationListener(EventType type,
+                                                      INotificationListener listener) {
+    int length = listeners.length;
+    int i = 0;
+    while (i < length) {
+      if (types[i] == type && listeners[i] == listener) {
+        types[i] = null;
+        listeners[i] = null;
+        break;
+      }
+      i++;
+    }
+  }
 
-	public void triggerEvent(Event event) {
-		handleEvent(event);
-	}
+  public void triggerEvent(Event event) {
+    handleEvent(event);
+  }
 
-	public void triggerEventReverse(Event event) {
-		Object typeId = event.getEventType();
-		for (int i = listeners.length; i >= 0; i--) {
-			Object id = types[i];
-			if (id != typeId && id != EventType.ALWAYS) {
-				continue;
-			}
-			listeners[i].handleEvent(event);
-		}
-	}
+  public void triggerEventReverse(Event event) {
+    Object typeId = event.getEventType();
+    for (int i = listeners.length; i >= 0; i--) {
+      Object id = types[i];
+      if (id != typeId && id != EventType.ALWAYS) {
+        continue;
+      }
+      listeners[i].handleEvent(event);
+    }
+  }
 }

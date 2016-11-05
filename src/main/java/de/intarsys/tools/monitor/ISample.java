@@ -33,17 +33,17 @@ package de.intarsys.tools.monitor;
  * A sample taken while the {@link IMonitor} is tracing.
  */
 public interface ISample {
-	/**
-	 * The description that is stored along with the sample.
-	 * 
-	 * @return The description that is stored along with the sample.
-	 */
-	public String getDescription();
+  /**
+   * The description that is stored along with the sample.
+   *
+   * @return The description that is stored along with the sample.
+   */
+  public String getDescription();
 
-	/**
-	 * The sample's value.
-	 * 
-	 * @return The sample's value.
-	 */
-	public long getValue();
+  /**
+   * The sample's value.
+   *
+   * @return The sample's value.
+   */
+  public long getValue();
 }

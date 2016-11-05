@@ -34,23 +34,22 @@ import de.intarsys.tools.variable.IVariableNamespace;
 
 /**
  * Select variable values from a {@link IVariableNamespace}.
- * 
  */
 public class VariableNamespaceResolver implements IStringEvaluator {
 
-	final private IVariableNamespace namespace;
+  final private IVariableNamespace namespace;
 
-	public VariableNamespaceResolver(IVariableNamespace namespace) {
-		super();
-		this.namespace = namespace;
-	}
+  public VariableNamespaceResolver(IVariableNamespace namespace) {
+    super();
+    this.namespace = namespace;
+  }
 
-	public Object evaluate(String expression, IArgs args)
-			throws EvaluationException {
-		if (namespace == null) {
-			return null;
-		}
-		return namespace.getVariable(expression);
-	}
+  public Object evaluate(String expression, IArgs args)
+      throws EvaluationException {
+    if (namespace == null) {
+      return null;
+    }
+    return namespace.getVariable(expression);
+  }
 
 }

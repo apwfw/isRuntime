@@ -34,23 +34,23 @@ package de.intarsys.tools.adapter;
  */
 public class AdapterOutlet {
 
-	private static IAdapterOutlet ACTIVE = new StandardAdapterOutlet();
+  private static IAdapterOutlet ACTIVE = new StandardAdapterOutlet();
 
-	/**
-	 * A VM wide singleton for the {@link IAdapterOutlet}.
-	 * 
-	 * @return A VM wide singleton for the {@link IAdapterOutlet}.
-	 */
-	static public IAdapterOutlet get() {
-		return ACTIVE;
-	}
+  /**
+   * A VM wide singleton for the {@link IAdapterOutlet}.
+   *
+   * @return A VM wide singleton for the {@link IAdapterOutlet}.
+   */
+  static public IAdapterOutlet get() {
+    return ACTIVE;
+  }
 
-	/**
-	 * Set the VM wide singleton for the {@link IAdapterOutlet}.
-	 * 
-	 * @param active
-	 */
-	static public void set(IAdapterOutlet active) {
-		ACTIVE = active;
-	}
+  /**
+   * Set the VM wide singleton for the {@link IAdapterOutlet}.
+   *
+   * @param active
+   */
+  static public void set(IAdapterOutlet active) {
+    ACTIVE = active;
+  }
 }

@@ -30,12 +30,12 @@
 package de.intarsys.tools.locking;
 
 /**
- * 
+ *
  */
 public interface ILock {
 
-	public boolean acquire(Object owner, ILockLevel level);
+  public boolean acquire(Object owner, ILockLevel level);
 
-	public void release(Object owner);
+  public void release(Object owner);
 
 }

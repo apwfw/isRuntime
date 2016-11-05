@@ -42,294 +42,281 @@ import java.util.Map;
  * After handling, the result of the {@link IDirectTagHandler} is streamd as a
  * replacement for the tag itself. After streaming the processed tag content,
  * reading the input continues as normal.
- * 
  */
 public class DirectTagReader extends FilterReader {
-	static private class NullLocationProvider implements ILocationProvider {
-		public int getColumn() {
-			return 0;
-		}
+  public static final char ESCAPE_CHARACTER = '\\';
+  public static final Map DefaultEscapeMap = new HashMap();
+  private static final char[] defaultEndTag = "}".toCharArray();
+  private static final char[] defaultStartTag = "${".toCharArray();
+  static private ILocationProvider nullLocationProvider = new NullLocationProvider();
 
-		public int getLine() {
-			return 0;
-		}
+  static {
+    DefaultEscapeMap.put(new Character('\\'), new Character('\\'));
+    DefaultEscapeMap.put(new Character('n'), new Character('\n'));
+    DefaultEscapeMap.put(new Character('r'), new Character('\r'));
+    DefaultEscapeMap.put(new Character('t'), new Character('\t'));
+    DefaultEscapeMap.put(new Character('$'), new Character('$'));
+    DefaultEscapeMap.put(new Character('}'), new Character('}'));
+    DefaultEscapeMap.put(new Character('\n'), null);
+    DefaultEscapeMap.put(new Character('\r'), null);
+    DefaultEscapeMap.put(new Character('\t'), null);
+    DefaultEscapeMap.put(new Character(' '), null);
+  }
 
-		public int getPosition() {
-			return 0;
-		}
-	}
+  private int bufferLength = 0;
+  private char[] endTag = defaultEndTag;
+  private IDirectTagHandler handler;
+  private char[] readBuffer = new char[100];
+  private char[] startTag = defaultStartTag;
+  private StringBuilder tagBuffer = new StringBuilder();
+  private UnEscapeReader unescapeReader;
+  private boolean checkTag = true;
+  private Object context;
 
-	public static final char ESCAPE_CHARACTER = '\\';
+  public DirectTagReader(Reader pReader, IDirectTagHandler handler,
+                         Object context) {
+    this(pReader, handler, context, true);
+  }
 
-	public static final Map DefaultEscapeMap = new HashMap();
+  public DirectTagReader(Reader pReader, IDirectTagHandler handler,
+                         Object context, boolean escape) {
+    super(pReader);
+    if (escape) {
+      this.in = new UnEscapeReader(pReader, ESCAPE_CHARACTER,
+          DefaultEscapeMap);
+      unescapeReader = (UnEscapeReader) this.in;
+    }
+    this.handler = handler;
+    this.context = context;
+    if (pReader instanceof ILocationProvider) {
+      handler.setLocationProvider((ILocationProvider) pReader);
+    } else {
+      handler.setLocationProvider(nullLocationProvider);
+    }
+  }
 
-	private static final char[] defaultEndTag = "}".toCharArray();
+  static public String escape(String value) {
+    return value.replaceAll("\\$\\{", "\\$\\{\\$\\{\\}");
+  }
 
-	private static final char[] defaultStartTag = "${".toCharArray();
+  /**
+   * Read from either the read buffer or the underlying stream.
+   *
+   * @return The next character available frm the read buffer or underlying
+   * stream.
+   * @throws IOException
+   */
+  protected int basicRead() throws IOException {
+    if (bufferLength > 0) {
+      // consume "prepared" content - this is read ahead or
+      // the result from a tag handling callback
+      return readBuffer[--bufferLength];
+    }
+    checkTag = true;
+    return super.read();
+  }
 
-	static private ILocationProvider nullLocationProvider = new NullLocationProvider();
+  protected IDirectTagHandler getHandler() {
+    return handler;
+  }
 
-	static {
-		DefaultEscapeMap.put(new Character('\\'), new Character('\\'));
-		DefaultEscapeMap.put(new Character('n'), new Character('\n'));
-		DefaultEscapeMap.put(new Character('r'), new Character('\r'));
-		DefaultEscapeMap.put(new Character('t'), new Character('\t'));
-		DefaultEscapeMap.put(new Character('$'), new Character('$'));
-		DefaultEscapeMap.put(new Character('}'), new Character('}'));
-		DefaultEscapeMap.put(new Character('\n'), null);
-		DefaultEscapeMap.put(new Character('\r'), null);
-		DefaultEscapeMap.put(new Character('\t'), null);
-		DefaultEscapeMap.put(new Character(' '), null);
-	}
+  protected boolean isSpecialTag(String tag) {
+    if (tag.length() == startTag.length) {
+      for (int index = 0; index < startTag.length; index++) {
+        if (tag.charAt(index) != startTag[index]) {
+          return false;
+        }
+      }
+      return true;
+    } else {
+      return false;
+    }
+  }
 
-	static public String escape(String value) {
-		return value.replaceAll("\\$\\{", "\\$\\{\\$\\{\\}");
-	}
+  /**
+   * Read a character until we encounter a tag.
+   *
+   * @see java.io.Reader#read()
+   */
+  @Override
+  public int read() throws IOException {
+    int i = basicRead();
+    if (checkTag && (i == startTag[0])
+        && (unescapeReader == null || !unescapeReader.isMapped())) {
+      return scanTag();
+    }
+    return i;
+  }
 
-	private int bufferLength = 0;
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.io.Reader#read(char[], int, int)
+   */
+  @Override
+  public int read(final char[] cbuf, final int off, final int len)
+      throws IOException {
+    for (int i = 0; i < len; i++) {
+      final int ch = read();
+      if (ch == -1) {
+        if (i == 0) {
+          return -1;
+        } else {
+          return i;
+        }
+      }
+      cbuf[off + i] = (char) ch;
+    }
+    return len;
+  }
 
-	private char[] endTag = defaultEndTag;
+  protected int scanEndTag() throws IOException {
+    int tagIndex = 0;
+    int i = endTag[0];
+    while (i == endTag[tagIndex]) {
+      tagIndex++;
+      if (tagIndex == endTag.length) {
+        return -1;
+      }
+      i = basicRead();
+    }
+    if (i != -1) {
+      unread(i);
+    }
+    unread(endTag, 0, tagIndex);
+    // consume buffer content
+    return basicRead();
+  }
 
-	private IDirectTagHandler handler;
+  /**
+   * Scan the stream for tagged content. We check the presence of the start
+   * tag. If found the stream is read until the presence of the end tag. If
+   * the start tag is not completely found, we return the literal stream
+   * content.
+   *
+   * @return
+   * @throws IOException
+   */
+  protected int scanTag() throws IOException {
+    int tagIndex = 0;
+    int i = startTag[0];
+    while (i == startTag[tagIndex]) {
+      tagIndex++;
+      if (tagIndex == startTag.length) {
+        handler.startTag();
+        return scanTagContent();
+      }
+      i = basicRead();
+    }
+    if (i != -1) {
+      unread(i);
+    }
+    unread(startTag, 0, tagIndex);
+    // consume buffer content
+    return basicRead();
+  }
 
-	private char[] readBuffer = new char[100];
+  /**
+   * Scan the content between start and end tag and process the result.
+   *
+   * @throws IOException
+   */
+  protected int scanTagContent() throws IOException {
+    tagBuffer.setLength(0);
+    int i = tagRead();
+    while (i != -1) {
+      tagBuffer.append((char) i);
+      i = tagRead();
+    }
+    String tag = tagBuffer.toString();
+    String temp;
+    if (isSpecialTag(tag)) {
+      temp = tag;
+    } else {
+      // now process tag content detected
+      temp = getHandler().process(tag, context);
+    }
+    if (temp != null) {
+      unread(temp.toCharArray(), 0, temp.length());
+      // we do not check for tags in result recursive
+      checkTag = false;
+    }
 
-	private char[] startTag = defaultStartTag;
+    // we make a full read to enable processing for an immediate new tag
+    return read();
+  }
 
-	private StringBuilder tagBuffer = new StringBuilder();
+  public void setEndTag(String tag) {
+    if (endTag != null && unescapeReader != null) {
+      unescapeReader.removeEscapedCharacter(endTag[0]);
+    }
+    endTag = tag.toCharArray();
+    if (unescapeReader != null) {
+      unescapeReader.addEscapedCharacter(endTag[0], endTag[0]);
+    }
+  }
 
-	private UnEscapeReader unescapeReader;
+  public void setStartTag(String tag) {
+    if (startTag != null && unescapeReader != null) {
+      unescapeReader.removeEscapedCharacter(startTag[0]);
+    }
+    startTag = tag.toCharArray();
+    if (unescapeReader != null) {
+      unescapeReader.addEscapedCharacter(startTag[0], startTag[0]);
+    }
+  }
 
-	private boolean checkTag = true;
+  /**
+   * Read the underlying stream until the end tag is encountered. When we find
+   * the end tag, we return -1, anything else is IOException.
+   *
+   * @return next char from stream between tags
+   * @throws IOException
+   */
+  protected int tagRead() throws IOException {
+    int i = super.read();
+    if (i == -1) {
+      throw new IOException("end tag '" + new String(endTag)
+          + "' missing");
+    }
+    if ((i == endTag[0])
+        && (unescapeReader == null || !unescapeReader.isMapped())) {
+      return scanEndTag();
+    }
+    return i;
+  }
 
-	private Object context;
+  protected void unread(char[] chars, int start, int len) {
+    if (readBuffer.length < (bufferLength + len)) {
+      char[] newBuffer = new char[(bufferLength + len) * 2];
+      System.arraycopy(readBuffer, 0, newBuffer, 0, bufferLength);
+      readBuffer = newBuffer;
+    }
+    for (int i = (start + len) - 1; i >= start; i--) {
+      readBuffer[bufferLength++] = chars[i];
+    }
+  }
 
-	public DirectTagReader(Reader pReader, IDirectTagHandler handler,
-			Object context) {
-		this(pReader, handler, context, true);
-	}
+  protected void unread(int c) {
+    if (readBuffer.length < (bufferLength + 1)) {
+      char[] newBuffer = new char[(bufferLength + 1) * 2];
+      System.arraycopy(readBuffer, 0, newBuffer, 0, bufferLength);
+      readBuffer = newBuffer;
+    }
+    readBuffer[bufferLength++] = (char) c;
+  }
 
-	public DirectTagReader(Reader pReader, IDirectTagHandler handler,
-			Object context, boolean escape) {
-		super(pReader);
-		if (escape) {
-			this.in = new UnEscapeReader(pReader, ESCAPE_CHARACTER,
-					DefaultEscapeMap);
-			unescapeReader = (UnEscapeReader) this.in;
-		}
-		this.handler = handler;
-		this.context = context;
-		if (pReader instanceof ILocationProvider) {
-			handler.setLocationProvider((ILocationProvider) pReader);
-		} else {
-			handler.setLocationProvider(nullLocationProvider);
-		}
-	}
+  static private class NullLocationProvider implements ILocationProvider {
+    public int getColumn() {
+      return 0;
+    }
 
-	/**
-	 * Read from either the read buffer or the underlying stream.
-	 * 
-	 * @return The next character available frm the read buffer or underlying
-	 *         stream.
-	 * @throws IOException
-	 */
-	protected int basicRead() throws IOException {
-		if (bufferLength > 0) {
-			// consume "prepared" content - this is read ahead or
-			// the result from a tag handling callback
-			return readBuffer[--bufferLength];
-		}
-		checkTag = true;
-		return super.read();
-	}
+    public int getLine() {
+      return 0;
+    }
 
-	protected IDirectTagHandler getHandler() {
-		return handler;
-	}
-
-	protected boolean isSpecialTag(String tag) {
-		if (tag.length() == startTag.length) {
-			for (int index = 0; index < startTag.length; index++) {
-				if (tag.charAt(index) != startTag[index]) {
-					return false;
-				}
-			}
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	/**
-	 * Read a character until we encounter a tag.
-	 * 
-	 * @see java.io.Reader#read()
-	 */
-	@Override
-	public int read() throws IOException {
-		int i = basicRead();
-		if (checkTag && (i == startTag[0])
-				&& (unescapeReader == null || !unescapeReader.isMapped())) {
-			return scanTag();
-		}
-		return i;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.io.Reader#read(char[], int, int)
-	 */
-	@Override
-	public int read(final char[] cbuf, final int off, final int len)
-			throws IOException {
-		for (int i = 0; i < len; i++) {
-			final int ch = read();
-			if (ch == -1) {
-				if (i == 0) {
-					return -1;
-				} else {
-					return i;
-				}
-			}
-			cbuf[off + i] = (char) ch;
-		}
-		return len;
-	}
-
-	protected int scanEndTag() throws IOException {
-		int tagIndex = 0;
-		int i = endTag[0];
-		while (i == endTag[tagIndex]) {
-			tagIndex++;
-			if (tagIndex == endTag.length) {
-				return -1;
-			}
-			i = basicRead();
-		}
-		if (i != -1) {
-			unread(i);
-		}
-		unread(endTag, 0, tagIndex);
-		// consume buffer content
-		return basicRead();
-	}
-
-	/**
-	 * Scan the stream for tagged content. We check the presence of the start
-	 * tag. If found the stream is read until the presence of the end tag. If
-	 * the start tag is not completely found, we return the literal stream
-	 * content.
-	 * 
-	 * @return
-	 * @throws IOException
-	 */
-	protected int scanTag() throws IOException {
-		int tagIndex = 0;
-		int i = startTag[0];
-		while (i == startTag[tagIndex]) {
-			tagIndex++;
-			if (tagIndex == startTag.length) {
-				handler.startTag();
-				return scanTagContent();
-			}
-			i = basicRead();
-		}
-		if (i != -1) {
-			unread(i);
-		}
-		unread(startTag, 0, tagIndex);
-		// consume buffer content
-		return basicRead();
-	}
-
-	/**
-	 * Scan the content between start and end tag and process the result.
-	 * 
-	 * @throws IOException
-	 */
-	protected int scanTagContent() throws IOException {
-		tagBuffer.setLength(0);
-		int i = tagRead();
-		while (i != -1) {
-			tagBuffer.append((char) i);
-			i = tagRead();
-		}
-		String tag = tagBuffer.toString();
-		String temp;
-		if (isSpecialTag(tag)) {
-			temp = tag;
-		} else {
-			// now process tag content detected
-			temp = getHandler().process(tag, context);
-		}
-		if (temp != null) {
-			unread(temp.toCharArray(), 0, temp.length());
-			// we do not check for tags in result recursive
-			checkTag = false;
-		}
-
-		// we make a full read to enable processing for an immediate new tag
-		return read();
-	}
-
-	public void setEndTag(String tag) {
-		if (endTag != null && unescapeReader != null) {
-			unescapeReader.removeEscapedCharacter(endTag[0]);
-		}
-		endTag = tag.toCharArray();
-		if (unescapeReader != null) {
-			unescapeReader.addEscapedCharacter(endTag[0], endTag[0]);
-		}
-	}
-
-	public void setStartTag(String tag) {
-		if (startTag != null && unescapeReader != null) {
-			unescapeReader.removeEscapedCharacter(startTag[0]);
-		}
-		startTag = tag.toCharArray();
-		if (unescapeReader != null) {
-			unescapeReader.addEscapedCharacter(startTag[0], startTag[0]);
-		}
-	}
-
-	/**
-	 * Read the underlying stream until the end tag is encountered. When we find
-	 * the end tag, we return -1, anything else is IOException.
-	 * 
-	 * @return next char from stream between tags
-	 * @throws IOException
-	 */
-	protected int tagRead() throws IOException {
-		int i = super.read();
-		if (i == -1) {
-			throw new IOException("end tag '" + new String(endTag)
-					+ "' missing");
-		}
-		if ((i == endTag[0])
-				&& (unescapeReader == null || !unescapeReader.isMapped())) {
-			return scanEndTag();
-		}
-		return i;
-	}
-
-	protected void unread(char[] chars, int start, int len) {
-		if (readBuffer.length < (bufferLength + len)) {
-			char[] newBuffer = new char[(bufferLength + len) * 2];
-			System.arraycopy(readBuffer, 0, newBuffer, 0, bufferLength);
-			readBuffer = newBuffer;
-		}
-		for (int i = (start + len) - 1; i >= start; i--) {
-			readBuffer[bufferLength++] = chars[i];
-		}
-	}
-
-	protected void unread(int c) {
-		if (readBuffer.length < (bufferLength + 1)) {
-			char[] newBuffer = new char[(bufferLength + 1) * 2];
-			System.arraycopy(readBuffer, 0, newBuffer, 0, bufferLength);
-			readBuffer = newBuffer;
-		}
-		readBuffer[bufferLength++] = (char) c;
-	}
+    public int getPosition() {
+      return 0;
+    }
+  }
 }

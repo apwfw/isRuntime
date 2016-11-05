@@ -37,77 +37,75 @@ import de.intarsys.tools.presentation.IPresentationSupport;
  * {@link DomainItem}. These {@link DomainItem} instances are grouped in a
  * {@link Domain} that can for example be used for a choice in a user interface
  * element.
- * 
  */
 public class Domain<T> extends EnumMeta<DomainItem<T>> {
 
-	public Domain() {
-		super(DomainItem.class);
-	}
+  public Domain() {
+    super(DomainItem.class);
+  }
 
-	/**
-	 * A {@link DomainItem} for the array of object members defining the item
-	 * state.
-	 * 
-	 * @param object
-	 * 
-	 * @return A {@link DomainItem} for the array of object members defining the
-	 *         item state.
-	 */
-	public DomainItem<T> getDomainItem(Object... object) {
-		if (object == null) {
-			object = new Object[] { null };
-		}
-		DomainItem tempItem = lookupDomainItem(object);
-		if (tempItem == null) {
-			tempItem = new DomainItem(this, object);
-			if (object.length > 0) {
-				Object temp = object[0];
-				if (temp instanceof IPresentationSupport) {
-					tempItem.setLabel(((IPresentationSupport) temp).getLabel());
-				} else {
-					tempItem.setLabel(String.valueOf(temp));
-				}
-			}
-		}
-		return tempItem;
-	}
+  /**
+   * A {@link DomainItem} for the array of object members defining the item
+   * state.
+   *
+   * @param object
+   * @return A {@link DomainItem} for the array of object members defining the
+   * item state.
+   */
+  public DomainItem<T> getDomainItem(Object... object) {
+    if (object == null) {
+      object = new Object[]{null};
+    }
+    DomainItem tempItem = lookupDomainItem(object);
+    if (tempItem == null) {
+      tempItem = new DomainItem(this, object);
+      if (object.length > 0) {
+        Object temp = object[0];
+        if (temp instanceof IPresentationSupport) {
+          tempItem.setLabel(((IPresentationSupport) temp).getLabel());
+        } else {
+          tempItem.setLabel(String.valueOf(temp));
+        }
+      }
+    }
+    return tempItem;
+  }
 
-	public DomainItem<T> getDomainItemOrDefault(Object... object) {
-		if (object == null) {
-			object = new Object[] { null };
-		}
-		DomainItem tempItem = lookupDomainItem(object);
-		if (tempItem == null && isValidState(object)) {
-			tempItem = getDomainItem(object);
-		}
-		if (tempItem == null) {
-			return getDefault();
-		}
-		return tempItem;
-	}
+  public DomainItem<T> getDomainItemOrDefault(Object... object) {
+    if (object == null) {
+      object = new Object[]{null};
+    }
+    DomainItem tempItem = lookupDomainItem(object);
+    if (tempItem == null && isValidState(object)) {
+      tempItem = getDomainItem(object);
+    }
+    if (tempItem == null) {
+      return getDefault();
+    }
+    return tempItem;
+  }
 
-	public boolean isValidState(Object... object) {
-		if (object == null) {
-			object = new Object[] { null };
-		}
-		for (int i = 0; i < object.length; i++) {
-			if (object[i] == null) {
-				return false;
-			}
-		}
-		return true;
-	}
+  public boolean isValidState(Object... object) {
+    if (object == null) {
+      object = new Object[]{null};
+    }
+    for (int i = 0; i < object.length; i++) {
+      if (object[i] == null) {
+        return false;
+      }
+    }
+    return true;
+  }
 
-	public DomainItem<T> lookupDomainItem(Object... object) {
-		if (object == null) {
-			object = new Object[] { null };
-		}
-		for (DomainItem item : getItems()) {
-			if (item.isObject(object)) {
-				return item;
-			}
-		}
-		return null;
-	}
+  public DomainItem<T> lookupDomainItem(Object... object) {
+    if (object == null) {
+      object = new Object[]{null};
+    }
+    for (DomainItem item : getItems()) {
+      if (item.isObject(object)) {
+        return item;
+      }
+    }
+    return null;
+  }
 }

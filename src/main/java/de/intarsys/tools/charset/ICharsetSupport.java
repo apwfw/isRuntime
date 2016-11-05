@@ -31,6 +31,6 @@ package de.intarsys.tools.charset;
 
 public interface ICharsetSupport {
 
-	public String getCharset();
+  public String getCharset();
 
 }

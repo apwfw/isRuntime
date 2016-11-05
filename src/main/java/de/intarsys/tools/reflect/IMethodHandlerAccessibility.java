@@ -35,17 +35,15 @@ import de.intarsys.tools.functor.IArgs;
  * An object able to access a method within a delegate
  */
 public interface IMethodHandlerAccessibility {
-	/**
-	 * Query the accessibility of the implementation associated with this method
-	 * in the context of the <code>receiver</code>.
-	 * 
-	 * @param receiver
-	 *            The object hosting the method.
-	 * @param args
-	 *            The arguments for the invocation.
-	 * @return The accesibility of the implementation
-	 * @throws MethodException
-	 */
-	public boolean isInvokeEnabled(Object receiver, IArgs args)
-			throws MethodInvocationException;
+  /**
+   * Query the accessibility of the implementation associated with this method
+   * in the context of the <code>receiver</code>.
+   *
+   * @param receiver The object hosting the method.
+   * @param args     The arguments for the invocation.
+   * @return The accesibility of the implementation
+   * @throws MethodException
+   */
+  public boolean isInvokeEnabled(Object receiver, IArgs args)
+      throws MethodInvocationException;
 }

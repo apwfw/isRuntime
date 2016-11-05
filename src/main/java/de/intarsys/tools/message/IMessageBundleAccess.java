@@ -34,12 +34,11 @@ package de.intarsys.tools.message;
  */
 public interface IMessageBundleAccess extends IMessageBundleSupport {
 
-	/**
-	 * Associate the message bundle with the receiver.
-	 * 
-	 * @param messageBundle
-	 *            A {@link MessageBundle} instance suitable to load messages
-	 *            associated with the receiver context.
-	 */
-	public void setMessageBundle(MessageBundle messageBundle);
+  /**
+   * Associate the message bundle with the receiver.
+   *
+   * @param messageBundle A {@link MessageBundle} instance suitable to load messages
+   *                      associated with the receiver context.
+   */
+  public void setMessageBundle(MessageBundle messageBundle);
 }

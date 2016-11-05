@@ -31,18 +31,17 @@ package de.intarsys.tools.event;
 
 /**
  * An event indicating the request to deny positive termination.
- * 
  */
 public class CancelRequestedEvent extends Event {
-	public static final EventType ID = new EventType(CancelRequestedEvent.class
-			.getName());
+  public static final EventType ID = new EventType(CancelRequestedEvent.class
+      .getName());
 
-	public CancelRequestedEvent(Object source) {
-		super(source);
-	}
+  public CancelRequestedEvent(Object source) {
+    super(source);
+  }
 
-	@Override
-	public EventType getEventType() {
-		return ID;
-	}
+  @Override
+  public EventType getEventType() {
+    return ID;
+  }
 }

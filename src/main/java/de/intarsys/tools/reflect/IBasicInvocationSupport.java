@@ -37,15 +37,13 @@ package de.intarsys.tools.reflect;
  * {@link ObjectTools} methods!
  */
 public interface IBasicInvocationSupport {
-	/**
-	 * Make a reflective call to <code>name</code>.
-	 * 
-	 * @param name
-	 *            The name of the method to call.
-	 * @param values
-	 *            The arguments for the invocation.
-	 * @return The result of the invocation.
-	 * @throws MethodException
-	 */
-	public Object basicInvoke(String name, Object... values) throws MethodException;
+  /**
+   * Make a reflective call to <code>name</code>.
+   *
+   * @param name   The name of the method to call.
+   * @param values The arguments for the invocation.
+   * @return The result of the invocation.
+   * @throws MethodException
+   */
+  public Object basicInvoke(String name, Object... values) throws MethodException;
 }

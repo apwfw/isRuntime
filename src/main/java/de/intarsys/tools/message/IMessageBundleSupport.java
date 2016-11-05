@@ -34,12 +34,12 @@ package de.intarsys.tools.message;
  */
 public interface IMessageBundleSupport {
 
-	/**
-	 * A {@link MessageBundle} instance suitable to load messages associated
-	 * with the receiver context.
-	 * 
-	 * @return A {@link MessageBundle} instance suitable to load messages
-	 *         associated with the receiver context.
-	 */
-	public MessageBundle getMessageBundle();
+  /**
+   * A {@link MessageBundle} instance suitable to load messages associated
+   * with the receiver context.
+   *
+   * @return A {@link MessageBundle} instance suitable to load messages
+   * associated with the receiver context.
+   */
+  public MessageBundle getMessageBundle();
 }

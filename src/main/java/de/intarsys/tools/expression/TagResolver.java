@@ -35,23 +35,22 @@ import de.intarsys.tools.tag.TagTools;
 
 /**
  * Resolve expressions against an object's tags
- * 
  */
 public class TagResolver implements IStringEvaluator {
 
-	final private IAttributeSupport object;
+  final private IAttributeSupport object;
 
-	public TagResolver(IAttributeSupport object) {
-		super();
-		this.object = object;
-	}
+  public TagResolver(IAttributeSupport object) {
+    super();
+    this.object = object;
+  }
 
-	public Object evaluate(String expression, IArgs args)
-			throws EvaluationException {
-		String result = TagTools.getTagValue(object, expression);
-		if (result != null) {
-			return result;
-		}
-		throw new EvaluationException("can't evaluate '" + expression + "'"); //$NON-NLS-1$ //$NON-NLS-2$
-	}
+  public Object evaluate(String expression, IArgs args)
+      throws EvaluationException {
+    String result = TagTools.getTagValue(object, expression);
+    if (result != null) {
+      return result;
+    }
+    throw new EvaluationException("can't evaluate '" + expression + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+  }
 }

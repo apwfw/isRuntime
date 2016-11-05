@@ -31,23 +31,22 @@ package de.intarsys.tools.functor;
 
 /**
  * An exception while accepting a declaration.
- * 
  */
 public class DeclarationException extends Exception {
 
-	public DeclarationException() {
-	}
+  public DeclarationException() {
+  }
 
-	public DeclarationException(String message) {
-		super(message);
-	}
+  public DeclarationException(String message) {
+    super(message);
+  }
 
-	public DeclarationException(String message, Throwable cause) {
-		super(message, cause);
-	}
+  public DeclarationException(String message, Throwable cause) {
+    super(message, cause);
+  }
 
-	public DeclarationException(Throwable cause) {
-		super(cause);
-	}
+  public DeclarationException(Throwable cause) {
+    super(cause);
+  }
 
 }

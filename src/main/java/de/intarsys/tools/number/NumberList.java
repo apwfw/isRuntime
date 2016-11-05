@@ -29,162 +29,161 @@
  */
 package de.intarsys.tools.number;
 
+import de.intarsys.tools.collection.NestedIterator;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import de.intarsys.tools.collection.NestedIterator;
-
 /**
  * An implementation of NumberWrapper that represents an enumeration of single
  * number objects.
- * 
  */
 public class NumberList extends NumberWrapper {
 
-	public static char SEPARATOR = ';';
+  public static char SEPARATOR = ';';
 
-	public static char SEPARATOR_ALT = ',';
+  public static char SEPARATOR_ALT = ',';
 
-	private List list = new ArrayList();
+  private List list = new ArrayList();
 
-	/**
-	 * NumberList constructor comment.
-	 */
-	public NumberList() {
-		super();
-	}
+  /**
+   * NumberList constructor comment.
+   */
+  public NumberList() {
+    super();
+  }
 
-	public boolean add(Object arg0) {
-		if (arg0 instanceof NumberWrapper) {
-			getList().add(arg0);
-			return true;
-		} else if (arg0 instanceof Number) {
-			getList().add(new NumberInstance((Number) arg0));
-			return true;
-		}
-		return false;
-	}
+  public boolean add(Object arg0) {
+    if (arg0 instanceof NumberWrapper) {
+      getList().add(arg0);
+      return true;
+    } else if (arg0 instanceof Number) {
+      getList().add(new NumberInstance((Number) arg0));
+      return true;
+    }
+    return false;
+  }
 
-	public boolean addAll(Collection arg0) {
-		Iterator iter = arg0.iterator();
-		while (iter.hasNext()) {
-			Object element = iter.next();
-			if (!add(element)) {
-				return false;
-			}
-		}
-		return true;
-	}
+  public boolean addAll(Collection arg0) {
+    Iterator iter = arg0.iterator();
+    while (iter.hasNext()) {
+      Object element = iter.next();
+      if (!add(element)) {
+        return false;
+      }
+    }
+    return true;
+  }
 
-	public boolean contains(Object o) {
-		Iterator iter = getList().iterator();
-		while (iter.hasNext()) {
-			NumberWrapper element = (NumberWrapper) iter.next();
-			if (element.contains(o)) {
-				return true;
-			}
-		}
-		return false;
-	}
+  public boolean contains(Object o) {
+    Iterator iter = getList().iterator();
+    while (iter.hasNext()) {
+      NumberWrapper element = (NumberWrapper) iter.next();
+      if (element.contains(o)) {
+        return true;
+      }
+    }
+    return false;
+  }
 
-	public java.util.List getList() {
-		return list;
-	}
+  public java.util.List getList() {
+    return list;
+  }
 
-	@Override
-	protected double getMax() {
-		double max = Double.MIN_VALUE;
-		Iterator iter = getList().iterator();
-		while (iter.hasNext()) {
-			NumberWrapper wrapper = (NumberWrapper) iter.next();
-			if (wrapper.getMax() < max) {
-				max = wrapper.getMax();
-			}
-		}
-		return max;
-	}
+  public void setList(java.util.List newList) {
+    list = newList;
+  }
 
-	@Override
-	protected double getMin() {
-		double min = Double.MAX_VALUE;
-		Iterator iter = getList().iterator();
-		while (iter.hasNext()) {
-			NumberWrapper wrapper = (NumberWrapper) iter.next();
-			if (wrapper.getMin() < min) {
-				min = wrapper.getMin();
-			}
-		}
-		return min;
-	}
+  @Override
+  protected double getMax() {
+    double max = Double.MIN_VALUE;
+    Iterator iter = getList().iterator();
+    while (iter.hasNext()) {
+      NumberWrapper wrapper = (NumberWrapper) iter.next();
+      if (wrapper.getMax() < max) {
+        max = wrapper.getMax();
+      }
+    }
+    return max;
+  }
 
-	@Override
-	public NumberWrapper increment(int i) {
-		for (Iterator it = getList().iterator(); it.hasNext();) {
-			NumberWrapper wrapper = (NumberWrapper) it.next();
-			wrapper.increment(i);
-		}
-		return this;
-	}
+  @Override
+  protected double getMin() {
+    double min = Double.MAX_VALUE;
+    Iterator iter = getList().iterator();
+    while (iter.hasNext()) {
+      NumberWrapper wrapper = (NumberWrapper) iter.next();
+      if (wrapper.getMin() < min) {
+        min = wrapper.getMin();
+      }
+    }
+    return min;
+  }
 
-	public boolean isEmpty() {
-		if (getList().isEmpty()) {
-			return true;
-		}
-		Iterator iter = getList().iterator();
-		while (iter.hasNext()) {
-			NumberWrapper element = (NumberWrapper) iter.next();
-			if (!element.isEmpty()) {
-				return false;
-			}
-		}
-		return true;
-	}
+  @Override
+  public NumberWrapper increment(int i) {
+    for (Iterator it = getList().iterator(); it.hasNext(); ) {
+      NumberWrapper wrapper = (NumberWrapper) it.next();
+      wrapper.increment(i);
+    }
+    return this;
+  }
 
-	public java.util.Iterator iterator() {
-		return new NestedIterator(getList().iterator());
-	}
+  public boolean isEmpty() {
+    if (getList().isEmpty()) {
+      return true;
+    }
+    Iterator iter = getList().iterator();
+    while (iter.hasNext()) {
+      NumberWrapper element = (NumberWrapper) iter.next();
+      if (!element.isEmpty()) {
+        return false;
+      }
+    }
+    return true;
+  }
 
-	public void setList(java.util.List newList) {
-		list = newList;
-	}
+  public java.util.Iterator iterator() {
+    return new NestedIterator(getList().iterator());
+  }
 
-	public int size() {
-		int size = 0;
-		Iterator iter = getList().iterator();
-		while (iter.hasNext()) {
-			NumberWrapper element = (NumberWrapper) iter.next();
-			size = size + element.size();
-		}
-		return size;
-	}
+  public int size() {
+    int size = 0;
+    Iterator iter = getList().iterator();
+    while (iter.hasNext()) {
+      NumberWrapper element = (NumberWrapper) iter.next();
+      size = size + element.size();
+    }
+    return size;
+  }
 
-	public Object[] toArray() {
-		Number[] numbers = new Number[size()];
-		Iterator iter = getList().iterator();
-		int i = 0;
-		while (iter.hasNext()) {
-			NumberWrapper element = (NumberWrapper) iter.next();
-			Number[] elementArray = (Number[]) element.toArray();
-			for (int j = 0; j < elementArray.length; j++) {
-				numbers[i] = elementArray[j];
-				i++;
-			}
-		}
+  public Object[] toArray() {
+    Number[] numbers = new Number[size()];
+    Iterator iter = getList().iterator();
+    int i = 0;
+    while (iter.hasNext()) {
+      NumberWrapper element = (NumberWrapper) iter.next();
+      Number[] elementArray = (Number[]) element.toArray();
+      for (int j = 0; j < elementArray.length; j++) {
+        numbers[i] = elementArray[j];
+        i++;
+      }
+    }
 
-		return numbers;
-	}
+    return numbers;
+  }
 
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		for (Iterator i = getList().iterator(); i.hasNext();) {
-			sb.append(i.next().toString());
-			if (i.hasNext()) {
-				sb.append(SEPARATOR);
-			}
-		}
-		return sb.toString();
-	}
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    for (Iterator i = getList().iterator(); i.hasNext(); ) {
+      sb.append(i.next().toString());
+      if (i.hasNext()) {
+        sb.append(SEPARATOR);
+      }
+    }
+    return sb.toString();
+  }
 }

@@ -29,6 +29,10 @@
  */
 package de.intarsys.tools.locator;
 
+import de.intarsys.tools.adapter.AdapterTools;
+import de.intarsys.tools.adapter.IAdapterSupport;
+import de.intarsys.tools.randomaccess.IRandomAccess;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -36,129 +40,125 @@ import java.io.Reader;
 import java.io.Writer;
 import java.net.URL;
 
-import de.intarsys.tools.adapter.AdapterTools;
-import de.intarsys.tools.adapter.IAdapterSupport;
-import de.intarsys.tools.randomaccess.IRandomAccess;
-
 /**
  * This {@link ILocator} serves as an adapter for an {@link ILocatorSupport}
  * instance.
  */
 public class LocatorByReference implements ILocator, IAdapterSupport {
 
-	private ILocatorSupport locatorSupport;
+  private ILocatorSupport locatorSupport;
 
-	public LocatorByReference(ILocatorSupport locatorSupport) {
-		super();
-		this.locatorSupport = locatorSupport;
-	}
+  public LocatorByReference(ILocatorSupport locatorSupport) {
+    super();
+    this.locatorSupport = locatorSupport;
+  }
 
-	public void delete() throws IOException {
-		getLocator().delete();
-	}
+  public void delete() throws IOException {
+    getLocator().delete();
+  }
 
-	public boolean exists() {
-		return getLocator().exists();
-	}
+  public boolean exists() {
+    return getLocator().exists();
+  }
 
-	public <T> T getAdapter(Class<T> clazz) {
-		return AdapterTools.getAdapter(getLocator(), clazz);
-	}
+  public <T> T getAdapter(Class<T> clazz) {
+    return AdapterTools.getAdapter(getLocator(), clazz);
+  }
 
-	public ILocator getChild(String name) {
-		return getLocator().getChild(name);
-	}
+  public ILocator getChild(String name) {
+    return getLocator().getChild(name);
+  }
 
-	public String getFullName() {
-		return getLocator().getFullName();
-	}
+  public String getFullName() {
+    return getLocator().getFullName();
+  }
 
-	public InputStream getInputStream() throws IOException {
-		return getLocator().getInputStream();
-	}
+  public InputStream getInputStream() throws IOException {
+    return getLocator().getInputStream();
+  }
 
-	public long getLength() throws IOException {
-		return getLocator().getLength();
-	}
+  public long getLength() throws IOException {
+    return getLocator().getLength();
+  }
 
-	public String getLocalName() {
-		return getLocator().getLocalName();
-	}
+  public String getLocalName() {
+    return getLocator().getLocalName();
+  }
 
-	protected ILocator getLocator() {
-		return locatorSupport.getLocator();
-	}
+  protected ILocator getLocator() {
+    return locatorSupport.getLocator();
+  }
 
-	public ILocatorSupport getLocatorSupport() {
-		return locatorSupport;
-	}
+  public ILocatorSupport getLocatorSupport() {
+    return locatorSupport;
+  }
 
-	public OutputStream getOutputStream() throws IOException {
-		return getLocator().getOutputStream();
-	}
+  public OutputStream getOutputStream() throws IOException {
+    return getLocator().getOutputStream();
+  }
 
-	public ILocator getParent() {
-		return getLocator().getParent();
-	}
+  public ILocator getParent() {
+    return getLocator().getParent();
+  }
 
-	public IRandomAccess getRandomAccess() throws IOException {
-		return getLocator().getRandomAccess();
-	}
+  public IRandomAccess getRandomAccess() throws IOException {
+    return getLocator().getRandomAccess();
+  }
 
-	public Reader getReader() throws IOException {
-		return getLocator().getReader();
-	}
+  public Reader getReader() throws IOException {
+    return getLocator().getReader();
+  }
 
-	public Reader getReader(String encoding) throws IOException {
-		return getLocator().getReader(encoding);
-	}
+  public Reader getReader(String encoding) throws IOException {
+    return getLocator().getReader(encoding);
+  }
 
-	public String getType() {
-		return getLocator().getType();
-	}
+  public String getType() {
+    return getLocator().getType();
+  }
 
-	public String getTypedName() {
-		return getLocator().getTypedName();
-	}
+  public String getTypedName() {
+    return getLocator().getTypedName();
+  }
 
-	public Writer getWriter() throws IOException {
-		return getLocator().getWriter();
-	}
+  public Writer getWriter() throws IOException {
+    return getLocator().getWriter();
+  }
 
-	public Writer getWriter(String encoding) throws IOException {
-		return getLocator().getWriter(encoding);
-	}
+  public Writer getWriter(String encoding) throws IOException {
+    return getLocator().getWriter(encoding);
+  }
 
-	public boolean isDirectory() {
-		return getLocator().isDirectory();
-	}
+  public boolean isDirectory() {
+    return getLocator().isDirectory();
+  }
 
-	public boolean isOutOfSynch() {
-		return getLocator().isOutOfSynch();
-	}
+  public boolean isOutOfSynch() {
+    return getLocator().isOutOfSynch();
+  }
 
-	public boolean isReadOnly() {
-		return getLocator().isReadOnly();
-	}
+  public boolean isReadOnly() {
+    return getLocator().isReadOnly();
+  }
 
-	public ILocator[] listLocators(ILocatorNameFilter filter)
-			throws IOException {
-		return getLocator().listLocators(filter);
-	}
+  public ILocator[] listLocators(ILocatorNameFilter filter)
+      throws IOException {
+    return getLocator().listLocators(filter);
+  }
 
-	public void rename(String newName) throws IOException {
-		getLocator().rename(newName);
-	}
+  public void rename(String newName) throws IOException {
+    getLocator().rename(newName);
+  }
 
-	public void setReadOnly() {
-		getLocator().setReadOnly();
-	}
+  public void setReadOnly() {
+    getLocator().setReadOnly();
+  }
 
-	public void synch() {
-		getLocator().synch();
-	}
+  public void synch() {
+    getLocator().synch();
+  }
 
-	public URL toURL() {
-		return getLocator().toURL();
-	}
+  public URL toURL() {
+    return getLocator().toURL();
+  }
 }

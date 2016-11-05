@@ -33,12 +33,12 @@ package de.intarsys.tools.locator;
  * Indicate support for locating the receivers resource physically.
  */
 public interface ILocatorSupport {
-	/**
-	 * Return the {@link ILocator} that defines the physical resource location
-	 * for the reciver.
-	 * 
-	 * @return Return the {@link ILocator} that defines the physical resource
-	 *         location for the reciver.
-	 */
-	public ILocator getLocator();
+  /**
+   * Return the {@link ILocator} that defines the physical resource location
+   * for the reciver.
+   *
+   * @return Return the {@link ILocator} that defines the physical resource
+   * location for the reciver.
+   */
+  public ILocator getLocator();
 }

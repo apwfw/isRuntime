@@ -33,22 +33,21 @@ package de.intarsys.tools.monitor;
  * A trace for taking time samples while executing.
  */
 public class TimeMonitorTrace extends MonitorTrace {
-	/**
-	 * Create a TimeMonitorTrace
-	 * 
-	 * @param owner
-	 *            monitor owning the trace
-	 */
-	public TimeMonitorTrace(Monitor owner) {
-		super(owner);
-	}
+  /**
+   * Create a TimeMonitorTrace
+   *
+   * @param owner monitor owning the trace
+   */
+  public TimeMonitorTrace(Monitor owner) {
+    super(owner);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.monitor.MonitorEvent#createSample()
-	 */
-	protected long createSampleValue() {
-		return System.currentTimeMillis();
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.monitor.MonitorEvent#createSample()
+   */
+  protected long createSampleValue() {
+    return System.currentTimeMillis();
+  }
 }

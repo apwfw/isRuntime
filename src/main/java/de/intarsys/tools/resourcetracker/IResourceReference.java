@@ -37,12 +37,12 @@ import java.lang.ref.Reference;
  */
 public interface IResourceReference {
 
-	public void dispose();
+  public void dispose();
 
-	/**
-	 * The resource tracked.
-	 * 
-	 * @return The resource tracked.
-	 */
-	public Object getResource();
+  /**
+   * The resource tracked.
+   *
+   * @return The resource tracked.
+   */
+  public Object getResource();
 }

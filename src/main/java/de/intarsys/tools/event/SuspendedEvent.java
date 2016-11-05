@@ -31,18 +31,17 @@ package de.intarsys.tools.event;
 
 /**
  * An event indicating that a component is supended.
- * 
  */
 public class SuspendedEvent extends Event {
-	public static final EventType ID = new EventType(SuspendedEvent.class
-			.getName());
+  public static final EventType ID = new EventType(SuspendedEvent.class
+      .getName());
 
-	public SuspendedEvent(Object source) {
-		super(source);
-	}
+  public SuspendedEvent(Object source) {
+    super(source);
+  }
 
-	@Override
-	public EventType getEventType() {
-		return ID;
-	}
+  @Override
+  public EventType getEventType() {
+    return ID;
+  }
 }

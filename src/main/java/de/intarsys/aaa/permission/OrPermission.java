@@ -33,24 +33,23 @@ import de.intarsys.aaa.resource.IResource;
 
 /**
  * An "or" association of all permissions contained.
- * 
  */
 public class OrPermission implements IPermission {
 
-	final private IPermission[] operands;
+  final private IPermission[] operands;
 
-	public OrPermission(IPermission... operands) {
-		super();
-		this.operands = operands;
-	}
+  public OrPermission(IPermission... operands) {
+    super();
+    this.operands = operands;
+  }
 
-	public boolean isAccessGranted(IResource resource) {
-		for (int i = 0; i < operands.length; i++) {
-			if (operands[i].isAccessGranted(resource)) {
-				return true;
-			}
-		}
-		return false;
-	}
+  public boolean isAccessGranted(IResource resource) {
+    for (int i = 0; i < operands.length; i++) {
+      if (operands[i].isAccessGranted(resource)) {
+        return true;
+      }
+    }
+    return false;
+  }
 
 }

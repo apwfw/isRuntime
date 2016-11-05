@@ -35,31 +35,30 @@ import de.intarsys.tools.functor.IArgs;
  * An {@link IStringEvaluator} that looks up a variable in an array.
  * <p>
  * Naturally only indexed lookup is supported.
- * 
  */
 public class ArrayResolver extends ContainerResolver {
 
-	private Object[] variables;
+  private Object[] variables;
 
-	public ArrayResolver() {
-		this(new Object[0]);
-	}
+  public ArrayResolver() {
+    this(new Object[0]);
+  }
 
-	public ArrayResolver(Object[] variables) {
-		super();
-		this.variables = variables;
-	}
+  public ArrayResolver(Object[] variables) {
+    super();
+    this.variables = variables;
+  }
 
-	@Override
-	protected Object basicEvaluate(String expression, IArgs args)
-			throws EvaluationException {
-		try {
-			int index = Integer.parseInt(expression);
-			return variables[index];
-		} catch (Exception e) {
-			// unsuitable index syntax or out of bound
-			throw new EvaluationException(e);
-		}
-	}
+  @Override
+  protected Object basicEvaluate(String expression, IArgs args)
+      throws EvaluationException {
+    try {
+      int index = Integer.parseInt(expression);
+      return variables[index];
+    } catch (Exception e) {
+      // unsuitable index syntax or out of bound
+      throw new EvaluationException(e);
+    }
+  }
 
 }

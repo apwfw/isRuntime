@@ -31,18 +31,17 @@ package de.intarsys.tools.event;
 
 /**
  * An event indicating the the request to positively terminate.
- * 
  */
 public class OkRequestedEvent extends Event {
-	public static final EventType ID = new EventType(OkRequestedEvent.class
-			.getName());
+  public static final EventType ID = new EventType(OkRequestedEvent.class
+      .getName());
 
-	public OkRequestedEvent(Object source) {
-		super(source);
-	}
+  public OkRequestedEvent(Object source) {
+    super(source);
+  }
 
-	@Override
-	public EventType getEventType() {
-		return ID;
-	}
+  @Override
+  public EventType getEventType() {
+    return ID;
+  }
 }

@@ -29,63 +29,62 @@
  */
 package de.intarsys.tools.crypto;
 
-import java.security.GeneralSecurityException;
-import java.security.spec.KeySpec;
-
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.security.GeneralSecurityException;
+import java.security.spec.KeySpec;
 
 public class PBAES128Cryptdec extends PBCryptdec {
 
-	public PBAES128Cryptdec(String id, byte[] iv, char[] passphrase,
-			byte[] salt, int iterationCount) throws GeneralSecurityException {
-		super(id, iv, passphrase, salt);
-		init(passphrase, salt, iterationCount);
-	}
+  public PBAES128Cryptdec(String id, byte[] iv, char[] passphrase,
+                          byte[] salt, int iterationCount) throws GeneralSecurityException {
+    super(id, iv, passphrase, salt);
+    init(passphrase, salt, iterationCount);
+  }
 
-	protected String getCipherAlgorithmId() {
-		return "AES";
-	}
+  protected String getCipherAlgorithmId() {
+    return "AES";
+  }
 
-	protected String getCipherId() {
-		return "AES/CBC/PKCS5Padding";
-	}
+  protected String getCipherId() {
+    return "AES/CBC/PKCS5Padding";
+  }
 
-	protected int getKeyLength() {
-		return 128;
-	}
+  protected int getKeyLength() {
+    return 128;
+  }
 
-	protected String getPBKeyFactoryId() {
-		return "PBKDF2WithHmacSHA1";
-	}
+  protected String getPBKeyFactoryId() {
+    return "PBKDF2WithHmacSHA1";
+  }
 
-	private void init(char[] passphrase, byte[] salt, int iterationCount)
-			throws GeneralSecurityException {
-		KeySpec pbKeySpec = new PBEKeySpec(passphrase, salt, iterationCount,
-				getKeyLength());
-		SecretKeyFactory pbKeyFactory = SecretKeyFactory
-				.getInstance(getPBKeyFactoryId());
-		SecretKey pbSecret = pbKeyFactory.generateSecret(pbKeySpec);
+  private void init(char[] passphrase, byte[] salt, int iterationCount)
+      throws GeneralSecurityException {
+    KeySpec pbKeySpec = new PBEKeySpec(passphrase, salt, iterationCount,
+        getKeyLength());
+    SecretKeyFactory pbKeyFactory = SecretKeyFactory
+        .getInstance(getPBKeyFactoryId());
+    SecretKey pbSecret = pbKeyFactory.generateSecret(pbKeySpec);
 
-		SecretKey key = new SecretKeySpec(pbSecret.getEncoded(),
-				getCipherAlgorithmId());
+    SecretKey key = new SecretKeySpec(pbSecret.getEncoded(),
+        getCipherAlgorithmId());
 
-		setEcipher(Cipher.getInstance(getCipherId()));
-		setDcipher(Cipher.getInstance(getCipherId()));
+    setEcipher(Cipher.getInstance(getCipherId()));
+    setDcipher(Cipher.getInstance(getCipherId()));
 
-		if (getInitializationVector() != null) {
-			IvParameterSpec ips = new IvParameterSpec(getInitializationVector());
-			getEcipher().init(Cipher.ENCRYPT_MODE, key, ips);
-			getDcipher().init(Cipher.DECRYPT_MODE, key, ips);
-		} else {
-			getEcipher().init(Cipher.ENCRYPT_MODE, key);
-			setInitializationVector(getEcipher().getIV());
-			IvParameterSpec ips = new IvParameterSpec(getInitializationVector());
-			getDcipher().init(Cipher.DECRYPT_MODE, key, ips);
-		}
-	}
+    if (getInitializationVector() != null) {
+      IvParameterSpec ips = new IvParameterSpec(getInitializationVector());
+      getEcipher().init(Cipher.ENCRYPT_MODE, key, ips);
+      getDcipher().init(Cipher.DECRYPT_MODE, key, ips);
+    } else {
+      getEcipher().init(Cipher.ENCRYPT_MODE, key);
+      setInitializationVector(getEcipher().getIV());
+      IvParameterSpec ips = new IvParameterSpec(getInitializationVector());
+      getDcipher().init(Cipher.DECRYPT_MODE, key, ips);
+    }
+  }
 }

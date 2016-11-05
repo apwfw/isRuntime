@@ -35,51 +35,49 @@ import java.util.NoSuchElementException;
 
 /**
  * Wraps an iterator into an enumeration API.
- * 
  */
 public class IteratorEnumeration<T> implements Enumeration<T> {
-	private Iterator<T> iterator;
+  private Iterator<T> iterator;
 
-	/**
-	 * IteratorEnumeration constructor.
-	 * 
-	 * @param i
-	 *            The Iterator to be enumerated
-	 */
-	public IteratorEnumeration(Iterator<T> i) {
-		super();
-		setIterator(i);
-	}
+  /**
+   * IteratorEnumeration constructor.
+   *
+   * @param i The Iterator to be enumerated
+   */
+  public IteratorEnumeration(Iterator<T> i) {
+    super();
+    setIterator(i);
+  }
 
-	protected Iterator<T> getIterator() {
-		return iterator;
-	}
+  protected Iterator<T> getIterator() {
+    return iterator;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.Enumeration#hasMoreElements()
-	 */
-	public boolean hasMoreElements() {
-		if (getIterator() == null) {
-			return false;
-		}
-		return getIterator().hasNext();
-	}
+  private void setIterator(Iterator<T> newIterator) {
+    iterator = newIterator;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.Enumeration#nextElement()
-	 */
-	public T nextElement() {
-		if (getIterator() == null) {
-			throw new NoSuchElementException("iterator not available");
-		}
-		return getIterator().next();
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.util.Enumeration#hasMoreElements()
+   */
+  public boolean hasMoreElements() {
+    if (getIterator() == null) {
+      return false;
+    }
+    return getIterator().hasNext();
+  }
 
-	private void setIterator(Iterator<T> newIterator) {
-		iterator = newIterator;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.util.Enumeration#nextElement()
+   */
+  public T nextElement() {
+    if (getIterator() == null) {
+      throw new NoSuchElementException("iterator not available");
+    }
+    return getIterator().next();
+  }
 }

@@ -36,34 +36,32 @@ import de.intarsys.tools.functor.IArgs;
  * evaluate templates with embedded expressions, for example in the form
  * "${expr}". The expressions may be evaluated using the
  * {@link ExpressionEvaluator} instance.
- * 
  */
 public class TemplateEvaluator {
 
-	/**
-	 * A simple trick to support lazy access to this singleton. If someone reads
-	 * the singleton before the context is set up properly, he will be forwarded
-	 * to the correct context upon execution.
-	 * 
-	 */
-	protected static class LazyEvaluator implements IStringEvaluator {
-		public Object evaluate(String expression, IArgs args)
-				throws EvaluationException {
-			IStringEvaluator current = TemplateEvaluator.get();
-			if (current == this) {
-				throw new EvaluationException("singleton not available"); //$NON-NLS-1$
-			}
-			return current.evaluate(expression, args);
-		}
-	}
+  private static IStringEvaluator ACTIVE = new LazyEvaluator();
 
-	private static IStringEvaluator ACTIVE = new LazyEvaluator();
+  static public IStringEvaluator get() {
+    return ACTIVE;
+  }
 
-	static public IStringEvaluator get() {
-		return ACTIVE;
-	}
+  static public void set(IStringEvaluator active) {
+    ACTIVE = active;
+  }
 
-	static public void set(IStringEvaluator active) {
-		ACTIVE = active;
-	}
+  /**
+   * A simple trick to support lazy access to this singleton. If someone reads
+   * the singleton before the context is set up properly, he will be forwarded
+   * to the correct context upon execution.
+   */
+  protected static class LazyEvaluator implements IStringEvaluator {
+    public Object evaluate(String expression, IArgs args)
+        throws EvaluationException {
+      IStringEvaluator current = TemplateEvaluator.get();
+      if (current == this) {
+        throw new EvaluationException("singleton not available"); //$NON-NLS-1$
+      }
+      return current.evaluate(expression, args);
+    }
+  }
 }

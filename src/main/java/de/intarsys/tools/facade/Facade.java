@@ -31,24 +31,23 @@ package de.intarsys.tools.facade;
 
 /**
  * A common superclass for implementaing the facade pattern.
- * 
  */
 abstract public class Facade implements IFacade {
-	protected Object object;
+  protected Object object;
 
-	/**
-	 * 
-	 */
-	public Facade(Object object) {
-		super();
-		this.object = object;
-	}
+  /**
+   *
+   */
+  public Facade(Object object) {
+    super();
+    this.object = object;
+  }
 
-	public Object getImpl() {
-		return object;
-	}
+  public Object getImpl() {
+    return object;
+  }
 
-	protected Object createFacade(Object impl) {
-		return FacadeTools.createFacade(impl);
-	}
+  protected Object createFacade(Object impl) {
+    return FacadeTools.createFacade(impl);
+  }
 }

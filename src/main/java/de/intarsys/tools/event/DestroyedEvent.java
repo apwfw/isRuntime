@@ -31,29 +31,30 @@ package de.intarsys.tools.event;
 
 /**
  * An event indicating the destruction of an instance.
- * 
  */
 public class DestroyedEvent extends Event {
-	public static final EventType ID = new EventType(DestroyedEvent.class
-			.getName());
+  public static final EventType ID = new EventType(DestroyedEvent.class
+      .getName());
 
-	/** The instance destroyed */
-	private Object instance;
+  /**
+   * The instance destroyed
+   */
+  private Object instance;
 
-	public DestroyedEvent(Object source) {
-		super(source);
-	}
+  public DestroyedEvent(Object source) {
+    super(source);
+  }
 
-	public Object getInstance() {
-		return instance;
-	}
+  public Object getInstance() {
+    return instance;
+  }
 
-	@Override
-	public EventType getEventType() {
-		return ID;
-	}
+  public void setInstance(Object instance) {
+    this.instance = instance;
+  }
 
-	public void setInstance(Object instance) {
-		this.instance = instance;
-	}
+  @Override
+  public EventType getEventType() {
+    return ID;
+  }
 }

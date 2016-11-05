@@ -38,22 +38,22 @@ import de.intarsys.tools.converter.IConverter;
  * Convert any {@link EnumItem} to a {@link Canonical} format.
  */
 public class CanonicalFromEnumItemConverter implements
-		IConverter<EnumItem, String> {
+    IConverter<EnumItem, String> {
 
-	public CanonicalFromEnumItemConverter() {
-		ConverterRegistry.get().registerConverter(this);
-	}
+  public CanonicalFromEnumItemConverter() {
+    ConverterRegistry.get().registerConverter(this);
+  }
 
-	public String convert(EnumItem source) throws ConversionException {
-		return source.getId();
-	}
+  public String convert(EnumItem source) throws ConversionException {
+    return source.getId();
+  }
 
-	public Class<?> getSourceType() {
-		return EnumItem.class;
-	}
+  public Class<?> getSourceType() {
+    return EnumItem.class;
+  }
 
-	public Class<?> getTargetType() {
-		return Canonical.class;
-	}
+  public Class<?> getTargetType() {
+    return Canonical.class;
+  }
 
 }

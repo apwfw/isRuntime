@@ -32,12 +32,11 @@ package de.intarsys.tools.objectmodel;
 /**
  * An object holding meta information about an executable object, like for
  * example an IFunctor or IMethod.
- * 
  */
 public interface ISignatureInfo {
 
-	public String getName();
+  public String getName();
 
-	public IClass[] getParameterTypes();
+  public IClass[] getParameterTypes();
 
 }

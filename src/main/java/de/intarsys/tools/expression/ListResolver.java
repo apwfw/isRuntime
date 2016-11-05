@@ -29,39 +29,38 @@
  */
 package de.intarsys.tools.expression;
 
+import de.intarsys.tools.functor.IArgs;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import de.intarsys.tools.functor.IArgs;
 
 /**
  * An {@link IStringEvaluator} that looks up a variable in a {@link List}.
  * <p>
  * Only indexed lookup is supported.
- * 
  */
 public class ListResolver extends ContainerResolver {
 
-	private List variables;
+  private List variables;
 
-	public ListResolver() {
-		this(new ArrayList());
-	}
+  public ListResolver() {
+    this(new ArrayList());
+  }
 
-	public ListResolver(List variables) {
-		super();
-		this.variables = variables;
-	}
+  public ListResolver(List variables) {
+    super();
+    this.variables = variables;
+  }
 
-	@Override
-	protected Object basicEvaluate(String expression, IArgs args)
-			throws EvaluationException {
-		try {
-			int index = Integer.parseInt(expression);
-			return variables.get(index);
-		} catch (Exception e) {
-			// unsuitable index syntax or out of bound
-			throw new EvaluationException(e);
-		}
-	}
+  @Override
+  protected Object basicEvaluate(String expression, IArgs args)
+      throws EvaluationException {
+    try {
+      int index = Integer.parseInt(expression);
+      return variables.get(index);
+    } catch (Exception e) {
+      // unsuitable index syntax or out of bound
+      throw new EvaluationException(e);
+    }
+  }
 }

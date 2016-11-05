@@ -31,37 +31,36 @@ package de.intarsys.tools.facade;
 
 /**
  * Tool class to handle common IFacadeFactory scenarios.
- * 
  */
 public class FacadeTools {
-	public static Object createFacade(IFacadeFactory factory, Object object) {
-		if (object instanceof IFacadeSupport) {
-			return ((IFacadeSupport) object).createFacade();
-		}
-		Object result = factory.createFacade(object);
-		if (result == null) {
-			return object;
-		} else {
-			return result;
-		}
-	}
+  public static Object createFacade(IFacadeFactory factory, Object object) {
+    if (object instanceof IFacadeSupport) {
+      return ((IFacadeSupport) object).createFacade();
+    }
+    Object result = factory.createFacade(object);
+    if (result == null) {
+      return object;
+    } else {
+      return result;
+    }
+  }
 
-	public static Object createFacade(Object object) {
-		if (object instanceof IFacadeSupport) {
-			return ((IFacadeSupport) object).createFacade();
-		}
-		Object result = FacadeFactory.get().createFacade(object);
-		if (result == null) {
-			return object;
-		} else {
-			return result;
-		}
-	}
+  public static Object createFacade(Object object) {
+    if (object instanceof IFacadeSupport) {
+      return ((IFacadeSupport) object).createFacade();
+    }
+    Object result = FacadeFactory.get().createFacade(object);
+    if (result == null) {
+      return object;
+    } else {
+      return result;
+    }
+  }
 
-	public static Object unwrap(Object object) {
-		if (object instanceof IFacade) {
-			return ((IFacade) object).getImpl();
-		}
-		return object;
-	}
+  public static Object unwrap(Object object) {
+    if (object instanceof IFacade) {
+      return ((IFacade) object).getImpl();
+    }
+    return object;
+  }
 }

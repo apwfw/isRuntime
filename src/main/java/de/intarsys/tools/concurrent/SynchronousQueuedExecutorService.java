@@ -43,95 +43,95 @@ import java.util.concurrent.TimeUnit;
  */
 public class SynchronousQueuedExecutorService extends AbstractExecutorService {
 
-	volatile private boolean shutdown = false;
+  volatile private boolean shutdown = false;
 
-	volatile private boolean terminated = false;
+  volatile private boolean terminated = false;
 
-	private List<Runnable> queue = new ArrayList<Runnable>();
+  private List<Runnable> queue = new ArrayList<Runnable>();
 
-	private Object lock = new Object();
+  private Object lock = new Object();
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.concurrent.ExecutorService#awaitTermination(long,
-	 * java.util.concurrent.TimeUnit)
-	 */
-	public boolean awaitTermination(long timeout, TimeUnit unit)
-			throws InterruptedException {
-		return true;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.util.concurrent.ExecutorService#awaitTermination(long,
+   * java.util.concurrent.TimeUnit)
+   */
+  public boolean awaitTermination(long timeout, TimeUnit unit)
+      throws InterruptedException {
+    return true;
+  }
 
-	public void drain() {
-		List<Runnable> tempQueue;
-		synchronized (lock) {
-			tempQueue = new ArrayList<Runnable>(queue);
-			queue.clear();
-		}
-		for (Iterator it = tempQueue.iterator(); it.hasNext();) {
-			Runnable command = (Runnable) it.next();
-			command.run();
-		}
-	}
+  public void drain() {
+    List<Runnable> tempQueue;
+    synchronized (lock) {
+      tempQueue = new ArrayList<Runnable>(queue);
+      queue.clear();
+    }
+    for (Iterator it = tempQueue.iterator(); it.hasNext(); ) {
+      Runnable command = (Runnable) it.next();
+      command.run();
+    }
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.concurrent.Executor#execute(java.lang.Runnable)
-	 */
-	public void execute(Runnable command) {
-		synchronized (lock) {
-			if (shutdown || terminated) {
-				return;
-			}
-			queue.add(command);
-		}
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.util.concurrent.Executor#execute(java.lang.Runnable)
+   */
+  public void execute(Runnable command) {
+    synchronized (lock) {
+      if (shutdown || terminated) {
+        return;
+      }
+      queue.add(command);
+    }
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.concurrent.ExecutorService#isShutdown()
-	 */
-	public boolean isShutdown() {
-		synchronized (lock) {
-			return shutdown;
-		}
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.util.concurrent.ExecutorService#isShutdown()
+   */
+  public boolean isShutdown() {
+    synchronized (lock) {
+      return shutdown;
+    }
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.concurrent.ExecutorService#isTerminated()
-	 */
-	public boolean isTerminated() {
-		synchronized (lock) {
-			return terminated;
-		}
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.util.concurrent.ExecutorService#isTerminated()
+   */
+  public boolean isTerminated() {
+    synchronized (lock) {
+      return terminated;
+    }
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.concurrent.ExecutorService#shutdown()
-	 */
-	public void shutdown() {
-		synchronized (lock) {
-			shutdown = true;
-			terminated = true;
-		}
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.util.concurrent.ExecutorService#shutdown()
+   */
+  public void shutdown() {
+    synchronized (lock) {
+      shutdown = true;
+      terminated = true;
+    }
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.concurrent.ExecutorService#shutdownNow()
-	 */
-	public List shutdownNow() {
-		synchronized (lock) {
-			shutdown = true;
-			terminated = true;
-			return new ArrayList<Runnable>(queue);
-		}
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.util.concurrent.ExecutorService#shutdownNow()
+   */
+  public List shutdownNow() {
+    synchronized (lock) {
+      shutdown = true;
+      terminated = true;
+      return new ArrayList<Runnable>(queue);
+    }
+  }
 }

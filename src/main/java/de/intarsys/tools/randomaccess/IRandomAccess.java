@@ -41,207 +41,184 @@ import java.io.RandomAccessFile;
  * storage objects (like byte arrays and so on).
  */
 public interface IRandomAccess {
-	/**
-	 * A {@link InputStream} view on the data structure.
-	 * 
-	 * @return A {@link InputStream} view on the data structure.
-	 */
-	public abstract InputStream asInputStream();
+  /**
+   * A {@link InputStream} view on the data structure.
+   *
+   * @return A {@link InputStream} view on the data structure.
+   */
+  public abstract InputStream asInputStream();
 
-	/**
-	 * A {@link OutputStream} view on the data structure.
-	 * 
-	 * @return A {@link OutputStream} view on the data structure.
-	 */
-	public abstract OutputStream asOutputStream();
+  /**
+   * A {@link OutputStream} view on the data structure.
+   *
+   * @return A {@link OutputStream} view on the data structure.
+   */
+  public abstract OutputStream asOutputStream();
 
-	/**
-	 * Closes this random access data container and releases any system
-	 * resources associated with the stream. A closed random access data
-	 * container cannot perform input or output operations and cannot be
-	 * reopened.
-	 * 
-	 * @exception IOException
-	 *                if an I/O error occurs.
-	 */
-	public void close() throws IOException;
+  /**
+   * Closes this random access data container and releases any system
+   * resources associated with the stream. A closed random access data
+   * container cannot perform input or output operations and cannot be
+   * reopened.
+   *
+   * @throws IOException if an I/O error occurs.
+   */
+  public void close() throws IOException;
 
-	/**
-	 * Force changes to be made persistent.
-	 * 
-	 * @throws IOException
-	 */
-	public void flush() throws IOException;
+  /**
+   * Force changes to be made persistent.
+   *
+   * @throws IOException
+   */
+  public void flush() throws IOException;
 
-	/**
-	 * Returns the length of this data container.
-	 * 
-	 * @return the length of this data container, measured in bytes.
-	 * @exception IOException
-	 *                if an I/O error occurs.
-	 */
-	public long getLength() throws IOException;
+  /**
+   * Returns the length of this data container.
+   *
+   * @return the length of this data container, measured in bytes.
+   * @throws IOException if an I/O error occurs.
+   */
+  public long getLength() throws IOException;
 
-	/**
-	 * Returns the current offset in this data container.
-	 * 
-	 * @return the offset from the beginning of the data container, in bytes, at
-	 *         which the next read or write occurs.
-	 * @exception IOException
-	 *                if an I/O error occurs.
-	 */
-	public long getOffset() throws IOException;
+  /**
+   * Assign the length. All bytes after length are truncated. If the real
+   * length is currently less than newLength, the data structure will be
+   * enlarged.
+   *
+   * @param newLength
+   * @throws IOException
+   */
+  public void setLength(long newLength) throws IOException;
 
-	/**
-	 * <code>true</code> if this is a read only data container.
-	 * 
-	 * @return <code>true</code> if this is a read only data container.
-	 */
-	public boolean isReadOnly();
+  /**
+   * Returns the current offset in this data container.
+   *
+   * @return the offset from the beginning of the data container, in bytes, at
+   * which the next read or write occurs.
+   * @throws IOException if an I/O error occurs.
+   */
+  public long getOffset() throws IOException;
 
-	/**
-	 * Mark the current offset into the data in a stack like manner.
-	 */
-	public abstract void mark() throws IOException;
+  /**
+   * <code>true</code> if this is a read only data container.
+   *
+   * @return <code>true</code> if this is a read only data container.
+   */
+  public boolean isReadOnly();
 
-	/**
-	 * Reads a byte of data from this data container. The byte is returned as an
-	 * integer in the range 0 to 255 (<code>0x00-0x0ff</code>). This method
-	 * blocks if no input is yet available.
-	 * <p>
-	 * This method behaves in exactly the same way as the
-	 * {@link InputStream#read()} method of <code>InputStream</code>.
-	 * 
-	 * @return the next byte of data, or <code>-1</code> if the end of the data
-	 *         container has been reached.
-	 * @exception IOException
-	 *                if an I/O error occurs. Not thrown if the end of the data
-	 *                container has been reached.
-	 */
-	public int read() throws IOException;
+  /**
+   * Mark the current offset into the data in a stack like manner.
+   */
+  public abstract void mark() throws IOException;
 
-	/**
-	 * Reads up to <code>buffer.length</code> bytes of data from this data
-	 * container into an array of bytes. This method blocks until at least one
-	 * byte of input is available.
-	 * <p>
-	 * This method behaves in the exactly the same way as the
-	 * {@link InputStream#read(byte[])} method of <code>InputStream</code>.
-	 * 
-	 * @param buffer
-	 *            the buffer into which the data is read.
-	 * @return the total number of bytes read into the buffer, or
-	 *         <code>-1</code> if there is no more data because the end of this
-	 *         data container has been reached.
-	 * @exception IOException
-	 *                if an I/O error occurs.
-	 */
-	public int read(byte[] buffer) throws IOException;
+  /**
+   * Reads a byte of data from this data container. The byte is returned as an
+   * integer in the range 0 to 255 (<code>0x00-0x0ff</code>). This method
+   * blocks if no input is yet available.
+   * <p>
+   * This method behaves in exactly the same way as the
+   * {@link InputStream#read()} method of <code>InputStream</code>.
+   *
+   * @return the next byte of data, or <code>-1</code> if the end of the data
+   * container has been reached.
+   * @throws IOException if an I/O error occurs. Not thrown if the end of the data
+   *                     container has been reached.
+   */
+  public int read() throws IOException;
 
-	/**
-	 * Reads up to <code>len</code> bytes of data from this data container into
-	 * an array of bytes. This method blocks until at least one byte of input is
-	 * available.
-	 * <p>
-	 * 
-	 * @param buffer
-	 *            the buffer into which the data is read.
-	 * @param start
-	 *            the start offset of the data.
-	 * @param numBytes
-	 *            the maximum number of bytes read.
-	 * @return the total number of bytes read into the buffer, or
-	 *         <code>-1</code> if there is no more data because the end of the
-	 *         file has been reached.
-	 * @exception IOException
-	 *                if an I/O error occurs.
-	 */
-	public int read(byte[] buffer, int start, int numBytes) throws IOException;
+  /**
+   * Reads up to <code>buffer.length</code> bytes of data from this data
+   * container into an array of bytes. This method blocks until at least one
+   * byte of input is available.
+   * <p>
+   * This method behaves in the exactly the same way as the
+   * {@link InputStream#read(byte[])} method of <code>InputStream</code>.
+   *
+   * @param buffer the buffer into which the data is read.
+   * @return the total number of bytes read into the buffer, or
+   * <code>-1</code> if there is no more data because the end of this
+   * data container has been reached.
+   * @throws IOException if an I/O error occurs.
+   */
+  public int read(byte[] buffer) throws IOException;
 
-	/**
-	 * Reset to the last position on the mark-stack.
-	 */
-	public abstract void reset() throws IOException;
+  /**
+   * Reads up to <code>len</code> bytes of data from this data container into
+   * an array of bytes. This method blocks until at least one byte of input is
+   * available.
+   * <p>
+   *
+   * @param buffer   the buffer into which the data is read.
+   * @param start    the start offset of the data.
+   * @param numBytes the maximum number of bytes read.
+   * @return the total number of bytes read into the buffer, or
+   * <code>-1</code> if there is no more data because the end of the
+   * file has been reached.
+   * @throws IOException if an I/O error occurs.
+   */
+  public int read(byte[] buffer, int start, int numBytes) throws IOException;
 
-	/**
-	 * Sets the offset, measured from the beginning of the data container at
-	 * which the next read or write occurs. The offset may be set beyond the end
-	 * of the data container. Setting the offset beyond the end of the data
-	 * container does not change the data container length. The length will
-	 * change only by writing after the offset has been set beyond the end of
-	 * the data container.
-	 * 
-	 * @param offset
-	 *            the offset position, measured in bytes from the beginning of
-	 *            the data container
-	 * @exception IOException
-	 *                if <code>offset</code> is less than <code>0</code> or if
-	 *                an I/O error occurs.
-	 */
-	public void seek(long offset) throws IOException;
+  /**
+   * Reset to the last position on the mark-stack.
+   */
+  public abstract void reset() throws IOException;
 
-	/**
-	 * Sets the offset, measured from the current offset at which the next read
-	 * or write occurs. The offset may be set beyond the end of the data
-	 * container. Setting the offset beyond the end of the data container does
-	 * not change the data container length. The length will change only by
-	 * writing after the offset has been set beyond the end of the data
-	 * container.
-	 * 
-	 * @param delta
-	 *            the amount of bytes by which to change the current offset
-	 *            position
-	 * 
-	 * @exception IOException
-	 *                if the resulting <code>offset</code> is less than
-	 *                <code>0</code> or if an I/O error occurs.
-	 */
-	public void seekBy(long delta) throws IOException;
+  /**
+   * Sets the offset, measured from the beginning of the data container at
+   * which the next read or write occurs. The offset may be set beyond the end
+   * of the data container. Setting the offset beyond the end of the data
+   * container does not change the data container length. The length will
+   * change only by writing after the offset has been set beyond the end of
+   * the data container.
+   *
+   * @param offset the offset position, measured in bytes from the beginning of
+   *               the data container
+   * @throws IOException if <code>offset</code> is less than <code>0</code> or if
+   *                     an I/O error occurs.
+   */
+  public void seek(long offset) throws IOException;
 
-	/**
-	 * Assign the length. All bytes after length are truncated. If the real
-	 * length is currently less than newLength, the data structure will be
-	 * enlarged.
-	 * 
-	 * @param newLength
-	 * @throws IOException
-	 */
-	public void setLength(long newLength) throws IOException;
+  /**
+   * Sets the offset, measured from the current offset at which the next read
+   * or write occurs. The offset may be set beyond the end of the data
+   * container. Setting the offset beyond the end of the data container does
+   * not change the data container length. The length will change only by
+   * writing after the offset has been set beyond the end of the data
+   * container.
+   *
+   * @param delta the amount of bytes by which to change the current offset
+   *              position
+   * @throws IOException if the resulting <code>offset</code> is less than
+   *                     <code>0</code> or if an I/O error occurs.
+   */
+  public void seekBy(long delta) throws IOException;
 
-	/**
-	 * Writes <code>b.length</code> bytes from the specified byte array,
-	 * starting at the current offset.
-	 * 
-	 * @param buffer
-	 *            the data.
-	 * @exception IOException
-	 *                if an I/O error occurs.
-	 */
-	public void write(byte[] buffer) throws IOException;
+  /**
+   * Writes <code>b.length</code> bytes from the specified byte array,
+   * starting at the current offset.
+   *
+   * @param buffer the data.
+   * @throws IOException if an I/O error occurs.
+   */
+  public void write(byte[] buffer) throws IOException;
 
-	/**
-	 * Writes <code>len</code> bytes from the specified byte array starting at
-	 * <code>start</code>.
-	 * 
-	 * @param buffer
-	 *            the data.
-	 * @param start
-	 *            the start offset in the data.
-	 * @param numBytes
-	 *            the number of bytes to write.
-	 * @exception IOException
-	 *                if an I/O error occurs.
-	 */
-	public abstract void write(byte[] buffer, int start, int numBytes)
-			throws IOException;
+  /**
+   * Writes <code>len</code> bytes from the specified byte array starting at
+   * <code>start</code>.
+   *
+   * @param buffer   the data.
+   * @param start    the start offset in the data.
+   * @param numBytes the number of bytes to write.
+   * @throws IOException if an I/O error occurs.
+   */
+  public abstract void write(byte[] buffer, int start, int numBytes)
+      throws IOException;
 
-	/**
-	 * Writes the specified byte . The write starts at the current offset.
-	 * 
-	 * @param b
-	 *            the <code>byte</code> to be written.
-	 * @exception IOException
-	 *                if an I/O error occurs.
-	 */
-	public void write(int b) throws IOException;
+  /**
+   * Writes the specified byte . The write starts at the current offset.
+   *
+   * @param b the <code>byte</code> to be written.
+   * @throws IOException if an I/O error occurs.
+   */
+  public void write(int b) throws IOException;
 }

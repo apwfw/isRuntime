@@ -38,350 +38,346 @@ import java.util.Set;
  * An {@link IArgs} implementation allowing to concat two {@link IArgs}
  * together. Lookup will be performed in "args" first. If nothing is found,
  * lookup is done in "fallbackArgs".
- * 
  */
 public class ChainedArgs implements IArgs {
 
-	class Binding implements IBinding {
+  private IArgs args;
+  private IArgs fallbackArgs;
 
-		final private IBinding argBinding;
+  /**
+   * Create new {@link ChainedArgs} where <code>args</code> are always looked
+   * up first. If lookup fails, <code>fallbackArgs</code> are used.
+   *
+   * @param args         The main {@link IArgs} to use for lookup
+   * @param fallbackArgs The fallback {@link IArgs} for lookup
+   */
+  public ChainedArgs(IArgs args, IArgs fallbackArgs) {
+    super();
+    this.args = args;
+    this.fallbackArgs = fallbackArgs;
+  }
 
-		final private IBinding fallbackBinding;
+  public IBinding add(Object object) {
+    return args.add(object);
+  }
 
-		public Binding(IBinding argBinding, IBinding fallbackBinding) {
-			super();
-			this.argBinding = argBinding;
-			this.fallbackBinding = fallbackBinding;
-		}
+  @Override
+  public Iterator<IBinding> bindings() {
+    return new Iterator<IBinding>() {
+      private IBinding current;
+      private Iterator<IBinding> argsIterator = args.bindings();
+      private Iterator<IBinding> fallbackIteratorIndexed = fallbackArgs
+          .bindings();
+      private Iterator<IBinding> fallbackIteratorNamed = fallbackArgs
+          .bindings();
 
-		@Override
-		public String getName() {
-			return argBinding.getName();
-		}
+      @Override
+      public boolean hasNext() {
+        if (current != null) {
+          return true;
+        }
+        IBinding currentArg = null;
+        IBinding currentFallbackArg = null;
+        if (argsIterator.hasNext()) {
+          currentArg = argsIterator.next();
+        }
+        if (fallbackIteratorIndexed.hasNext()) {
+          currentFallbackArg = fallbackIteratorIndexed.next();
+        }
+        if (currentArg == null && currentFallbackArg != null
+            && currentFallbackArg.getName() == null) {
+          currentArg = args.add(null);
+        }
+        if (currentArg != null) {
+          String name = currentArg.getName();
+          if (name == null) {
+            // positional match
+            if (currentFallbackArg != null) {
+              current = new Binding(currentArg,
+                  currentFallbackArg);
+            } else {
+              current = currentArg;
+            }
+          } else {
+            // associative match
+            if (fallbackArgs.isDefined(name)) {
+              current = new Binding(currentArg,
+                  fallbackArgs.declare(name));
+            } else {
+              current = currentArg;
+            }
+          }
+        }
+        while (current == null && fallbackIteratorNamed.hasNext()) {
+          currentFallbackArg = fallbackIteratorNamed.next();
+          String name = currentFallbackArg.getName();
+          if (name == null) {
+            // visit only named
+            continue;
+          } else if (args.isDefined(name)) {
+            // already visited
+            continue;
+          } else {
+            current = new Binding(args.declare(name),
+                currentFallbackArg);
+          }
+        }
+        return false;
+      }
 
-		@Override
-		public Object getValue() {
-			Object result = argBinding.getValue();
-			if (result == null) {
-				if (!argBinding.isDefined()) {
-					Object fallbackValue = fallbackBinding.getValue();
-					if (fallbackValue instanceof IArgs) {
-						result = Args.create();
-						argBinding.setValue(result);
-					} else {
-						result = fallbackValue;
-					}
-				}
-			}
-			if (result instanceof IArgs) {
-				Object fallbackValue = fallbackBinding.getValue();
-				if (fallbackValue instanceof IArgs) {
-					// result = new ChainedArgs((IArgs) result,
-					// (IArgs) fallbackValue);
-					result = null;
-				}
-			}
-			return result;
-		}
+      @Override
+      public IBinding next() {
+        if (!hasNext()) {
+          throw new NoSuchElementException();
+        }
+        IBinding result = current;
+        current = null;
+        return result;
+      }
 
-		@Override
-		public boolean isDefined() {
-			return argBinding.isDefined() || fallbackBinding.isDefined();
-		}
+      @Override
+      public void remove() {
+        throw new UnsupportedOperationException();
+      }
+    };
+  }
 
-		@Override
-		public void setValue(Object value) {
-			argBinding.setValue(value);
-		}
+  public void clear() {
+    args.clear();
+  }
 
-	}
+  @Override
+  public IArgs copy() {
+    IArgs result = fallbackArgs.copy();
+    for (String name : args.names()) {
+      Object value = args.get(name);
+      if (value instanceof IArgs) {
+        result.put(name, ((IArgs) value).copy());
+      } else {
+        result.put(name, value);
+      }
+    }
+    return result;
+  }
 
-	private IArgs args;
+  @Override
+  public IBinding declare(String name) {
+    return new Binding(args.declare(name), fallbackArgs.declare(name));
+  }
 
-	private IArgs fallbackArgs;
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.functor.IArgs#get(int)
+   */
+  public Object get(int index) {
+    Object result = args.get(index);
+    if (result == null) {
+      Object fallbackResult = fallbackArgs.get(index);
+      if (fallbackResult instanceof IArgs) {
+        result = Args.create();
+        args.put(index, result);
+      } else {
+        result = fallbackResult;
+      }
+    }
+    if (result instanceof IArgs) {
+      Object fallbackResult = fallbackArgs.get(index);
+      if (fallbackResult instanceof IArgs) {
+        // result = new ChainedArgs((IArgs) result, (IArgs)
+        // fallbackResult);
+        result = null;
+      }
+    }
+    return result;
+  }
 
-	/**
-	 * Create new {@link ChainedArgs} where <code>args</code> are always looked
-	 * up first. If lookup fails, <code>fallbackArgs</code> are used.
-	 * 
-	 * @param args
-	 *            The main {@link IArgs} to use for lookup
-	 * @param fallbackArgs
-	 *            The fallback {@link IArgs} for lookup
-	 */
-	public ChainedArgs(IArgs args, IArgs fallbackArgs) {
-		super();
-		this.args = args;
-		this.fallbackArgs = fallbackArgs;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.functor.IArgs#get(int, java.lang.Object)
+   */
+  public Object get(int index, Object defaultValue) {
+    Object result = get(index);
+    if (result == null) {
+      result = defaultValue;
+    }
+    return result;
+  }
 
-	public IBinding add(Object object) {
-		return args.add(object);
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.functor.IArgs#get(java.lang.String)
+   */
+  public Object get(String name) {
+    Object result = args.get(name);
+    if (result == null) {
+      if (!args.isDefined(name)) {
+        Object fallbackResult = fallbackArgs.get(name);
+        if (fallbackResult instanceof IArgs) {
+          result = Args.create();
+          args.put(name, result);
+        } else {
+          result = fallbackResult;
+        }
+      }
+    }
+    if (result instanceof IArgs) {
+      Object fallbackResult = fallbackArgs.get(name);
+      if (fallbackResult instanceof IArgs) {
+        // result = new ChainedArgs((IArgs) result, (IArgs)
+        // fallbackResult);
+        result = null;
+      }
+    }
+    return result;
+  }
 
-	@Override
-	public Iterator<IBinding> bindings() {
-		return new Iterator<IBinding>() {
-			private IBinding current;
-			private Iterator<IBinding> argsIterator = args.bindings();
-			private Iterator<IBinding> fallbackIteratorIndexed = fallbackArgs
-					.bindings();
-			private Iterator<IBinding> fallbackIteratorNamed = fallbackArgs
-					.bindings();
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.functor.IArgs#get(java.lang.String,
+   * java.lang.Object)
+   */
+  public Object get(String name, Object defaultValue) {
+    Object result = get(name);
+    if (result == null) {
+      result = defaultValue;
+    }
+    return result;
+  }
 
-			@Override
-			public boolean hasNext() {
-				if (current != null) {
-					return true;
-				}
-				IBinding currentArg = null;
-				IBinding currentFallbackArg = null;
-				if (argsIterator.hasNext()) {
-					currentArg = argsIterator.next();
-				}
-				if (fallbackIteratorIndexed.hasNext()) {
-					currentFallbackArg = fallbackIteratorIndexed.next();
-				}
-				if (currentArg == null && currentFallbackArg != null
-						&& currentFallbackArg.getName() == null) {
-					currentArg = args.add(null);
-				}
-				if (currentArg != null) {
-					String name = currentArg.getName();
-					if (name == null) {
-						// positional match
-						if (currentFallbackArg != null) {
-							current = new Binding(currentArg,
-									currentFallbackArg);
-						} else {
-							current = currentArg;
-						}
-					} else {
-						// associative match
-						if (fallbackArgs.isDefined(name)) {
-							current = new Binding(currentArg,
-									fallbackArgs.declare(name));
-						} else {
-							current = currentArg;
-						}
-					}
-				}
-				while (current == null && fallbackIteratorNamed.hasNext()) {
-					currentFallbackArg = fallbackIteratorNamed.next();
-					String name = currentFallbackArg.getName();
-					if (name == null) {
-						// visit only named
-						continue;
-					} else if (args.isDefined(name)) {
-						// already visited
-						continue;
-					} else {
-						current = new Binding(args.declare(name),
-								currentFallbackArg);
-					}
-				}
-				return false;
-			}
+  /**
+   * The main (primary) {@link IArgs}.
+   *
+   * @return The main (primary) {@link IArgs}.
+   */
+  public IArgs getArgs() {
+    return args;
+  }
 
-			@Override
-			public IBinding next() {
-				if (!hasNext()) {
-					throw new NoSuchElementException();
-				}
-				IBinding result = current;
-				current = null;
-				return result;
-			}
+  /**
+   * The fallback (secondary) {@link IArgs};
+   *
+   * @return The fallback (secondary) {@link IArgs};
+   */
+  public IArgs getFallbackArgs() {
+    return fallbackArgs;
+  }
 
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException();
-			}
-		};
-	}
+  public boolean isDefined(String name) {
+    if (args.isDefined(name)) {
+      return true;
+    }
+    return fallbackArgs.isDefined(name);
+  }
 
-	public void clear() {
-		args.clear();
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.functor.IArgs#isIndexed()
+   */
+  public boolean isIndexed() {
+    return true;
+  }
 
-	@Override
-	public IArgs copy() {
-		IArgs result = fallbackArgs.copy();
-		for (String name : args.names()) {
-			Object value = args.get(name);
-			if (value instanceof IArgs) {
-				result.put(name, ((IArgs) value).copy());
-			} else {
-				result.put(name, value);
-			}
-		}
-		return result;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.functor.IArgs#isNamed()
+   */
+  public boolean isNamed() {
+    return true;
+  }
 
-	@Override
-	public IBinding declare(String name) {
-		return new Binding(args.declare(name), fallbackArgs.declare(name));
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.functor.IArgs#names()
+   */
+  public Set names() {
+    Set names = new HashSet(args.names());
+    names.addAll(fallbackArgs.names());
+    return names;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.functor.IArgs#get(int)
-	 */
-	public Object get(int index) {
-		Object result = args.get(index);
-		if (result == null) {
-			Object fallbackResult = fallbackArgs.get(index);
-			if (fallbackResult instanceof IArgs) {
-				result = Args.create();
-				args.put(index, result);
-			} else {
-				result = fallbackResult;
-			}
-		}
-		if (result instanceof IArgs) {
-			Object fallbackResult = fallbackArgs.get(index);
-			if (fallbackResult instanceof IArgs) {
-				// result = new ChainedArgs((IArgs) result, (IArgs)
-				// fallbackResult);
-				result = null;
-			}
-		}
-		return result;
-	}
+  public IBinding put(int index, Object value) {
+    return args.put(index, value);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.functor.IArgs#get(int, java.lang.Object)
-	 */
-	public Object get(int index, Object defaultValue) {
-		Object result = get(index);
-		if (result == null) {
-			result = defaultValue;
-		}
-		return result;
-	}
+  public IBinding put(String name, Object value) {
+    return args.put(name, value);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.functor.IArgs#get(java.lang.String)
-	 */
-	public Object get(String name) {
-		Object result = args.get(name);
-		if (result == null) {
-			if (!args.isDefined(name)) {
-				Object fallbackResult = fallbackArgs.get(name);
-				if (fallbackResult instanceof IArgs) {
-					result = Args.create();
-					args.put(name, result);
-				} else {
-					result = fallbackResult;
-				}
-			}
-		}
-		if (result instanceof IArgs) {
-			Object fallbackResult = fallbackArgs.get(name);
-			if (fallbackResult instanceof IArgs) {
-				// result = new ChainedArgs((IArgs) result, (IArgs)
-				// fallbackResult);
-				result = null;
-			}
-		}
-		return result;
-	}
+  public int size() {
+    return names().size();
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.functor.IArgs#get(java.lang.String,
-	 * java.lang.Object)
-	 */
-	public Object get(String name, Object defaultValue) {
-		Object result = get(name);
-		if (result == null) {
-			result = defaultValue;
-		}
-		return result;
-	}
+  @Override
+  public String toString() {
+    return ArgTools.toString(this, "");
+  }
 
-	/**
-	 * The main (primary) {@link IArgs}.
-	 * 
-	 * @return The main (primary) {@link IArgs}.
-	 */
-	public IArgs getArgs() {
-		return args;
-	}
+  @Override
+  public void undefine(int index) {
+  }
 
-	/**
-	 * The fallback (secondary) {@link IArgs};
-	 * 
-	 * @return The fallback (secondary) {@link IArgs};
-	 */
-	public IArgs getFallbackArgs() {
-		return fallbackArgs;
-	}
+  @Override
+  public void undefine(String name) {
+  }
 
-	public boolean isDefined(String name) {
-		if (args.isDefined(name)) {
-			return true;
-		}
-		return fallbackArgs.isDefined(name);
-	}
+  class Binding implements IBinding {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.functor.IArgs#isIndexed()
-	 */
-	public boolean isIndexed() {
-		return true;
-	}
+    final private IBinding argBinding;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.functor.IArgs#isNamed()
-	 */
-	public boolean isNamed() {
-		return true;
-	}
+    final private IBinding fallbackBinding;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.functor.IArgs#names()
-	 */
-	public Set names() {
-		Set names = new HashSet(args.names());
-		names.addAll(fallbackArgs.names());
-		return names;
-	}
+    public Binding(IBinding argBinding, IBinding fallbackBinding) {
+      super();
+      this.argBinding = argBinding;
+      this.fallbackBinding = fallbackBinding;
+    }
 
-	public IBinding put(int index, Object value) {
-		return args.put(index, value);
-	}
+    @Override
+    public String getName() {
+      return argBinding.getName();
+    }
 
-	public IBinding put(String name, Object value) {
-		return args.put(name, value);
-	}
+    @Override
+    public Object getValue() {
+      Object result = argBinding.getValue();
+      if (result == null) {
+        if (!argBinding.isDefined()) {
+          Object fallbackValue = fallbackBinding.getValue();
+          if (fallbackValue instanceof IArgs) {
+            result = Args.create();
+            argBinding.setValue(result);
+          } else {
+            result = fallbackValue;
+          }
+        }
+      }
+      if (result instanceof IArgs) {
+        Object fallbackValue = fallbackBinding.getValue();
+        if (fallbackValue instanceof IArgs) {
+          // result = new ChainedArgs((IArgs) result,
+          // (IArgs) fallbackValue);
+          result = null;
+        }
+      }
+      return result;
+    }
 
-	public int size() {
-		return names().size();
-	}
+    @Override
+    public void setValue(Object value) {
+      argBinding.setValue(value);
+    }
 
-	@Override
-	public String toString() {
-		return ArgTools.toString(this, "");
-	}
+    @Override
+    public boolean isDefined() {
+      return argBinding.isDefined() || fallbackBinding.isDefined();
+    }
 
-	@Override
-	public void undefine(int index) {
-	}
-
-	@Override
-	public void undefine(String name) {
-	}
+  }
 }

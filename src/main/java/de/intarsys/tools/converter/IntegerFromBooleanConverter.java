@@ -33,18 +33,18 @@ package de.intarsys.tools.converter;
  * Convert a {@link Boolean} to {@link Integer}
  */
 public class IntegerFromBooleanConverter implements
-		IConverter<Boolean, Integer> {
+    IConverter<Boolean, Integer> {
 
-	public Integer convert(Boolean source) throws ConversionException {
-		return source ? 1 : 0;
-	}
+  public Integer convert(Boolean source) throws ConversionException {
+    return source ? 1 : 0;
+  }
 
-	public Class<?> getSourceType() {
-		return Boolean.class;
-	}
+  public Class<?> getSourceType() {
+    return Boolean.class;
+  }
 
-	public Class<?> getTargetType() {
-		return Integer.class;
-	}
+  public Class<?> getTargetType() {
+    return Integer.class;
+  }
 
 }

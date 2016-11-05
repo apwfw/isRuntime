@@ -29,6 +29,8 @@
  */
 package de.intarsys.tools.digest;
 
+import de.intarsys.tools.provider.Providers;
+
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -37,66 +39,63 @@ import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import de.intarsys.tools.provider.Providers;
-
 /**
  * The standard implementation for {@link IDigestEnvironment}.
- * 
  */
 public class StandardDigestEnvironment implements IDigestEnvironment {
 
-	private IDigestCodec codec;
+  private IDigestCodec codec;
 
-	protected IDigestCodec createCodec() {
-		Iterator<IDigestCodec> it = Providers.get().lookupProviders(
-				IDigestCodec.class);
-		while (it.hasNext()) {
-			try {
-				return it.next();
-			} catch (Throwable t) {
-				Logger.getAnonymousLogger().log(Level.WARNING,
-						"error creating codec", t);
-			}
-		}
-		return null;
-	}
+  protected IDigestCodec createCodec() {
+    Iterator<IDigestCodec> it = Providers.get().lookupProviders(
+        IDigestCodec.class);
+    while (it.hasNext()) {
+      try {
+        return it.next();
+      } catch (Throwable t) {
+        Logger.getAnonymousLogger().log(Level.WARNING,
+            "error creating codec", t);
+      }
+    }
+    return null;
+  }
 
-	public IDigest createDigest(String algorithmName, byte[] bytes) {
-		return new Digest(algorithmName, bytes);
-	}
+  public IDigest createDigest(String algorithmName, byte[] bytes) {
+    return new Digest(algorithmName, bytes);
+  }
 
-	public IDigester createDigester(String algorithmName)
-			throws NoSuchAlgorithmException {
-		try {
-			MessageDigest digest = MessageDigest.getInstance(algorithmName,
-					"BC"); //$NON-NLS-1$
-			return new Digester(algorithmName, digest);
-		} catch (NoSuchProviderException e) {
-			MessageDigest digest = MessageDigest.getInstance(algorithmName);
-			return new Digester(algorithmName, digest);
-		}
-	}
+  public IDigester createDigester(String algorithmName)
+      throws NoSuchAlgorithmException {
+    try {
+      MessageDigest digest = MessageDigest.getInstance(algorithmName,
+          "BC"); //$NON-NLS-1$
+      return new Digester(algorithmName, digest);
+    } catch (NoSuchProviderException e) {
+      MessageDigest digest = MessageDigest.getInstance(algorithmName);
+      return new Digester(algorithmName, digest);
+    }
+  }
 
-	@Override
-	public IDigest decode(byte[] bytes) throws IOException {
-		if (getCodec() == null) {
-			throw new IOException("no digest codec installed");
-		}
-		return getCodec().decode(bytes);
-	}
+  @Override
+  public IDigest decode(byte[] bytes) throws IOException {
+    if (getCodec() == null) {
+      throw new IOException("no digest codec installed");
+    }
+    return getCodec().decode(bytes);
+  }
 
-	@Override
-	public byte[] encode(IDigest digest) throws IOException {
-		if (getCodec() == null) {
-			throw new IOException("no digest codec installed");
-		}
-		return getCodec().encode(digest);
-	}
+  @Override
+  public byte[] encode(IDigest digest) throws IOException {
+    if (getCodec() == null) {
+      throw new IOException("no digest codec installed");
+    }
+    return getCodec().encode(digest);
+  }
 
-	protected IDigestCodec getCodec() {
-		if (codec == null) {
-			codec = createCodec();
-		}
-		return codec;
-	}
+  protected IDigestCodec getCodec() {
+    if (codec == null) {
+      codec = createCodec();
+    }
+    return codec;
+  }
 }

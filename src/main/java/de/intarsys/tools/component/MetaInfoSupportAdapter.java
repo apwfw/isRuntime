@@ -34,22 +34,26 @@ import java.util.Map;
 
 public class MetaInfoSupportAdapter implements IMetaInfoSupport {
 
-	private Map<String, String> info = new HashMap<String, String>();
+  private Map<String, String> info = new HashMap<String, String>();
 
-	public MetaInfoSupportAdapter(String id, String name, String version,
-			String vendor) {
-		putMetaInfo(META_ID, id);
-		putMetaInfo(META_NAME, name);
-		putMetaInfo(META_VERSION, version);
-		putMetaInfo(META_VENDOR, vendor);
-	}
+  public MetaInfoSupportAdapter(String id, String name, String version,
+                                String vendor) {
+    putMetaInfo(META_ID, id);
+    putMetaInfo(META_NAME, name);
+    putMetaInfo(META_VERSION, version);
+    putMetaInfo(META_VENDOR, vendor);
+  }
 
-	public String getMetaInfo(String name) {
-		return info.get(name);
-	};
+  public String getMetaInfo(String name) {
+    return info.get(name);
+  }
 
-	protected void putMetaInfo(String name, String value) {
-		info.put(name, name);
-	};
+  ;
+
+  protected void putMetaInfo(String name, String value) {
+    info.put(name, name);
+  }
+
+  ;
 
 }

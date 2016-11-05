@@ -31,14 +31,14 @@ package de.intarsys.tools.locking;
 
 public class NullLockStrategy extends AbstractLockStrategy {
 
-	public NullLockStrategy() {
-		super();
-	}
+  public NullLockStrategy() {
+    super();
+  }
 
-	public boolean lock(Object object, Object owner, ILockLevel level) {
-		return true;
-	}
+  public boolean lock(Object object, Object owner, ILockLevel level) {
+    return true;
+  }
 
-	public void unlock(Object object, Object owner) {
-	}
+  public void unlock(Object object, Object owner) {
+  }
 }

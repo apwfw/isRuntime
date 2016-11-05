@@ -33,55 +33,54 @@ import de.intarsys.tools.presentation.IPresentationSupport;
 
 /**
  * A resource abstracted as a simple "id".
- * 
  */
 public class StaticResource extends Resource implements IPresentationSupport {
 
-	final private String id;
+  final private String id;
 
-	private String label;
+  private String label;
 
-	public StaticResource(String id) {
-		super();
-		this.id = id;
-		ResourceRegistry.get().registerResource(this);
-	}
+  public StaticResource(String id) {
+    super();
+    this.id = id;
+    ResourceRegistry.get().registerResource(this);
+  }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof StaticResource)) {
-			return false;
-		}
-		return ((StaticResource) obj).id.equals(id);
-	}
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof StaticResource)) {
+      return false;
+    }
+    return ((StaticResource) obj).id.equals(id);
+  }
 
-	public String getDescription() {
-		return getTip();
-	}
+  public String getDescription() {
+    return getTip();
+  }
 
-	public String getIconName() {
-		return null;
-	}
+  public String getIconName() {
+    return null;
+  }
 
-	public String getId() {
-		return id;
-	}
+  public String getId() {
+    return id;
+  }
 
-	public String getLabel() {
-		return label;
-	}
+  public String getLabel() {
+    return label;
+  }
 
-	public String getTip() {
-		return getLabel();
-	}
+  public void setLabel(String label) {
+    this.label = label;
+  }
 
-	@Override
-	public int hashCode() {
-		return id.hashCode();
-	}
+  public String getTip() {
+    return getLabel();
+  }
 
-	public void setLabel(String label) {
-		this.label = label;
-	}
+  @Override
+  public int hashCode() {
+    return id.hashCode();
+  }
 
 }

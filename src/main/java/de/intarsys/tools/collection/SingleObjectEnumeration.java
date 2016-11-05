@@ -34,57 +34,54 @@ import java.util.NoSuchElementException;
 
 /**
  * An enumeration of a single object.
- * 
  */
 public class SingleObjectEnumeration<T> implements Enumeration<T> {
 
-	private T singleObject;
+  private T singleObject;
 
-	private boolean hasNext = true;
+  private boolean hasNext = true;
 
-	/**
-	 * EnumerationIterator constructor comment.
-	 * 
-	 * @param single
-	 * 
-	 */
-	public SingleObjectEnumeration(T single) {
-		super();
-		setSingleObject(single);
-	}
+  /**
+   * EnumerationIterator constructor comment.
+   *
+   * @param single
+   */
+  public SingleObjectEnumeration(T single) {
+    super();
+    setSingleObject(single);
+  }
 
-	private T getSingleObject() {
-		return singleObject;
-	}
+  private T getSingleObject() {
+    return singleObject;
+  }
 
-	public boolean hasMoreElements() {
-		return hasNext;
-	}
+  private void setSingleObject(T newSingleObject) {
+    singleObject = newSingleObject;
+  }
 
-	public T nextElement() {
-		if (hasMoreElements()) {
-			hasNext = false;
-			return getSingleObject();
-		}
-		throw new NoSuchElementException();
-	}
+  public boolean hasMoreElements() {
+    return hasNext;
+  }
 
-	/**
-	 * Removes from the underlying collection the last element returned by the
-	 * iterator (optional operation). This method can be called only once per
-	 * call to <tt>next</tt>. The behavior of an iterator is unspecified if
-	 * the underlying collection is modified while the iteration is in progress
-	 * in any way other than by calling this method.
-	 * 
-	 * @exception UnsupportedOperationException
-	 *                if the <tt>remove</tt> operation is not supported by
-	 *                this Iterator.
-	 */
-	public void remove() {
-		throw new UnsupportedOperationException();
-	}
+  public T nextElement() {
+    if (hasMoreElements()) {
+      hasNext = false;
+      return getSingleObject();
+    }
+    throw new NoSuchElementException();
+  }
 
-	private void setSingleObject(T newSingleObject) {
-		singleObject = newSingleObject;
-	}
+  /**
+   * Removes from the underlying collection the last element returned by the
+   * iterator (optional operation). This method can be called only once per
+   * call to <tt>next</tt>. The behavior of an iterator is unspecified if
+   * the underlying collection is modified while the iteration is in progress
+   * in any way other than by calling this method.
+   *
+   * @throws UnsupportedOperationException if the <tt>remove</tt> operation is not supported by
+   *                                       this Iterator.
+   */
+  public void remove() {
+    throw new UnsupportedOperationException();
+  }
 }

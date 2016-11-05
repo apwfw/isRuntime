@@ -35,122 +35,122 @@ import java.util.concurrent.ExecutionException;
  * Helper object for implementing {@link ITaskListenerSupport}.
  */
 public class TaskCallbackDispatcher implements ITaskListenerSupport,
-		ITaskListener {
+    ITaskListener {
 
-	private final Object owner;
+  private final Object owner;
 
-	private ITaskListener[] listeners = new ITaskListener[2];
+  private ITaskListener[] listeners = new ITaskListener[2];
 
-	public TaskCallbackDispatcher(Object pOwner) {
-		super();
-		owner = pOwner;
-	}
+  public TaskCallbackDispatcher(Object pOwner) {
+    super();
+    owner = pOwner;
+  }
 
-	public void addTaskListener(ITaskListener listener) {
-		if (listener == null) {
-			throw new NullPointerException("listener may not be null");
-		}
-		int length = listeners.length;
-		int i = 0;
-		while (i < length) {
-			if (listeners[i] == null) {
-				break;
-			}
-			i++;
-		}
-		if (i >= length) {
-			ITaskListener[] templisteners = new ITaskListener[length + 4];
-			System.arraycopy(listeners, 0, templisteners, 0, length);
-			listeners = templisteners;
-		}
-		listeners[i] = listener;
-	}
+  public void addTaskListener(ITaskListener listener) {
+    if (listener == null) {
+      throw new NullPointerException("listener may not be null");
+    }
+    int length = listeners.length;
+    int i = 0;
+    while (i < length) {
+      if (listeners[i] == null) {
+        break;
+      }
+      i++;
+    }
+    if (i >= length) {
+      ITaskListener[] templisteners = new ITaskListener[length + 4];
+      System.arraycopy(listeners, 0, templisteners, 0, length);
+      listeners = templisteners;
+    }
+    listeners[i] = listener;
+  }
 
-	synchronized public void attach(ITaskListenerSupport support) {
-		int length = listeners.length;
-		for (int i = 0; i < length; i++) {
-			support.addTaskListener(listeners[i]);
-		}
-	}
+  synchronized public void attach(ITaskListenerSupport support) {
+    int length = listeners.length;
+    for (int i = 0; i < length; i++) {
+      support.addTaskListener(listeners[i]);
+    }
+  }
 
-	public synchronized void clear() {
-		listeners = new ITaskListener[4];
-	}
+  public synchronized void clear() {
+    listeners = new ITaskListener[4];
+  }
 
-	synchronized public void detach(ITaskListenerSupport support) {
-		int length = listeners.length;
-		for (int i = 0; i < length; i++) {
-			support.removeTaskListener(listeners[i]);
-		}
-	}
+  synchronized public void detach(ITaskListenerSupport support) {
+    int length = listeners.length;
+    for (int i = 0; i < length; i++) {
+      support.removeTaskListener(listeners[i]);
+    }
+  }
 
-	public Object getOwner() {
-		return owner;
-	}
+  public Object getOwner() {
+    return owner;
+  }
 
-	public synchronized boolean isEmpty() {
-		for (int i = 0; i < listeners.length; i++) {
-			if (listeners[i] != null) {
-				return false;
-			}
-		}
-		return true;
-	}
+  public synchronized boolean isEmpty() {
+    for (int i = 0; i < listeners.length; i++) {
+      if (listeners[i] != null) {
+        return false;
+      }
+    }
+    return true;
+  }
 
-	public void removeTaskListener(ITaskListener listener) {
-		int length = listeners.length;
-		int i = 0;
-		while (i < length) {
-			if (listeners[i] == listener) {
-				listeners[i] = null;
-				break;
-			}
-			i++;
-		}
-	}
+  public void removeTaskListener(ITaskListener listener) {
+    int length = listeners.length;
+    int i = 0;
+    while (i < length) {
+      if (listeners[i] == listener) {
+        listeners[i] = null;
+        break;
+      }
+      i++;
+    }
+  }
 
-	public void taskCancelled(Object task) {
-		int length = listeners.length;
-		for (int i = 0; i < length; i++) {
-			ITaskListener templistener = listeners[i];
-			if (templistener == null) {
-				continue;
-			}
-			templistener.taskCancelled(task);
-		}
-	}
+  public void taskCancelled(Object task) {
+    int length = listeners.length;
+    for (int i = 0; i < length; i++) {
+      ITaskListener templistener = listeners[i];
+      if (templistener == null) {
+        continue;
+      }
+      templistener.taskCancelled(task);
+    }
+  }
 
-	public void taskFailed(Object task, ExecutionException exception) {
-		int length = listeners.length;
-		for (int i = 0; i < length; i++) {
-			ITaskListener templistener = listeners[i];
-			if (templistener == null) {
-				continue;
-			}
-			templistener.taskFailed(task, exception);
-		}
-	}
+  public void taskFailed(Object task, ExecutionException exception) {
+    int length = listeners.length;
+    for (int i = 0; i < length; i++) {
+      ITaskListener templistener = listeners[i];
+      if (templistener == null) {
+        continue;
+      }
+      templistener.taskFailed(task, exception);
+    }
+  }
 
-	public void taskFinished(Object task, Object result) {
-		int length = listeners.length;
-		for (int i = 0; i < length; i++) {
-			ITaskListener templistener = listeners[i];
-			if (templistener == null) {
-				continue;
-			}
-			templistener.taskFinished(task, result);
-		}
-	}
+  public void taskFinished(Object task, Object result) {
+    int length = listeners.length;
+    for (int i = 0; i < length; i++) {
+      ITaskListener templistener = listeners[i];
+      if (templistener == null) {
+        continue;
+      }
+      templistener.taskFinished(task, result);
+    }
+  }
 
-	public void taskStarted(Object task) {
-		int length = listeners.length;
-		for (int i = 0; i < length; i++) {
-			ITaskListener templistener = listeners[i];
-			if (templistener == null) {
-				continue;
-			}
-			templistener.taskStarted(task);
-		}
-	}
+  public void taskStarted(Object task) {
+    int length = listeners.length;
+    for (int i = 0; i < length; i++) {
+      ITaskListener templistener = listeners[i];
+      if (templistener == null) {
+        continue;
+      }
+      templistener.taskStarted(task);
+    }
+  }
 
 }

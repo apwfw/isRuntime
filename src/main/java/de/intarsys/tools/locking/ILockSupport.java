@@ -31,6 +31,6 @@ package de.intarsys.tools.locking;
 
 public interface ILockSupport {
 
-	public ILock getLock();
+  public ILock getLock();
 
 }

@@ -31,22 +31,21 @@ package de.intarsys.tools.preferences;
 
 /**
  * A factory for {@link IPreferences} root objects.
- * 
  */
 public interface IPreferencesFactory {
 
-	/**
-	 * The standard root to be used by a "main" component.
-	 * 
-	 * @return The standard root to be used by a "main" component.
-	 */
-	public IPreferences getMain();
+  /**
+   * The standard root to be used by a "main" component.
+   *
+   * @return The standard root to be used by a "main" component.
+   */
+  public IPreferences getMain();
 
-	/**
-	 * The global root where all {@link IPreferences} are mounted. Most often
-	 * this is the parent of the "main" {@link IPreferences} object.
-	 * 
-	 * @return The global root where all {@link IPreferences} are mounted.
-	 */
-	public IPreferences getRoot();
+  /**
+   * The global root where all {@link IPreferences} are mounted. Most often
+   * this is the parent of the "main" {@link IPreferences} object.
+   *
+   * @return The global root where all {@link IPreferences} are mounted.
+   */
+  public IPreferences getRoot();
 }

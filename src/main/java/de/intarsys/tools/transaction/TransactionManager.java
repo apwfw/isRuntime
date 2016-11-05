@@ -34,13 +34,13 @@ package de.intarsys.tools.transaction;
  */
 public class TransactionManager {
 
-	private static ITransactionManager ACTIVE = new ThreadLocalTransactionManager();
+  private static ITransactionManager ACTIVE = new ThreadLocalTransactionManager();
 
-	public static ITransactionManager get() {
-		return ACTIVE;
-	}
+  public static ITransactionManager get() {
+    return ACTIVE;
+  }
 
-	public static void set(ITransactionManager active) {
-		ACTIVE = active;
-	}
+  public static void set(ITransactionManager active) {
+    ACTIVE = active;
+  }
 }

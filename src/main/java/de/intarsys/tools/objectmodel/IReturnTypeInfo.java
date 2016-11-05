@@ -32,15 +32,14 @@ package de.intarsys.tools.objectmodel;
 /**
  * An executable object (like a functor or executable) holding meta information
  * about the type of its result.
- * 
  */
 public interface IReturnTypeInfo {
 
-	/**
-	 * The declared type of the executable.
-	 * 
-	 * @return The declared type of the field.
-	 */
-	public IClass getReturnType();
+  /**
+   * The declared type of the executable.
+   *
+   * @return The declared type of the field.
+   */
+  public IClass getReturnType();
 
 }

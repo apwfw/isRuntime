@@ -39,91 +39,91 @@ package de.intarsys.tools.reporter;
  */
 public class ReplayReporter implements IReporter, IReporterSupport {
 
-	private final Object owner;
+  private final Object owner;
 
-	final private ReportDispatcher dispatcher;
+  final private ReportDispatcher dispatcher;
 
-	final private ReportEvent[] messages = new ReportEvent[10];
+  final private ReportEvent[] messages = new ReportEvent[10];
 
-	private int first = 0;
+  private int first = 0;
 
-	public ReplayReporter(Object owner) {
-		super();
-		this.owner = owner;
-		this.dispatcher = new ReportDispatcher(owner);
-	}
+  public ReplayReporter(Object owner) {
+    super();
+    this.owner = owner;
+    this.dispatcher = new ReportDispatcher(owner);
+  }
 
-	protected void addMessage(ReportEvent message) {
-		messages[first] = message;
-		first = (first + 1) % messages.length;
-	}
+  protected void addMessage(ReportEvent message) {
+    messages[first] = message;
+    first = (first + 1) % messages.length;
+  }
 
-	public void addReporter(IReporter reporter) {
-		dispatcher.addReporter(reporter);
-		replay(reporter);
-	}
+  public void addReporter(IReporter reporter) {
+    dispatcher.addReporter(reporter);
+    replay(reporter);
+  }
 
-	public Object getOwner() {
-		return owner;
-	}
+  public Object getOwner() {
+    return owner;
+  }
 
-	public void removeReporter(IReporter reporter) {
-		dispatcher.removeReporter(reporter);
-	}
+  public void removeReporter(IReporter reporter) {
+    dispatcher.removeReporter(reporter);
+  }
 
-	protected void replay(IReporter reporter) {
-		for (int i = 0; i < messages.length; i++) {
-			int index = (i + first) % messages.length;
-			ReportEvent message = messages[index];
-			if (message == null) {
-				continue;
-			}
-			if (message.isTypeStatus()) {
-				reporter.reportStatus(message.getMessage(), message.getStyle());
-			} else if (message.isTypeMessage()) {
-				reporter.reportMessage(message.getTitle(),
-						message.getMessage(), message.getStyle());
-			} else if (message.isTypeError()) {
-				reporter.reportError(message.getTitle(), message.getMessage(),
-						message.getThrowable(), message.getStyle());
-			} else {
-				// ignore
-			}
-		}
-	}
+  protected void replay(IReporter reporter) {
+    for (int i = 0; i < messages.length; i++) {
+      int index = (i + first) % messages.length;
+      ReportEvent message = messages[index];
+      if (message == null) {
+        continue;
+      }
+      if (message.isTypeStatus()) {
+        reporter.reportStatus(message.getMessage(), message.getStyle());
+      } else if (message.isTypeMessage()) {
+        reporter.reportMessage(message.getTitle(),
+            message.getMessage(), message.getStyle());
+      } else if (message.isTypeError()) {
+        reporter.reportError(message.getTitle(), message.getMessage(),
+            message.getThrowable(), message.getStyle());
+      } else {
+        // ignore
+      }
+    }
+  }
 
-	public void reportActivityEnd() {
-		addMessage(new ReportEvent(ReportEvent.TYPE_ACTIVITY_END));
-		dispatcher.reportActivityEnd();
-	}
+  public void reportActivityEnd() {
+    addMessage(new ReportEvent(ReportEvent.TYPE_ACTIVITY_END));
+    dispatcher.reportActivityEnd();
+  }
 
-	public void reportActivityStart(String activity, int style) {
-		addMessage(new ReportEvent(ReportEvent.TYPE_ACTIVITY_START, activity,
-				style));
-		dispatcher.reportActivityStart(activity, style);
-	}
+  public void reportActivityStart(String activity, int style) {
+    addMessage(new ReportEvent(ReportEvent.TYPE_ACTIVITY_START, activity,
+        style));
+    dispatcher.reportActivityStart(activity, style);
+  }
 
-	public void reportError(String title, String message, Throwable t, int style) {
-		addMessage(new ReportEvent(ReportEvent.TYPE_ERROR, title, message, t,
-				style));
-		dispatcher.reportError(title, message, t, style);
-	}
+  public void reportError(String title, String message, Throwable t, int style) {
+    addMessage(new ReportEvent(ReportEvent.TYPE_ERROR, title, message, t,
+        style));
+    dispatcher.reportError(title, message, t, style);
+  }
 
-	public void reportMessage(String title, String message, int style) {
-		addMessage(new ReportEvent(ReportEvent.TYPE_MESSAGE, title, message,
-				style));
-		dispatcher.reportMessage(title, message, style);
-	}
+  public void reportMessage(String title, String message, int style) {
+    addMessage(new ReportEvent(ReportEvent.TYPE_MESSAGE, title, message,
+        style));
+    dispatcher.reportMessage(title, message, style);
+  }
 
-	public void reportProgress(String message, int percent, int style) {
-		addMessage(new ReportEvent(ReportEvent.TYPE_PROGRESS, message, percent,
-				style));
-		dispatcher.reportProgress(message, percent, style);
-	}
+  public void reportProgress(String message, int percent, int style) {
+    addMessage(new ReportEvent(ReportEvent.TYPE_PROGRESS, message, percent,
+        style));
+    dispatcher.reportProgress(message, percent, style);
+  }
 
-	public void reportStatus(String message, int style) {
-		addMessage(new ReportEvent(ReportEvent.TYPE_STATUS, message, style));
-		dispatcher.reportStatus(message, style);
-	}
+  public void reportStatus(String message, int style) {
+    addMessage(new ReportEvent(ReportEvent.TYPE_STATUS, message, style));
+    dispatcher.reportStatus(message, style);
+  }
 
 }

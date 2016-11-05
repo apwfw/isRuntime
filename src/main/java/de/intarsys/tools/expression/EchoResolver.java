@@ -39,32 +39,32 @@ import de.intarsys.tools.functor.IArgs;
  */
 public class EchoResolver implements IStringEvaluator {
 
-	final private String prefix;
+  final private String prefix;
 
-	final private String suffix;
+  final private String suffix;
 
-	public EchoResolver() {
-		super();
-		prefix = null;
-		suffix = null;
-	}
+  public EchoResolver() {
+    super();
+    prefix = null;
+    suffix = null;
+  }
 
-	public EchoResolver(String prefix, String suffix) {
-		super();
-		this.prefix = prefix;
-		this.suffix = suffix;
-	}
+  public EchoResolver(String prefix, String suffix) {
+    super();
+    this.prefix = prefix;
+    this.suffix = suffix;
+  }
 
-	public Object evaluate(String expression, IArgs args)
-			throws EvaluationException {
-		String result = expression;
-		if (prefix != null) {
-			result = prefix + result;
-		}
-		if (suffix != null) {
-			result = result + suffix;
-		}
-		return result;
-	}
+  public Object evaluate(String expression, IArgs args)
+      throws EvaluationException {
+    String result = expression;
+    if (prefix != null) {
+      result = prefix + result;
+    }
+    if (suffix != null) {
+      result = result + suffix;
+    }
+    return result;
+  }
 
 }

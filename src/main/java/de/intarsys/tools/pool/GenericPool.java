@@ -33,92 +33,91 @@ import java.util.Stack;
 
 /**
  * A very simple implementation of a generic {@link IPool}.
- * 
  */
 public class GenericPool implements IPool {
 
-	final private IPoolObjectFactory objectFactory;
+  final private IPoolObjectFactory objectFactory;
 
-	final private Stack<Object> objects;
+  final private Stack<Object> objects;
 
-	private boolean closed;
+  private boolean closed;
 
-	public GenericPool(IPoolObjectFactory objectFactory) {
-		super();
-		this.objectFactory = objectFactory;
-		this.objects = new Stack<Object>();
-		this.closed = false;
-	}
+  public GenericPool(IPoolObjectFactory objectFactory) {
+    super();
+    this.objectFactory = objectFactory;
+    this.objects = new Stack<Object>();
+    this.closed = false;
+  }
 
-	public void checkin(Object object) throws Exception {
-		deactivateObject(object);
-		synchronized (this) {
-			assertOpen();
-			objects.push(object);
-		}
-	}
+  public void checkin(Object object) throws Exception {
+    deactivateObject(object);
+    synchronized (this) {
+      assertOpen();
+      objects.push(object);
+    }
+  }
 
-	protected void deactivateObject(Object object) throws Exception {
-		if (objectFactory == null) {
-			return;
-		}
-		objectFactory.deactivateObject(object);
-	}
+  protected void deactivateObject(Object object) throws Exception {
+    if (objectFactory == null) {
+      return;
+    }
+    objectFactory.deactivateObject(object);
+  }
 
-	protected void destroyObject(Object object) throws Exception {
-		if (objectFactory == null) {
-			return;
-		}
-		objectFactory.destroyObject(object);
-	}
+  protected void destroyObject(Object object) throws Exception {
+    if (objectFactory == null) {
+      return;
+    }
+    objectFactory.destroyObject(object);
+  }
 
-	protected boolean isClosed() {
-		return closed;
-	}
+  protected boolean isClosed() {
+    return closed;
+  }
 
-	protected void assertOpen() {
-		if (closed) {
-			throw new IllegalStateException("pool closed");
-		}
-	}
+  protected void assertOpen() {
+    if (closed) {
+      throw new IllegalStateException("pool closed");
+    }
+  }
 
-	public Object checkout(long timeout) throws Exception {
-		Object result = null;
-		synchronized (this) {
-			assertOpen();
-			if (objects.isEmpty()) {
-				result = createObject();
-			} else {
-				result = objects.pop();
-			}
-		}
-		activateObject(result);
-		return result;
-	}
+  public Object checkout(long timeout) throws Exception {
+    Object result = null;
+    synchronized (this) {
+      assertOpen();
+      if (objects.isEmpty()) {
+        result = createObject();
+      } else {
+        result = objects.pop();
+      }
+    }
+    activateObject(result);
+    return result;
+  }
 
-	protected void activateObject(Object object) throws Exception {
-		if (objectFactory == null) {
-			return;
-		}
-		objectFactory.activateObject(object);
-	}
+  protected void activateObject(Object object) throws Exception {
+    if (objectFactory == null) {
+      return;
+    }
+    objectFactory.activateObject(object);
+  }
 
-	protected Object createObject() throws Exception {
-		if (objectFactory == null) {
-			throw new IllegalStateException("can not create new object");
-		}
-		Object result = objectFactory.createObject();
-		if (result == null) {
-			throw new IllegalStateException("new object can't be null");
-		}
-		return result;
-	}
+  protected Object createObject() throws Exception {
+    if (objectFactory == null) {
+      throw new IllegalStateException("can not create new object");
+    }
+    Object result = objectFactory.createObject();
+    if (result == null) {
+      throw new IllegalStateException("new object can't be null");
+    }
+    return result;
+  }
 
-	public void close() throws Exception {
-		closed = true;
-	}
+  public void close() throws Exception {
+    closed = true;
+  }
 
-	public void destroy(Object object) throws Exception {
-		destroyObject(object);
-	}
+  public void destroy(Object object) throws Exception {
+    destroyObject(object);
+  }
 }

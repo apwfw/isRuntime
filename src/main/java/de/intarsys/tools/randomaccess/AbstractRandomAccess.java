@@ -37,134 +37,133 @@ import java.util.Stack;
 /**
  * Supports reading and writing to a random access data container. A random
  * access data container behaves like a large array of bytes.
- * 
  */
 public abstract class AbstractRandomAccess implements IRandomAccess {
-	class MyOutputStream extends OutputStream {
-		public MyOutputStream() {
-			//
-		}
+  private Stack positionStack;
 
-		/**
-		 * must move with own pointer through random access!!
-		 */
-		private long offset = 0;
+  public AbstractRandomAccess() {
+    positionStack = new Stack();
+  }
 
-		public void write(int b) throws IOException {
-			AbstractRandomAccess.this.seek(offset);
-			AbstractRandomAccess.this.write(b);
-			offset++;
-		}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.randomaccess.IRandomAccessData#getInputStream()
+   */
+  public InputStream asInputStream() {
+    return new MyInputStream();
+  }
 
-		public void write(byte[] b) throws IOException {
-			AbstractRandomAccess.this.seek(offset);
-			AbstractRandomAccess.this.write(b);
-			offset += b.length;
-		}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.randomaccess.IRandomAccessData#getOutputStream()
+   */
+  public OutputStream asOutputStream() {
+    return new MyOutputStream();
+  }
 
-		public void write(byte[] b, int off, int len) throws IOException {
-			AbstractRandomAccess.this.seek(offset);
-			AbstractRandomAccess.this.write(b, off, len);
-			offset += len;
-		}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.randomaccess.IRandomAccessData#mark()
+   */
+  public void mark() throws IOException {
+    getPositionStack().push(new Long(getOffset()));
+  }
 
-		public void close() throws IOException {
-			// do not close
-		}
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.randomaccess.IRandomAccessData#reset()
+   */
+  public void reset() throws IOException {
+    if (getPositionStack().isEmpty()) {
+      seek(0);
+    } else {
+      seek(((Long) getPositionStack().pop()).longValue());
+    }
+  }
 
-	class MyInputStream extends InputStream {
-		public MyInputStream() {
-			//
-		}
+  /**
+   * @return Returns the positionStack.
+   */
+  protected Stack getPositionStack() {
+    return positionStack;
+  }
 
-		/**
-		 * must move with own pointer through random access!!
-		 */
-		private long offset = 0;
+  class MyOutputStream extends OutputStream {
+    /**
+     * must move with own pointer through random access!!
+     */
+    private long offset = 0;
 
-		public int read() throws IOException {
-			AbstractRandomAccess.this.seek(offset);
-			int i = AbstractRandomAccess.this.read();
-			if (i != -1) {
-				offset++;
-			}
-			return i;
-		}
+    public MyOutputStream() {
+      //
+    }
 
-		public int read(byte[] b, int off, int len) throws IOException {
-			AbstractRandomAccess.this.seek(offset);
-			int i = AbstractRandomAccess.this.read(b, off, len);
-			if (i != -1) {
-				offset += i;
-			}
-			return i;
-		}
+    public void write(int b) throws IOException {
+      AbstractRandomAccess.this.seek(offset);
+      AbstractRandomAccess.this.write(b);
+      offset++;
+    }
 
-		public int read(byte[] b) throws IOException {
-			AbstractRandomAccess.this.seek(offset);
-			int i = AbstractRandomAccess.this.read(b);
-			if (i != -1) {
-				offset += i;
-			}
-			return i;
-		}
+    public void write(byte[] b) throws IOException {
+      AbstractRandomAccess.this.seek(offset);
+      AbstractRandomAccess.this.write(b);
+      offset += b.length;
+    }
 
-		public void close() throws IOException {
-			// do not close....
-		}
-	}
+    public void write(byte[] b, int off, int len) throws IOException {
+      AbstractRandomAccess.this.seek(offset);
+      AbstractRandomAccess.this.write(b, off, len);
+      offset += len;
+    }
 
-	private Stack positionStack;
+    public void close() throws IOException {
+      // do not close
+    }
+  }
 
-	public AbstractRandomAccess() {
-		positionStack = new Stack();
-	}
+  class MyInputStream extends InputStream {
+    /**
+     * must move with own pointer through random access!!
+     */
+    private long offset = 0;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.randomaccess.IRandomAccessData#getInputStream()
-	 */
-	public InputStream asInputStream() {
-		return new MyInputStream();
-	}
+    public MyInputStream() {
+      //
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.randomaccess.IRandomAccessData#getOutputStream()
-	 */
-	public OutputStream asOutputStream() {
-		return new MyOutputStream();
-	}
+    public int read() throws IOException {
+      AbstractRandomAccess.this.seek(offset);
+      int i = AbstractRandomAccess.this.read();
+      if (i != -1) {
+        offset++;
+      }
+      return i;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.randomaccess.IRandomAccessData#mark()
-	 */
-	public void mark() throws IOException {
-		getPositionStack().push(new Long(getOffset()));
-	}
+    public int read(byte[] b, int off, int len) throws IOException {
+      AbstractRandomAccess.this.seek(offset);
+      int i = AbstractRandomAccess.this.read(b, off, len);
+      if (i != -1) {
+        offset += i;
+      }
+      return i;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.randomaccess.IRandomAccessData#reset()
-	 */
-	public void reset() throws IOException {
-		if (getPositionStack().isEmpty()) {
-			seek(0);
-		} else {
-			seek(((Long) getPositionStack().pop()).longValue());
-		}
-	}
+    public int read(byte[] b) throws IOException {
+      AbstractRandomAccess.this.seek(offset);
+      int i = AbstractRandomAccess.this.read(b);
+      if (i != -1) {
+        offset += i;
+      }
+      return i;
+    }
 
-	/**
-	 * @return Returns the positionStack.
-	 */
-	protected Stack getPositionStack() {
-		return positionStack;
-	}
+    public void close() throws IOException {
+      // do not close....
+    }
+  }
 }

@@ -34,47 +34,45 @@ import java.util.NoSuchElementException;
 
 /**
  * An iterator over a single object.
- * 
  */
 public class SingleObjectIterator implements Iterator {
-	private Object singleObject;
+  private Object singleObject;
 
-	private boolean hasNext = true;
+  private boolean hasNext = true;
 
-	/**
-	 * EnumerationIterator constructor comment.
-	 * 
-	 * @param singleton
-	 * 
-	 */
-	public SingleObjectIterator(Object singleton) {
-		super();
-		setSingleObject(singleton);
-	}
+  /**
+   * EnumerationIterator constructor comment.
+   *
+   * @param singleton
+   */
+  public SingleObjectIterator(Object singleton) {
+    super();
+    setSingleObject(singleton);
+  }
 
-	private java.lang.Object getSingleObject() {
-		return singleObject;
-	}
+  private java.lang.Object getSingleObject() {
+    return singleObject;
+  }
 
-	public boolean hasNext() {
-		return hasNext;
-	}
+  private void setSingleObject(java.lang.Object newSingleObject) {
+    singleObject = newSingleObject;
+  }
 
-	public java.lang.Object next() {
-		if (hasNext()) {
-			hasNext = false;
-			return getSingleObject();
-		} else {
-			throw new NoSuchElementException();
-		}
-	}
+  public boolean hasNext() {
+    return hasNext;
+  }
 
-	public void remove() {
-		throw new UnsupportedOperationException(
-				"can not remove from singleton iterator");
-	}
+  public java.lang.Object next() {
+    if (hasNext()) {
+      hasNext = false;
+      return getSingleObject();
+    } else {
+      throw new NoSuchElementException();
+    }
+  }
 
-	private void setSingleObject(java.lang.Object newSingleObject) {
-		singleObject = newSingleObject;
-	}
+  public void remove() {
+    throw new UnsupportedOperationException(
+        "can not remove from singleton iterator");
+  }
 }

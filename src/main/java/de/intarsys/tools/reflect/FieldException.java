@@ -31,26 +31,25 @@ package de.intarsys.tools.reflect;
 
 /**
  * An exception while accessing an object field.
- * 
  */
 public abstract class FieldException extends ReflectionException {
 
-	public FieldException() {
-		super();
-	}
+  public FieldException() {
+    super();
+  }
 
-	public FieldException(String message) {
-		super(message);
-	}
+  public FieldException(String message) {
+    super(message);
+  }
 
-	public FieldException(String message, Throwable cause) {
-		super(message, cause);
-	}
+  public FieldException(String message, Throwable cause) {
+    super(message, cause);
+  }
 
-	public FieldException(Throwable cause) {
-		super(cause);
-	}
+  public FieldException(Throwable cause) {
+    super(cause);
+  }
 
-	abstract public String getName();
+  abstract public String getName();
 
 }

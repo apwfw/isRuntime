@@ -32,13 +32,12 @@ package de.intarsys.tools.component;
 /**
  * Component lifecycle feature. The component supports activation and
  * deactivation.
- * 
  */
 public interface IActivateDeactivate {
 
-	public void activate();
+  public void activate();
 
-	public void deactivate();
+  public void deactivate();
 
-	public boolean isActive();
+  public boolean isActive();
 }

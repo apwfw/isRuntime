@@ -31,8 +31,8 @@ package de.intarsys.tools.locking;
 
 public interface ILockStrategy {
 
-	public boolean lock(Object object, Object owner, ILockLevel level);
+  public boolean lock(Object object, Object owner, ILockLevel level);
 
-	public void unlock(Object object, Object owner);
+  public void unlock(Object object, Object owner);
 
 }

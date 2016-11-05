@@ -32,36 +32,32 @@ package de.intarsys.tools.functor;
 /**
  * A concrete named declaration. An {@link IDeclarationElement} may have
  * optional modifiers, supporting fine tuning of its behavior.
- * 
  */
 public interface IDeclarationElement extends IDeclaration {
 
-	public static final String MOD_TRANSIENT = "transient";
+  public static final String MOD_TRANSIENT = "transient";
 
-	public String getModifierString();
+  public String getModifierString();
 
-	/**
-	 * An optional name for the declaration element.
-	 * 
-	 * @return An optional name for the declaration element.
-	 */
-	public String getName();
+  /**
+   * An optional name for the declaration element.
+   *
+   * @return An optional name for the declaration element.
+   */
+  public String getName();
 
-	/**
-	 * <code>true</code> if the declaration has the requested modifier.
-	 * <p>
-	 * An implementation is free to support modifiers and define their
-	 * respective semantics.
-	 * <p>
-	 * An example for a modifier may be "persistent" to indicate the
-	 * implementation should store argument values to be able to present them
-	 * again in a later call (in a wizard for example).
-	 * 
-	 * @param modifier
-	 *            The modifier name.
-	 * 
-	 * @return <code>true</code> if the declaration has the requested modifier.
-	 * 
-	 */
-	public boolean hasModifier(String modifier);
+  /**
+   * <code>true</code> if the declaration has the requested modifier.
+   * <p>
+   * An implementation is free to support modifiers and define their
+   * respective semantics.
+   * <p>
+   * An example for a modifier may be "persistent" to indicate the
+   * implementation should store argument values to be able to present them
+   * again in a later call (in a wizard for example).
+   *
+   * @param modifier The modifier name.
+   * @return <code>true</code> if the declaration has the requested modifier.
+   */
+  public boolean hasModifier(String modifier);
 }

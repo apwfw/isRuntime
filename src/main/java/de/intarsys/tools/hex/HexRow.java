@@ -30,73 +30,73 @@
 package de.intarsys.tools.hex;
 
 /**
- * 
+ *
  */
 public class HexRow {
-	public static int DEFAULT_LENGTH = 16;
+  public static int DEFAULT_LENGTH = 16;
 
-	private HexData hexData;
+  private HexData hexData;
 
-	private int length = DEFAULT_LENGTH;
+  private int length = DEFAULT_LENGTH;
 
-	private int offset;
+  private int offset;
 
-	/**
-	 * 
-	 */
-	protected HexRow(HexData hexData, int offset, int length) {
-		super();
-		this.hexData = hexData;
-		this.offset = offset;
-		this.length = length;
-	}
+  /**
+   *
+   */
+  protected HexRow(HexData hexData, int offset, int length) {
+    super();
+    this.hexData = hexData;
+    this.offset = offset;
+    this.length = length;
+  }
 
-	public String getAsString() {
-		return new String(hexData.basicGetBytes(), offset, Math.min(length,
-				hexData.length() - offset));
-	}
+  public String getAsString() {
+    return new String(hexData.basicGetBytes(), offset, Math.min(length,
+        hexData.length() - offset));
+  }
 
-	public byte getCellValue(int column) {
-		int index = offset + column;
-		if (index >= hexData.length()) {
-			return 0;
-		} else {
-			return hexData.basicGetValue(offset + column);
-		}
-	}
+  public byte getCellValue(int column) {
+    int index = offset + column;
+    if (index >= hexData.length()) {
+      return 0;
+    } else {
+      return hexData.basicGetValue(offset + column);
+    }
+  }
 
-	public String getCellValueAsString(int column) {
-		int index = offset + column;
-		if (index >= hexData.length()) {
-			return "  ";
-		} else {
-			return new String(HexTools.ByteToHex[0xff & hexData
-					.basicGetValue(offset + column)]);
-		}
-	}
+  public String getCellValueAsString(int column) {
+    int index = offset + column;
+    if (index >= hexData.length()) {
+      return "  ";
+    } else {
+      return new String(HexTools.ByteToHex[0xff & hexData
+          .basicGetValue(offset + column)]);
+    }
+  }
 
-	public int getLength() {
-		return length;
-	}
+  public int getLength() {
+    return length;
+  }
 
-	public int getOffset() {
-		return offset;
-	}
+  public void setLength(int width) {
+    this.length = width;
+  }
 
-	public void setCellValue(int column, byte value) {
-		hexData.basicSetValue(offset + column, value);
-	}
+  public int getOffset() {
+    return offset;
+  }
 
-	public void setCellValue(int column, String value) {
-		hexData.basicSetValue(offset + column, (byte) HexTools
-				.hexStringToInt(value));
-	}
+  public void setOffset(int offset) {
+    this.offset = offset;
+  }
 
-	public void setLength(int width) {
-		this.length = width;
-	}
+  public void setCellValue(int column, byte value) {
+    hexData.basicSetValue(offset + column, value);
+  }
 
-	public void setOffset(int offset) {
-		this.offset = offset;
-	}
+  public void setCellValue(int column, String value) {
+    hexData.basicSetValue(offset + column, (byte) HexTools
+        .hexStringToInt(value));
+  }
 }

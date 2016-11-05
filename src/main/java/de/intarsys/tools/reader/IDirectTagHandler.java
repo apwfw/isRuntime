@@ -32,9 +32,9 @@ package de.intarsys.tools.reader;
 import java.io.IOException;
 
 public interface IDirectTagHandler {
-	public void setLocationProvider(ILocationProvider locationProvider);
+  public void setLocationProvider(ILocationProvider locationProvider);
 
-	public void startTag();
+  public void startTag();
 
-	public String process(String tagContent, Object context) throws IOException;
+  public String process(String tagContent, Object context) throws IOException;
 }

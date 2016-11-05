@@ -31,20 +31,20 @@ package de.intarsys.tools.functor;
 
 public class ArgsConfigurationException extends Exception {
 
-	public ArgsConfigurationException() {
-		super();
-	}
+  public ArgsConfigurationException() {
+    super();
+  }
 
-	public ArgsConfigurationException(String message) {
-		super(message);
-	}
+  public ArgsConfigurationException(String message) {
+    super(message);
+  }
 
-	public ArgsConfigurationException(String message, Throwable cause) {
-		super(message, cause);
-	}
+  public ArgsConfigurationException(String message, Throwable cause) {
+    super(message, cause);
+  }
 
-	public ArgsConfigurationException(Throwable cause) {
-		super(cause);
-	}
+  public ArgsConfigurationException(Throwable cause) {
+    super(cause);
+  }
 
 }

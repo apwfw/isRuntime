@@ -33,15 +33,13 @@ import java.io.IOException;
 
 /**
  * A simple interface for a password validator.
- * 
  */
 public interface IPasswordValidator {
-	/**
-	 * Check if the password provided by the user is valid.
-	 * 
-	 * @param password
-	 *            The password provided by the user.
-	 * @return <code>true</code> if password valid.
-	 */
-	public boolean isValid(char[] password) throws IOException;
+  /**
+   * Check if the password provided by the user is valid.
+   *
+   * @param password The password provided by the user.
+   * @return <code>true</code> if password valid.
+   */
+  public boolean isValid(char[] password) throws IOException;
 }

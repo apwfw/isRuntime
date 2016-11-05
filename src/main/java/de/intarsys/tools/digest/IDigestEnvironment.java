@@ -34,49 +34,46 @@ import java.security.NoSuchAlgorithmException;
 
 /**
  * Factory methods for {@link IDigest} and {@link IDigester}.
- * 
  */
 public interface IDigestEnvironment {
 
-	/**
-	 * An {@link IDigest} object from an algorithm name and the raw bytes.
-	 * 
-	 * @param algorithmName
-	 * @param bytes
-	 * @return An {@link IDigest} object from an algorithm name and the raw
-	 *         bytes.
-	 */
-	public IDigest createDigest(String algorithmName, byte[] bytes);
+  /**
+   * An {@link IDigest} object from an algorithm name and the raw bytes.
+   *
+   * @param algorithmName
+   * @param bytes
+   * @return An {@link IDigest} object from an algorithm name and the raw
+   * bytes.
+   */
+  public IDigest createDigest(String algorithmName, byte[] bytes);
 
-	/**
-	 * An {@link IDigester} for the given "algorithmName".
-	 * 
-	 * @param algorithmName
-	 * @return An {@link IDigester} for the given "algorithmName".
-	 * @throws NoSuchAlgorithmException
-	 */
-	public IDigester createDigester(String algorithmName)
-			throws NoSuchAlgorithmException;
+  /**
+   * An {@link IDigester} for the given "algorithmName".
+   *
+   * @param algorithmName
+   * @return An {@link IDigester} for the given "algorithmName".
+   * @throws NoSuchAlgorithmException
+   */
+  public IDigester createDigester(String algorithmName)
+      throws NoSuchAlgorithmException;
 
-	/**
-	 * Decode an DER encoded representation to an {@link IDigest}.
-	 * 
-	 * @param bytes
-	 * @return The decoded {@link IDigest}
-	 * @throws IOException
-	 *             If no decoder installed or "bytes" are not a correct encoded
-	 *             DER representation.
-	 */
-	public IDigest decode(byte[] bytes) throws IOException;
+  /**
+   * Decode an DER encoded representation to an {@link IDigest}.
+   *
+   * @param bytes
+   * @return The decoded {@link IDigest}
+   * @throws IOException If no decoder installed or "bytes" are not a correct encoded
+   *                     DER representation.
+   */
+  public IDigest decode(byte[] bytes) throws IOException;
 
-	/**
-	 * Encode an {@link IDigest} to a DER representation.
-	 * 
-	 * @param digest
-	 * @return The DER encoded IDigest
-	 * @throws IOException
-	 *             If no decoder installed.
-	 */
-	public byte[] encode(IDigest digest) throws IOException;
+  /**
+   * Encode an {@link IDigest} to a DER representation.
+   *
+   * @param digest
+   * @return The DER encoded IDigest
+   * @throws IOException If no decoder installed.
+   */
+  public byte[] encode(IDigest digest) throws IOException;
 
 }

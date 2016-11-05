@@ -33,48 +33,46 @@ import de.intarsys.tools.functor.Args;
 import de.intarsys.tools.functor.IArgs;
 
 /**
- * 
+ *
  */
 public class PushScopeStringEvaluator implements IStringEvaluator {
 
-	static public class Resolver implements IStringEvaluator {
-		@Override
-		public Object evaluate(String expression, IArgs args)
-				throws EvaluationException {
-			ScopedResolver resolver = (ScopedResolver) args
-					.get(ARG_DYNAMIC_SCOPE);
-			if (resolver == null) {
-				throw new EvaluationException(
-						"can't evaluate '" + expression + "'"); //$NON-NLS-1$ //$NON-NLS-2$
-			}
-			return resolver.evaluate(expression, args);
-		}
-	}
+  protected static final String ARG_DYNAMIC_SCOPE = "_dynamic_scope";
+  final private IStringEvaluator wrappedEvaluator;
+  final private IStringEvaluator scope;
 
-	protected static final String ARG_DYNAMIC_SCOPE = "_dynamic_scope";
+  public PushScopeStringEvaluator(IStringEvaluator wrappedEvaluator,
+                                  IStringEvaluator scope) {
+    super();
+    this.wrappedEvaluator = wrappedEvaluator;
+    this.scope = scope;
+  }
 
-	final private IStringEvaluator wrappedEvaluator;
+  public Object evaluate(String expression, IArgs args)
+      throws EvaluationException {
+    if (args == null) {
+      args = Args.create();
+    }
+    ScopedResolver resolver = (ScopedResolver) args.get(ARG_DYNAMIC_SCOPE);
+    if (resolver == null) {
+      resolver = new ScopedResolver();
+      args.put(ARG_DYNAMIC_SCOPE, resolver);
+    }
+    resolver.addResolver(scope);
+    return wrappedEvaluator.evaluate(expression, args);
+  }
 
-	final private IStringEvaluator scope;
-
-	public PushScopeStringEvaluator(IStringEvaluator wrappedEvaluator,
-			IStringEvaluator scope) {
-		super();
-		this.wrappedEvaluator = wrappedEvaluator;
-		this.scope = scope;
-	}
-
-	public Object evaluate(String expression, IArgs args)
-			throws EvaluationException {
-		if (args == null) {
-			args = Args.create();
-		}
-		ScopedResolver resolver = (ScopedResolver) args.get(ARG_DYNAMIC_SCOPE);
-		if (resolver == null) {
-			resolver = new ScopedResolver();
-			args.put(ARG_DYNAMIC_SCOPE, resolver);
-		}
-		resolver.addResolver(scope);
-		return wrappedEvaluator.evaluate(expression, args);
-	}
+  static public class Resolver implements IStringEvaluator {
+    @Override
+    public Object evaluate(String expression, IArgs args)
+        throws EvaluationException {
+      ScopedResolver resolver = (ScopedResolver) args
+          .get(ARG_DYNAMIC_SCOPE);
+      if (resolver == null) {
+        throw new EvaluationException(
+            "can't evaluate '" + expression + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+      }
+      return resolver.evaluate(expression, args);
+    }
+  }
 }

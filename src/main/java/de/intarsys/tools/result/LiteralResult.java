@@ -33,23 +33,22 @@ import de.intarsys.tools.string.StringTools;
 
 /**
  * Common implementation for an {@link ILiteralResult}.
- * 
  */
 public class LiteralResult extends CommonResult implements ILiteralResult {
 
-	private Object value;
+  private Object value;
 
-	public LiteralResult(String contentType, Object value) {
-		super(contentType);
-		this.value = value;
-	}
+  public LiteralResult(String contentType, Object value) {
+    super(contentType);
+    this.value = value;
+  }
 
-	public Object getValue() {
-		return value;
-	}
+  public Object getValue() {
+    return value;
+  }
 
-	@Override
-	public String toString() {
-		return StringTools.safeString(value);
-	}
+  @Override
+  public String toString() {
+    return StringTools.safeString(value);
+  }
 }

@@ -33,20 +33,20 @@ import java.util.concurrent.ExecutionException;
 
 public class TaskListenerAdapter implements ITaskListener {
 
-	@Override
-	public void taskCancelled(Object task) {
-	}
+  @Override
+  public void taskCancelled(Object task) {
+  }
 
-	@Override
-	public void taskFailed(Object task, ExecutionException exception) {
-	}
+  @Override
+  public void taskFailed(Object task, ExecutionException exception) {
+  }
 
-	@Override
-	public void taskFinished(Object task, Object result) {
-	}
+  @Override
+  public void taskFinished(Object task, Object result) {
+  }
 
-	@Override
-	public void taskStarted(Object task) {
-	}
+  @Override
+  public void taskStarted(Object task) {
+  }
 
 }

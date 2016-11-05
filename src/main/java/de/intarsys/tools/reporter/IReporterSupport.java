@@ -31,12 +31,11 @@ package de.intarsys.tools.reporter;
 
 /**
  * An object that supports state notifications.
- * 
  */
 public interface IReporterSupport {
 
-	public void addReporter(IReporter newReporter);
+  public void addReporter(IReporter newReporter);
 
-	public void removeReporter(IReporter newReporter);
+  public void removeReporter(IReporter newReporter);
 
 }

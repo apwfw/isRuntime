@@ -31,47 +31,42 @@ package de.intarsys.tools.pool;
 
 /**
  * A pool of objects.
- * 
  */
 public interface IPool {
 
-	/**
-	 * Add an object to the pool.
-	 * 
-	 * @param object
-	 *            The object to be added to the pool.
-	 * @throws Exception
-	 */
-	public void checkin(Object object) throws Exception;
+  /**
+   * Add an object to the pool.
+   *
+   * @param object The object to be added to the pool.
+   * @throws Exception
+   */
+  public void checkin(Object object) throws Exception;
 
-	/**
-	 * Get an object from the pool.
-	 * <p>
-	 * This may be a reused object or a new one, up to the pool strategy and
-	 * size.
-	 * 
-	 * @param timeout
-	 *            The maximum time to wait for an instance to be available in
-	 *            milliseconds. -1 will wait indefinitely, 0 will not wait.
-	 * 
-	 * @return A new object from the pool.
-	 * @throws Exception
-	 */
-	public Object checkout(long timeout) throws Exception;
+  /**
+   * Get an object from the pool.
+   * <p>
+   * This may be a reused object or a new one, up to the pool strategy and
+   * size.
+   *
+   * @param timeout The maximum time to wait for an instance to be available in
+   *                milliseconds. -1 will wait indefinitely, 0 will not wait.
+   * @return A new object from the pool.
+   * @throws Exception
+   */
+  public Object checkout(long timeout) throws Exception;
 
-	/**
-	 * Close the pool.
-	 * 
-	 * @throws Exception
-	 */
-	public void close() throws Exception;
+  /**
+   * Close the pool.
+   *
+   * @throws Exception
+   */
+  public void close() throws Exception;
 
-	/**
-	 * Destroy an object previously allocated from the pool.
-	 * 
-	 * @param object
-	 *            The object to be destroyed.
-	 * @throws Exception
-	 */
-	public void destroy(Object object) throws Exception;
+  /**
+   * Destroy an object previously allocated from the pool.
+   *
+   * @param object The object to be destroyed.
+   * @throws Exception
+   */
+  public void destroy(Object object) throws Exception;
 }

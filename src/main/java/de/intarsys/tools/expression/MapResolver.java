@@ -29,59 +29,58 @@
  */
 package de.intarsys.tools.expression;
 
+import de.intarsys.tools.functor.IArgs;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import de.intarsys.tools.functor.IArgs;
 
 /**
  * An {@link IStringEvaluator} that looks up a variable in a simple Map.
  * <p>
  * Only named (associative) lookup is supported.
- * 
  */
 public class MapResolver extends ContainerResolver {
-	/**
-	 * The Map where we can lookup a variable.
-	 */
-	final private Map variables;
+  /**
+   * The Map where we can lookup a variable.
+   */
+  final private Map variables;
 
-	final private boolean strict;
+  final private boolean strict;
 
-	public MapResolver() {
-		this(new HashMap(), false);
-	}
+  public MapResolver() {
+    this(new HashMap(), false);
+  }
 
-	public MapResolver(boolean strict) {
-		this(new HashMap(), strict);
-	}
+  public MapResolver(boolean strict) {
+    this(new HashMap(), strict);
+  }
 
-	public MapResolver(Map variables) {
-		this(variables, false);
-	}
+  public MapResolver(Map variables) {
+    this(variables, false);
+  }
 
-	public MapResolver(Map variables, boolean strict) {
-		super();
-		this.variables = variables;
-		this.strict = strict;
-	}
+  public MapResolver(Map variables, boolean strict) {
+    super();
+    this.variables = variables;
+    this.strict = strict;
+  }
 
-	@Override
-	protected Object basicEvaluate(String expression, IArgs args)
-			throws EvaluationException {
-		if (variables.containsKey(expression)) {
-			return variables.get(expression);
-		}
-		if (strict) {
-			// map resolver MUST indicate lookup failure to provide for nested
-			// dynamic lookup
-			throw new EvaluationException("can't evaluate '" + expression + "'"); //$NON-NLS-1$ //$NON-NLS-2$
-		} else {
-			return null;
-		}
-	}
+  @Override
+  protected Object basicEvaluate(String expression, IArgs args)
+      throws EvaluationException {
+    if (variables.containsKey(expression)) {
+      return variables.get(expression);
+    }
+    if (strict) {
+      // map resolver MUST indicate lookup failure to provide for nested
+      // dynamic lookup
+      throw new EvaluationException("can't evaluate '" + expression + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+    } else {
+      return null;
+    }
+  }
 
-	public void put(String key, Object value) {
-		variables.put(key, value);
-	}
+  public void put(String key, Object value) {
+    variables.put(key, value);
+  }
 }

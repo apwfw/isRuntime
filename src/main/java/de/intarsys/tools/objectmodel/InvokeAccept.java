@@ -36,42 +36,41 @@ import de.intarsys.tools.functor.IArgs;
 /**
  * An event indicating the succesful terminated invocation of a method for a
  * receiver.
- * 
  */
 public class InvokeAccept extends Event {
-	public static final EventType ID = new EventType(InvokeAccept.class
-			.getName());
+  public static final EventType ID = new EventType(InvokeAccept.class
+      .getName());
 
-	private Object result;
+  private Object result;
 
-	private IArgs args;
+  private IArgs args;
 
-	private IMethod method;
+  private IMethod method;
 
-	public InvokeAccept(IMethod method, Object receiver, IArgs args) {
-		super(receiver);
-		this.method = method;
-		this.args = args;
-	}
+  public InvokeAccept(IMethod method, Object receiver, IArgs args) {
+    super(receiver);
+    this.method = method;
+    this.args = args;
+  }
 
-	@Override
-	public EventType getEventType() {
-		return ID;
-	}
+  @Override
+  public EventType getEventType() {
+    return ID;
+  }
 
-	public IMethod getMethod() {
-		return method;
-	}
+  public IMethod getMethod() {
+    return method;
+  }
 
-	public Object getReceiver() {
-		return getSource();
-	}
+  public Object getReceiver() {
+    return getSource();
+  }
 
-	public Object getResult() {
-		return result;
-	}
+  public Object getResult() {
+    return result;
+  }
 
-	public void setResult(Object result) {
-		this.result = result;
-	}
+  public void setResult(Object result) {
+    this.result = result;
+  }
 }

@@ -35,89 +35,89 @@ import java.io.File;
  * Handles wildcards for filename matching.
  */
 public class WildcardMatch {
-	private boolean ignoreCase = true;
+  private boolean ignoreCase = true;
 
-	private boolean matchSeparators = true;
+  private boolean matchSeparators = true;
 
-	/**
-	 * 
-	 */
-	public WildcardMatch() {
-		super();
-	}
+  /**
+   *
+   */
+  public WildcardMatch() {
+    super();
+  }
 
-	protected char adjustCase(char c) {
-		return ignoreCase ? Character.toLowerCase(c) : c;
-	}
+  protected char adjustCase(char c) {
+    return ignoreCase ? Character.toLowerCase(c) : c;
+  }
 
-	public boolean isIgnoreCase() {
-		return ignoreCase;
-	}
+  public boolean isIgnoreCase() {
+    return ignoreCase;
+  }
 
-	public boolean isMatchSeparators() {
-		return matchSeparators;
-	}
+  public void setIgnoreCase(boolean newIgnoreCase) {
+    ignoreCase = newIgnoreCase;
+  }
 
-	public boolean match(final String pattern, final String string) {
-		// TODO lot of optimizations
-		// be sure test still runs
-		char c;
-		int len = pattern.length();
-		int n = 0;
-		for (int p = 0; p < len; p++) {
-			c = adjustCase(pattern.charAt(p));
-			switch (c) {
-			case '?':
-				if (string.length() == n) {
-					return false;
-				}
-				if (!matchSeparators
-						&& (string.charAt(n) == File.separatorChar)) {
-					return false;
-				}
-				break;
-			case '*':
-				if (++p == pattern.length()) {
-					for (; string.length() > n; ++n) {
-						if ((string.charAt(n) == File.separatorChar)
-								&& !matchSeparators) {
-							return false;
-						}
-					}
-					return true;
-				} else {
-					for (; string.length() >= n; ++n) {
-						if (match(pattern.substring(p), string.substring(n))) {
-							return true;
-						}
-						if ((n == string.length())
-								|| ((string.charAt(n) == File.separatorChar) && !matchSeparators)) {
-							return false;
-						}
-					}
-				}
-				return false;
-			default:
-				if (string.length() == n) {
-					return false;
-				}
-				if (c != adjustCase(string.charAt(n))) {
-					return false;
-				}
-			}
-			++n;
-		}
-		if (string.length() == n) {
-			return true;
-		}
-		return false;
-	}
+  public boolean isMatchSeparators() {
+    return matchSeparators;
+  }
 
-	public void setIgnoreCase(boolean newIgnoreCase) {
-		ignoreCase = newIgnoreCase;
-	}
+  public void setMatchSeparators(boolean newMatchSeparators) {
+    matchSeparators = newMatchSeparators;
+  }
 
-	public void setMatchSeparators(boolean newMatchSeparators) {
-		matchSeparators = newMatchSeparators;
-	}
+  public boolean match(final String pattern, final String string) {
+    // TODO lot of optimizations
+    // be sure test still runs
+    char c;
+    int len = pattern.length();
+    int n = 0;
+    for (int p = 0; p < len; p++) {
+      c = adjustCase(pattern.charAt(p));
+      switch (c) {
+        case '?':
+          if (string.length() == n) {
+            return false;
+          }
+          if (!matchSeparators
+              && (string.charAt(n) == File.separatorChar)) {
+            return false;
+          }
+          break;
+        case '*':
+          if (++p == pattern.length()) {
+            for (; string.length() > n; ++n) {
+              if ((string.charAt(n) == File.separatorChar)
+                  && !matchSeparators) {
+                return false;
+              }
+            }
+            return true;
+          } else {
+            for (; string.length() >= n; ++n) {
+              if (match(pattern.substring(p), string.substring(n))) {
+                return true;
+              }
+              if ((n == string.length())
+                  || ((string.charAt(n) == File.separatorChar) && !matchSeparators)) {
+                return false;
+              }
+            }
+          }
+          return false;
+        default:
+          if (string.length() == n) {
+            return false;
+          }
+          if (c != adjustCase(string.charAt(n))) {
+            return false;
+          }
+      }
+      ++n;
+    }
+    if (string.length() == n) {
+      return true;
+    }
+    return false;
+  }
 }

@@ -31,53 +31,51 @@ package de.intarsys.tools.string;
 
 /**
  * A tool class for the handling of strings.
- * 
  */
 public class CharacterTools {
 
-	/**
-	 * <code>true</code> if <code>c</code> is a vowel.
-	 * 
-	 * @param c
-	 *            The character to check.
-	 * @return <code>true</code> if <code>c</code> is a vowel.
-	 */
-	static public boolean isVowel(char c) {
-		return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u'
-				|| c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U';
-	}
+  /**
+   * <code>true</code> if <code>c</code> is a vowel.
+   *
+   * @param c The character to check.
+   * @return <code>true</code> if <code>c</code> is a vowel.
+   */
+  static public boolean isVowel(char c) {
+    return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u'
+        || c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U';
+  }
 
-	/**
-	 * Create a byte array from the char array ignoring any encoding.
-	 * 
-	 * @param value
-	 * @return A byte array created from the char array in value.
-	 */
-	static public byte[] toByteArray(char[] value) {
-		if (value == null) {
-			return null;
-		}
-		byte[] bytes = new byte[value.length];
-		for (int i = 0; i < bytes.length; i++) {
-			bytes[i] = (byte) value[i];
-		}
-		return bytes;
-	}
+  /**
+   * Create a byte array from the char array ignoring any encoding.
+   *
+   * @param value
+   * @return A byte array created from the char array in value.
+   */
+  static public byte[] toByteArray(char[] value) {
+    if (value == null) {
+      return null;
+    }
+    byte[] bytes = new byte[value.length];
+    for (int i = 0; i < bytes.length; i++) {
+      bytes[i] = (byte) value[i];
+    }
+    return bytes;
+  }
 
-	/**
-	 * Create a char array from the byte array ignoring any encoding.
-	 * 
-	 * @param value
-	 * @return A char array created from the byte array in value.
-	 */
-	static public char[] toCharArray(byte[] value) {
-		if (value == null) {
-			return null;
-		}
-		char[] chars = new char[value.length];
-		for (int i = 0; i < chars.length; i++) {
-			chars[i] = (char) value[i];
-		}
-		return chars;
-	}
+  /**
+   * Create a char array from the byte array ignoring any encoding.
+   *
+   * @param value
+   * @return A char array created from the byte array in value.
+   */
+  static public char[] toCharArray(byte[] value) {
+    if (value == null) {
+      return null;
+    }
+    char[] chars = new char[value.length];
+    for (int i = 0; i < chars.length; i++) {
+      chars[i] = (char) value[i];
+    }
+    return chars;
+  }
 }

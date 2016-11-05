@@ -33,36 +33,40 @@ package de.intarsys.tools.monitor;
  * An abstract superclass to ease implementation of a sample object.
  */
 abstract public class AbstractMonitorSample implements ISample {
-	/** The owner monitor trace */
-	private AbstractMonitorTrace trace;
+  /**
+   * The owner monitor trace
+   */
+  private AbstractMonitorTrace trace;
 
-	/** Descriptive information for the sample taken. */
-	private String description;
+  /**
+   * Descriptive information for the sample taken.
+   */
+  private String description;
 
-	/**
-	 * 
-	 */
-	public AbstractMonitorSample(AbstractMonitorTrace trace, String description) {
-		super();
-		this.trace = trace;
-		this.description = description;
-	}
+  /**
+   *
+   */
+  public AbstractMonitorSample(AbstractMonitorTrace trace, String description) {
+    super();
+    this.trace = trace;
+    this.description = description;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.monitor.IMonitorSample#getDescription()
-	 */
-	public String getDescription() {
-		return description;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.monitor.IMonitorSample#getDescription()
+   */
+  public String getDescription() {
+    return description;
+  }
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return Returns the trace.
-	 */
-	protected AbstractMonitorTrace getTrace() {
-		return trace;
-	}
+  /**
+   * DOCUMENT ME!
+   *
+   * @return Returns the trace.
+   */
+  protected AbstractMonitorTrace getTrace() {
+    return trace;
+  }
 }

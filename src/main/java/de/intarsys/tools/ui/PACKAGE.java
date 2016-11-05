@@ -29,22 +29,21 @@
  */
 package de.intarsys.tools.ui;
 
-import java.util.logging.Logger;
-
 import de.intarsys.tools.logging.LogTools;
 import de.intarsys.tools.message.MessageBundle;
 import de.intarsys.tools.message.MessageBundleTools;
 
+import java.util.logging.Logger;
+
 public class PACKAGE {
 
-	/**
-	 * The default message bundle.<br>
-	 * The default locale could change during init of the applet. Due to this
-	 * the message bundle should be reset the first time it is used.
-	 */
-	public static MessageBundle Messages = MessageBundleTools
-			.getMessageBundle(PACKAGE.class);
-
-	public final static Logger Log = LogTools.getLogger(PACKAGE.class);
+  public final static Logger Log = LogTools.getLogger(PACKAGE.class);
+  /**
+   * The default message bundle.<br>
+   * The default locale could change during init of the applet. Due to this
+   * the message bundle should be reset the first time it is used.
+   */
+  public static MessageBundle Messages = MessageBundleTools
+      .getMessageBundle(PACKAGE.class);
 
 }

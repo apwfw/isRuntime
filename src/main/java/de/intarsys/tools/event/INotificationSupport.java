@@ -34,27 +34,23 @@ package de.intarsys.tools.event;
  * objects to be informed about events.
  */
 public interface INotificationSupport {
-	/**
-	 * Add <code>listener</code> to the collection of objects to be informed
-	 * when the receiver triggers an event of type <code>name</code>.
-	 * 
-	 * @param type
-	 *            The event type we are interested in.
-	 * @param listener
-	 *            The object to be informed about an event occurrence
-	 */
-	public void addNotificationListener(EventType type,
-			INotificationListener listener);
+  /**
+   * Add <code>listener</code> to the collection of objects to be informed
+   * when the receiver triggers an event of type <code>name</code>.
+   *
+   * @param type     The event type we are interested in.
+   * @param listener The object to be informed about an event occurrence
+   */
+  public void addNotificationListener(EventType type,
+                                      INotificationListener listener);
 
-	/**
-	 * Remove <code>listener</code> from the collection of objects to be
-	 * informed about events of type <code>name</code>.
-	 * 
-	 * @param type
-	 *            The event type we are no longer interested in.
-	 * @param listener
-	 *            The object registered for the event till now.
-	 */
-	public void removeNotificationListener(EventType type,
-			INotificationListener listener);
+  /**
+   * Remove <code>listener</code> from the collection of objects to be
+   * informed about events of type <code>name</code>.
+   *
+   * @param type     The event type we are no longer interested in.
+   * @param listener The object registered for the event till now.
+   */
+  public void removeNotificationListener(EventType type,
+                                         INotificationListener listener);
 }

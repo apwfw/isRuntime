@@ -30,48 +30,48 @@
 package de.intarsys.tools.message;
 
 public class MessageBundleTools {
-	public static String MSG = "messages"; //$NON-NLS-1$
+  public static String MSG = "messages"; //$NON-NLS-1$
 
-	public static MessageBundle getMessageBundle(Class clazz) {
-		return new MessageBundle(getBundleName(clazz), clazz.getClassLoader());
-	}
+  public static MessageBundle getMessageBundle(Class clazz) {
+    return new MessageBundle(getBundleName(clazz), clazz.getClassLoader());
+  }
 
-	public static MessageBundle getMessageBundle(String name,
-			ClassLoader classloader) {
-		return new MessageBundle(name, classloader);
-	}
+  public static MessageBundle getMessageBundle(String name,
+                                               ClassLoader classloader) {
+    return new MessageBundle(name, classloader);
+  }
 
-	public static String getBundleName(Class clazz) {
-		return getPackageName(clazz) + "." + MSG; //$NON-NLS-1$
-	}
+  public static String getBundleName(Class clazz) {
+    return getPackageName(clazz) + "." + MSG; //$NON-NLS-1$
+  }
 
-	public static String getBundleName(String className) {
-		return getPackageName(className) + "." + MSG; //$NON-NLS-1$
-	}
+  public static String getBundleName(String className) {
+    return getPackageName(className) + "." + MSG; //$NON-NLS-1$
+  }
 
-	public static String getPackageName(Class clazz) {
-		return getPackageName(clazz.getName());
-	}
+  public static String getPackageName(Class clazz) {
+    return getPackageName(clazz.getName());
+  }
 
-	public static String getPackageName(String className) {
-		int index = className.lastIndexOf('.');
-		if (index >= 0) {
-			return className.substring(0, index);
-		} else {
-			return ""; //$NON-NLS-1$
-		}
-	}
+  public static String getPackageName(String className) {
+    int index = className.lastIndexOf('.');
+    if (index >= 0) {
+      return className.substring(0, index);
+    } else {
+      return ""; //$NON-NLS-1$
+    }
+  }
 
-	public static String getClassName(Class clazz) {
-		return getClassName(clazz.getName());
-	}
+  public static String getClassName(Class clazz) {
+    return getClassName(clazz.getName());
+  }
 
-	public static String getClassName(String className) {
-		int index = className.lastIndexOf('.');
-		if (index >= 0) {
-			return className.substring(index + 1);
-		} else {
-			return className;
-		}
-	}
+  public static String getClassName(String className) {
+    int index = className.lastIndexOf('.');
+    if (index >= 0) {
+      return className.substring(index + 1);
+    } else {
+      return className;
+    }
+  }
 }

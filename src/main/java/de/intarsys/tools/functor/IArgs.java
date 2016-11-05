@@ -34,162 +34,150 @@ import java.util.Set;
 
 /**
  * The arguments for executing an {@link IFunctor} implementation.
- * 
  */
 public interface IArgs {
 
-	/**
-	 * A binding between an index or name and a value in an {@link IArgs}
-	 * object.
-	 * 
-	 */
-	public interface IBinding {
+  /**
+   * Generic argument name for the transport of IArgs.
+   */
+  public static final String ARG_ARGS = "args"; //$NON-NLS-1$
 
-		public String getName();
+  /**
+   * Add an indexed value.
+   *
+   * @param object
+   */
+  public IBinding add(Object object);
 
-		public Object getValue();
+  /**
+   * An {@link Iterator} over all available bindings.
+   *
+   * @return An {@link Iterator} over all available bindings.
+   */
+  public Iterator<IBinding> bindings();
 
-		public boolean isDefined();
+  /**
+   * Clear all bindings.
+   */
+  public void clear();
 
-		public void setValue(Object value);
-	}
+  /**
+   * Create a copy.
+   *
+   * @return The new copy.
+   */
+  public IArgs copy();
 
-	/**
-	 * Generic argument name for the transport of IArgs.
-	 */
-	public static final String ARG_ARGS = "args"; //$NON-NLS-1$
+  /**
+   * Declare a name for a binding.
+   *
+   * @param name
+   * @return The binding resulting from the declaration.
+   */
+  public IBinding declare(String name);
 
-	/**
-	 * Add an indexed value.
-	 * 
-	 * @param object
-	 */
-	public IBinding add(Object object);
+  /**
+   * The argument at position <code>index</code>.
+   *
+   * @param index The index of the argument to return.
+   * @return The argument at position <code>index</code>.
+   */
+  public Object get(int index);
 
-	/**
-	 * An {@link Iterator} over all available bindings.
-	 * 
-	 * @return An {@link Iterator} over all available bindings.
-	 */
-	public Iterator<IBinding> bindings();
+  /**
+   * The argument at position <code>index</code>
+   *
+   * @param index        The index of the argument to return.
+   * @param defaultValue The default value to be returned if argument is not available.
+   * @return The argument at position <code>index</code>
+   */
+  public Object get(int index, Object defaultValue);
 
-	/**
-	 * Clear all bindings.
-	 */
-	public void clear();
+  /**
+   * The argument named <code>name</code> or null if not available.
+   *
+   * @param name The name of the argument to return.
+   * @return The argument named <code>name</code> or null if not available.
+   */
+  public Object get(String name);
 
-	/**
-	 * Create a copy.
-	 * 
-	 * @return The new copy.
-	 */
-	public IArgs copy();
+  /**
+   * The argument named <code>name</code> or the defaultValue if not
+   * available.
+   *
+   * @param name         The name of the argument to return.
+   * @param defaultValue The default value to be returned if argument is not available.
+   * @return The argument named <code>name</code>
+   */
+  public Object get(String name, Object defaultValue);
 
-	/**
-	 * Declare a name for a binding.
-	 * 
-	 * @param name
-	 * @return The binding resulting from the declaration.
-	 */
-	public IBinding declare(String name);
+  /**
+   * <code>true</code> if an argument named <code>name</code> is defined.
+   *
+   * @param name
+   * @return <code>true</code> if an argument named <code>name</code> is
+   * defined.
+   */
+  public boolean isDefined(String name);
 
-	/**
-	 * The argument at position <code>index</code>.
-	 * 
-	 * @param index
-	 *            The index of the argument to return.
-	 * 
-	 * @return The argument at position <code>index</code>.
-	 */
-	public Object get(int index);
+  /**
+   * The set of all argument names in the argument list if this argument list
+   * is not indexed or null.
+   *
+   * @return The set of all argument names in the argument list if this
+   * argument list is not indexed or null.
+   */
+  public Set<String> names();
 
-	/**
-	 * The argument at position <code>index</code>
-	 * 
-	 * @param index
-	 *            The index of the argument to return.
-	 * @param defaultValue
-	 *            The default value to be returned if argument is not available.
-	 * 
-	 * @return The argument at position <code>index</code>
-	 */
-	public Object get(int index, Object defaultValue);
+  /**
+   * Define an indexed binding for value.
+   *
+   * @param index
+   * @param value
+   */
+  public IBinding put(int index, Object value);
 
-	/**
-	 * The argument named <code>name</code> or null if not available.
-	 * 
-	 * @param name
-	 *            The name of the argument to return.
-	 * 
-	 * @return The argument named <code>name</code> or null if not available.
-	 */
-	public Object get(String name);
+  /**
+   * Define a named binding for value.
+   *
+   * @param name
+   * @param value
+   */
+  public IBinding put(String name, Object value);
 
-	/**
-	 * The argument named <code>name</code> or the defaultValue if not
-	 * available.
-	 * 
-	 * @param name
-	 *            The name of the argument to return.
-	 * @param defaultValue
-	 *            The default value to be returned if argument is not available.
-	 * 
-	 * @return The argument named <code>name</code>
-	 */
-	public Object get(String name, Object defaultValue);
+  /**
+   * The total number of arguments.
+   *
+   * @return The total number of arguments.
+   */
+  public int size();
 
-	/**
-	 * <code>true</code> if an argument named <code>name</code> is defined.
-	 * 
-	 * @param name
-	 * @return <code>true</code> if an argument named <code>name</code> is
-	 *         defined.
-	 */
-	public boolean isDefined(String name);
+  /**
+   * Undefine the binding at index.
+   *
+   * @param index
+   */
+  public void undefine(int index);
 
-	/**
-	 * The set of all argument names in the argument list if this argument list
-	 * is not indexed or null.
-	 * 
-	 * @return The set of all argument names in the argument list if this
-	 *         argument list is not indexed or null.
-	 */
-	public Set<String> names();
+  /**
+   * Undefine the binding for name.
+   *
+   * @param name
+   */
+  public void undefine(String name);
 
-	/**
-	 * Define an indexed binding for value.
-	 * 
-	 * @param index
-	 * @param value
-	 */
-	public IBinding put(int index, Object value);
+  /**
+   * A binding between an index or name and a value in an {@link IArgs}
+   * object.
+   */
+  public interface IBinding {
 
-	/**
-	 * Define a named binding for value.
-	 * 
-	 * @param name
-	 * @param value
-	 */
-	public IBinding put(String name, Object value);
+    public String getName();
 
-	/**
-	 * The total number of arguments.
-	 * 
-	 * @return The total number of arguments.
-	 */
-	public int size();
+    public Object getValue();
 
-	/**
-	 * Undefine the binding at index.
-	 * 
-	 * @param index
-	 */
-	public void undefine(int index);
+    public void setValue(Object value);
 
-	/**
-	 * Undefine the binding for name.
-	 * 
-	 * @param name
-	 */
-	public void undefine(String name);
+    public boolean isDefined();
+  }
 }

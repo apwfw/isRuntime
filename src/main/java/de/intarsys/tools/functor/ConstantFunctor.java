@@ -35,22 +35,22 @@ package de.intarsys.tools.functor;
  */
 public class ConstantFunctor extends CommonFunctor {
 
-	private Object constant;
+  private Object constant;
 
-	public ConstantFunctor(Object constant) {
-		this.constant = constant;
-	}
+  public ConstantFunctor(Object constant) {
+    this.constant = constant;
+  }
 
-	public Object getConstant() {
-		return constant;
-	}
+  public Object getConstant() {
+    return constant;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.functor.IFunctor#perform(de.intarsys.tools.functor.IFunctorCall)
-	 */
-	public Object perform(IFunctorCall call) throws FunctorInvocationException {
-		return getConstant();
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.functor.IFunctor#perform(de.intarsys.tools.functor.IFunctorCall)
+   */
+  public Object perform(IFunctorCall call) throws FunctorInvocationException {
+    return getConstant();
+  }
 }

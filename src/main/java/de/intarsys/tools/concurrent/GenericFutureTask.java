@@ -34,53 +34,53 @@ import java.util.concurrent.FutureTask;
 
 /**
  * A generic implementation for a {@link FutureTask}.
- * 
+ *
  * @param <R>
  */
 public class GenericFutureTask<R> extends AbstractFutureTask {
 
-	final private Callable<R> computeFunctor;
+  final private Callable<R> computeFunctor;
 
-	final private Runnable undoFunctor;
+  final private Runnable undoFunctor;
 
-	public GenericFutureTask(Callable<R> computeFunctor) {
-		super(null);
-		this.computeFunctor = computeFunctor;
-		this.undoFunctor = null;
-	}
+  public GenericFutureTask(Callable<R> computeFunctor) {
+    super(null);
+    this.computeFunctor = computeFunctor;
+    this.undoFunctor = null;
+  }
 
-	public GenericFutureTask(Callable<R> computeFunctor, ITaskListener callback) {
-		super(callback);
-		this.computeFunctor = computeFunctor;
-		this.undoFunctor = null;
-	}
+  public GenericFutureTask(Callable<R> computeFunctor, ITaskListener callback) {
+    super(callback);
+    this.computeFunctor = computeFunctor;
+    this.undoFunctor = null;
+  }
 
-	public GenericFutureTask(Callable<R> computeFunctor, Runnable undoFunctor) {
-		super(null);
-		this.computeFunctor = computeFunctor;
-		this.undoFunctor = undoFunctor;
-	}
+  public GenericFutureTask(Callable<R> computeFunctor, Runnable undoFunctor) {
+    super(null);
+    this.computeFunctor = computeFunctor;
+    this.undoFunctor = undoFunctor;
+  }
 
-	public GenericFutureTask(Callable<R> computeFunctor, Runnable undoFunctor,
-			ITaskListener callback) {
-		super(callback);
-		this.computeFunctor = computeFunctor;
-		this.undoFunctor = undoFunctor;
-	}
+  public GenericFutureTask(Callable<R> computeFunctor, Runnable undoFunctor,
+                           ITaskListener callback) {
+    super(callback);
+    this.computeFunctor = computeFunctor;
+    this.undoFunctor = undoFunctor;
+  }
 
-	@Override
-	protected Object compute() throws Exception {
-		if (computeFunctor != null) {
-			return computeFunctor.call();
-		}
-		return null;
-	}
+  @Override
+  protected Object compute() throws Exception {
+    if (computeFunctor != null) {
+      return computeFunctor.call();
+    }
+    return null;
+  }
 
-	@Override
-	protected void undo() {
-		if (undoFunctor != null) {
-			undoFunctor.run();
-		}
-	}
+  @Override
+  protected void undo() {
+    if (undoFunctor != null) {
+      undoFunctor.run();
+    }
+  }
 
 }

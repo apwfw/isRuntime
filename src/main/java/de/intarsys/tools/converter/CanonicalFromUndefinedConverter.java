@@ -33,19 +33,19 @@ package de.intarsys.tools.converter;
  * Convert {@link Undefined} to a {@link Canonical} format.
  */
 public class CanonicalFromUndefinedConverter implements
-		IConverter<Object, Object> {
+    IConverter<Object, Object> {
 
-	public Object convert(Object source) throws ConversionException {
-		// ...which should be null
-		return source;
-	}
+  public Object convert(Object source) throws ConversionException {
+    // ...which should be null
+    return source;
+  }
 
-	public Class<?> getSourceType() {
-		return Undefined.class;
-	}
+  public Class<?> getSourceType() {
+    return Undefined.class;
+  }
 
-	public Class<?> getTargetType() {
-		return Canonical.class;
-	}
+  public Class<?> getTargetType() {
+    return Canonical.class;
+  }
 
 }

@@ -31,34 +31,33 @@ package de.intarsys.tools.variable;
 
 /**
  * A environment that allows per thread usage of IVariableSupport objects.
- * 
  */
 public class VariableEnvironment {
-	protected static IVariableNamespace sharedEnvironment = null;
+  protected static IVariableNamespace sharedEnvironment = null;
 
-	protected static ThreadLocal environment = new ThreadLocal() {
-		protected Object initialValue() {
-			return getShared();
-		}
-	};
+  protected static ThreadLocal environment = new ThreadLocal() {
+    protected Object initialValue() {
+      return getShared();
+    }
+  };
 
-	public static IVariableNamespace get() {
-		return (IVariableNamespace) environment.get();
-	}
+  public static IVariableNamespace get() {
+    return (IVariableNamespace) environment.get();
+  }
 
-	synchronized public static IVariableNamespace getShared() {
-		if (sharedEnvironment == null) {
-			sharedEnvironment = new StandardVariableNamespace();
-		}
-		return sharedEnvironment;
-	}
+  synchronized public static IVariableNamespace getShared() {
+    if (sharedEnvironment == null) {
+      sharedEnvironment = new StandardVariableNamespace();
+    }
+    return sharedEnvironment;
+  }
 
-	public static void set(IVariableNamespace cc) {
-		environment.set(cc);
-	}
+  synchronized public static void setShared(IVariableNamespace cc) {
+    sharedEnvironment = cc;
+  }
 
-	synchronized public static void setShared(IVariableNamespace cc) {
-		sharedEnvironment = cc;
-	}
+  public static void set(IVariableNamespace cc) {
+    environment.set(cc);
+  }
 
 }

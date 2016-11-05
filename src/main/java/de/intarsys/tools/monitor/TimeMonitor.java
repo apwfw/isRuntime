@@ -29,93 +29,92 @@
  */
 package de.intarsys.tools.monitor;
 
+import de.intarsys.tools.format.TrivialDateFormat;
+
 import java.text.Format;
 import java.util.Iterator;
 import java.util.List;
-
-import de.intarsys.tools.format.TrivialDateFormat;
 
 /**
  * A monitor for taking time samples in the application.
  */
 public class TimeMonitor extends Monitor {
-	private static Format DEFAULT_FORMAT = TrivialDateFormat.getInstance();
+  private static Format DEFAULT_FORMAT = TrivialDateFormat.getInstance();
 
-	public TimeMonitor() {
-		super();
-	}
+  public TimeMonitor() {
+    super();
+  }
 
-	/**
-	 * Create a TimeMonitor
-	 * 
-	 * @param name
-	 *            monitor name
-	 */
-	public TimeMonitor(String name) {
-		super(name);
-	}
+  /**
+   * Create a TimeMonitor
+   *
+   * @param name monitor name
+   */
+  public TimeMonitor(String name) {
+    super(name);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.monitor.Monitor#createMonitorTrace()
-	 */
-	@Override
-	protected TimeMonitorTrace createMonitorTrace() {
-		return new TimeMonitorTrace(this);
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.monitor.Monitor#createMonitorTrace()
+   */
+  @Override
+  protected TimeMonitorTrace createMonitorTrace() {
+    return new TimeMonitorTrace(this);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.intarsys.tools.monitor.Monitor#doCalculation(de.intarsys.tools.monitor
-	 * .IMonitorTrace)
-	 */
-	@Override
-	protected void doCalculation(MonitorTrace trace) {
-		long start = trace.getStart();
-		long diff = trace.getDifference();
-		doStatistic(statistic, diff);
-		List samples = trace.getSamples();
-		if (samples != null) {
-			Iterator sampleIt = samples.iterator();
-			int i = 0;
-			for (; sampleIt.hasNext();) {
-				MonitorSample sample = (MonitorSample) sampleIt.next();
-				diff = sample.getValue() - start;
-				start = sample.getValue();
-				MonitorStatistic sampleStatistic;
-				synchronized (this) {
-					sampleStatistic = (MonitorStatistic) sampleStatistics
-							.get(sample.getDescription());
-					if (sampleStatistic == null) {
-						sampleStatistic = new MonitorStatistic(sample
-								.getDescription(), i);
-						sampleStatistics.put(sample.getDescription(),
-								sampleStatistic);
-					}
-				}
-				doStatistic(sampleStatistic, diff);
-				i++;
-			}
-		}
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see
+   * de.intarsys.tools.monitor.Monitor#doCalculation(de.intarsys.tools.monitor
+   * .IMonitorTrace)
+   */
+  @Override
+  protected void doCalculation(MonitorTrace trace) {
+    long start = trace.getStart();
+    long diff = trace.getDifference();
+    doStatistic(statistic, diff);
+    List samples = trace.getSamples();
+    if (samples != null) {
+      Iterator sampleIt = samples.iterator();
+      int i = 0;
+      for (; sampleIt.hasNext(); ) {
+        MonitorSample sample = (MonitorSample) sampleIt.next();
+        diff = sample.getValue() - start;
+        start = sample.getValue();
+        MonitorStatistic sampleStatistic;
+        synchronized (this) {
+          sampleStatistic = (MonitorStatistic) sampleStatistics
+              .get(sample.getDescription());
+          if (sampleStatistic == null) {
+            sampleStatistic = new MonitorStatistic(sample
+                .getDescription(), i);
+            sampleStatistics.put(sample.getDescription(),
+                sampleStatistic);
+          }
+        }
+        doStatistic(sampleStatistic, diff);
+        i++;
+      }
+    }
+  }
 
-	protected void doStatistic(MonitorStatistic sampleStatistic, long diff) {
-		if (diff < sampleStatistic.min) {
-			sampleStatistic.min = diff;
-		}
-		if (diff > sampleStatistic.max) {
-			sampleStatistic.max = diff;
-		}
-		sampleStatistic.total = sampleStatistic.total + diff;
-		sampleStatistic.count++;
-		sampleStatistic.avg = sampleStatistic.total / sampleStatistic.count;
-	}
+  protected void doStatistic(MonitorStatistic sampleStatistic, long diff) {
+    if (diff < sampleStatistic.min) {
+      sampleStatistic.min = diff;
+    }
+    if (diff > sampleStatistic.max) {
+      sampleStatistic.max = diff;
+    }
+    sampleStatistic.total = sampleStatistic.total + diff;
+    sampleStatistic.count++;
+    sampleStatistic.avg = sampleStatistic.total / sampleStatistic.count;
+  }
 
-	@Override
-	protected Format getFormat() {
-		return DEFAULT_FORMAT;
-	}
+  @Override
+  protected Format getFormat() {
+    return DEFAULT_FORMAT;
+  }
 }

@@ -36,62 +36,59 @@ import de.intarsys.tools.string.StringTools;
  * An item in a {@link Domain} enumeration. A {@link DomainItem} links together
  * tuples of objects with presentation logic to make them suitable for
  * presentation in a user interface.
- * 
  */
 public class DomainItem<T> extends EnumItem {
 
-	private static int counter = 0;
+  public static final Object MATCH_ANY = new Object();
+  private static int counter = 0;
+  private Object[] object;
 
-	private Object[] object;
+  protected DomainItem(Domain domain, Object[] object) {
+    super(domain, "" + counter++, StringTools.safeString(object), WEIGHT++);
+    if (object == null) {
+      throw new IllegalArgumentException();
+    }
+    this.object = object;
+  }
 
-	public static final Object MATCH_ANY = new Object();
+  public T getObject() {
+    if (object.length == 0) {
+      return null;
+    }
+    return (T) object[0];
+  }
 
-	protected DomainItem(Domain domain, Object[] object) {
-		super(domain, "" + counter++, StringTools.safeString(object), WEIGHT++);
-		if (object == null) {
-			throw new IllegalArgumentException();
-		}
-		this.object = object;
-	}
+  public Object getObject(int index) {
+    return object[index];
+  }
 
-	public T getObject() {
-		if (object.length == 0) {
-			return null;
-		}
-		return (T) object[0];
-	}
+  public boolean isObject(Object[] pObject) {
+    if (object.length != pObject.length) {
+      return false;
+    }
+    for (int i = 0; i < pObject.length; i++) {
+      if (!LangTools.equals(object[i], pObject[i])) {
+        if (object[i] != MATCH_ANY && pObject[i] != MATCH_ANY) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
 
-	public Object getObject(int index) {
-		return object[index];
-	}
+  @Override
+  public void setDefault() {
+    super.setDefault();
+  }
 
-	public boolean isObject(Object[] pObject) {
-		if (object.length != pObject.length) {
-			return false;
-		}
-		for (int i = 0; i < pObject.length; i++) {
-			if (!LangTools.equals(object[i], pObject[i])) {
-				if (object[i] != MATCH_ANY && pObject[i] != MATCH_ANY) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
+  @Override
+  public void setIconName(String iconName) {
+    super.setIconName(iconName);
+  }
 
-	@Override
-	public void setDefault() {
-		super.setDefault();
-	}
-
-	@Override
-	public void setIconName(String iconName) {
-		super.setIconName(iconName);
-	}
-
-	@Override
-	public void setLabel(String label) {
-		super.setLabel(label);
-	}
+  @Override
+  public void setLabel(String label) {
+    super.setLabel(label);
+  }
 
 }

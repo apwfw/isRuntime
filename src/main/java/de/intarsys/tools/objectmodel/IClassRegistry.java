@@ -31,31 +31,29 @@ package de.intarsys.tools.objectmodel;
 
 /**
  * The abstraction of a "repository" of available {@link IClass} instances.
- * 
  */
 public interface IClassRegistry {
 
-	/**
-	 * All declared classes.
-	 * 
-	 * @return All declared classes.
-	 */
-	public IClass[] getClasses();
+  /**
+   * All declared classes.
+   *
+   * @return All declared classes.
+   */
+  public IClass[] getClasses();
 
-	/**
-	 * The {@link IClass} that matches the <code>selector</code>.
-	 * 
-	 * @param selector
-	 *            A {@link IClassSelector} identifiying the {@link IClass}.
-	 * @return The {@link IClass} that matches the <code>selector</code>.
-	 */
-	public IClass lookupClass(IClassSelector selector);
+  /**
+   * The {@link IClass} that matches the <code>selector</code>.
+   *
+   * @param selector A {@link IClassSelector} identifiying the {@link IClass}.
+   * @return The {@link IClass} that matches the <code>selector</code>.
+   */
+  public IClass lookupClass(IClassSelector selector);
 
-	/**
-	 * Add a new {@link IClass} to the repository.
-	 * 
-	 * @param clazz
-	 */
-	public void registerClass(IClass clazz);
+  /**
+   * Add a new {@link IClass} to the repository.
+   *
+   * @param clazz
+   */
+  public void registerClass(IClass clazz);
 
 }

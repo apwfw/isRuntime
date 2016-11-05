@@ -31,26 +31,25 @@ package de.intarsys.aaa.resource;
 
 /**
  * A VM singleton for the {@link IResourceAccessHandler}.
- * 
  */
 public class ResourceAccessHandler {
 
-	private static IResourceAccessHandler ACTIVE = new GrantResourceAccessHandler();
+  private static IResourceAccessHandler ACTIVE = new GrantResourceAccessHandler();
 
-	static public void checkAccess(IResource resource)
-			throws ResourceAccessException {
-		if (get().isAccessGranted(resource)) {
-			return;
-		}
-		throw new ResourceAccessException("access denied");
-	}
+  static public void checkAccess(IResource resource)
+      throws ResourceAccessException {
+    if (get().isAccessGranted(resource)) {
+      return;
+    }
+    throw new ResourceAccessException("access denied");
+  }
 
-	static public IResourceAccessHandler get() {
-		return ACTIVE;
-	}
+  static public IResourceAccessHandler get() {
+    return ACTIVE;
+  }
 
-	static public void set(IResourceAccessHandler active) {
-		ACTIVE = active;
-	}
+  static public void set(IResourceAccessHandler active) {
+    ACTIVE = active;
+  }
 
 }

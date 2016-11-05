@@ -36,11 +36,11 @@ import de.intarsys.tools.reflect.IFieldHandler;
  */
 public interface IField extends IMember, IFieldHandler {
 
-	/**
-	 * The declared type of the field.
-	 * 
-	 * @return The declared type of the field.
-	 */
-	public IClass getFieldType();
+  /**
+   * The declared type of the field.
+   *
+   * @return The declared type of the field.
+   */
+  public IClass getFieldType();
 
 }

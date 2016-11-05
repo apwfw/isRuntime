@@ -35,21 +35,16 @@ import de.intarsys.tools.functor.IArgs;
  * Declares the ability to evaluate an expression or statement (for example
  * "2+3" or "variable") defined in a string and return the result. The syntax
  * supported by the evaluator is up to the implementor.
- * 
  */
 public interface IStringEvaluator {
-	/**
-	 * Evaluate an <code>expression</code> according to the syntax used by the
-	 * implementor and return the result.
-	 * 
-	 * @param expression
-	 *            The expression to evaluate.
-	 * 
-	 * @return The result object.
-	 * 
-	 * @throws EvaluationException
-	 *             If we encounter a compile or runtime error.
-	 */
-	public Object evaluate(String expression, IArgs args)
-			throws EvaluationException;
+  /**
+   * Evaluate an <code>expression</code> according to the syntax used by the
+   * implementor and return the result.
+   *
+   * @param expression The expression to evaluate.
+   * @return The result object.
+   * @throws EvaluationException If we encounter a compile or runtime error.
+   */
+  public Object evaluate(String expression, IArgs args)
+      throws EvaluationException;
 }

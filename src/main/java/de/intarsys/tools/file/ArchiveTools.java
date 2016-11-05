@@ -27,6 +27,8 @@
  */
 package de.intarsys.tools.file;
 
+import de.intarsys.tools.stream.StreamTools;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -37,332 +39,304 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.intarsys.tools.stream.StreamTools;
-
 public class ArchiveTools {
 
-	/**
-	 * A utility to manage archiving files in a directory.
-	 * 
-	 */
-	static class DumpDirectory {
+  // the number format used for archiving
+  private static final NumberFormat theFormat;
+  //
+  private static Map dumpDirs = new HashMap();
 
-		public static DumpDirectory get(File file) {
-			return get(file.getAbsolutePath());
-		}
+  static {
+    theFormat = NumberFormat.getNumberInstance();
+    theFormat.setMaximumFractionDigits(0);
+    theFormat.setMinimumIntegerDigits(19);
+    theFormat.setGroupingUsed(false);
+  }
 
-		public static synchronized DumpDirectory get(String name) {
-			DumpDirectory dd = (DumpDirectory) dumpDirs.get(name);
-			if (dd == null) {
-				dd = new DumpDirectory(new File(name)); // just for locking;
-				dd.prepare();
-				dumpDirs.put(name, dd);
-			}
-			return dd;
-		}
+  /**
+   * Archive a files content.
+   * <p>
+   * <p>
+   * The method creates a copy in the archive directory with a unique name
+   * that is guaranteed to create a sortable representation so that newer
+   * files have a "greater" filename. Creation of file names is thread safe.
+   * If more than <code>max</code> files are in the archive directory, the
+   * oldest files are deleted. max = 0 means never create archive, max = -1
+   * means always create archive. If <code>deleteSource</code> is
+   * <code>true</code>, the file to be archived is deleted after the archive
+   * was created.
+   * </p>
+   *
+   * @param root                The root for relative addressing.
+   * @param relativePath        The path relative to root where to create the archive.
+   * @param file                The file to archive.
+   * @param max                 The maximum number of archive files allowed.han
+   * @param sourceEncoding      The encoding of the file to be archived.
+   * @param destinationEncoding The encoding of the archived file.
+   * @param deleteSource        Flag if source should be deleted.
+   * @param forceArchive        Flag if we should archive even if file is already in the
+   *                            archive directory.
+   * @return The name of the archived file, or null.
+   * @throws IOException
+   */
+  public static String archive(File root, String relativePath, File file,
+                               int max, String sourceEncoding, String destinationEncoding,
+                               boolean deleteSource, boolean forceArchive) throws IOException {
+    if ((max == 0) || (root == null)) {
+      // no archiving desired
+      return null;
+    }
 
-		File dir;
+    String dirName = FileTools.resolvePath(root, relativePath)
+        .getAbsolutePath();
+    File archive;
+    if (!forceArchive
+        && dirName.equals(file.getParentFile().getAbsolutePath())) {
+      // i'm already in the temp directory, no need to copy
+      archive = file;
+    } else {
+      DumpDirectory d = DumpDirectory.get(dirName);
+      archive = d.getDumpFile(file.getName(), max);
+      if (deleteSource) {
+        FileTools.renameFile(file, sourceEncoding, archive,
+            destinationEncoding);
+      } else {
+        FileTools.copyFile(file, sourceEncoding, archive,
+            destinationEncoding);
+      }
+    }
+    try {
+      archive.setLastModified(System.currentTimeMillis());
+    } catch (Exception ignore) {
+      // getLog().logWarning(getLogPrefix() + " could not set
+      // modification
+      // time for file " + renamedFile.getPath());
+    }
+    return archive.getAbsolutePath();
+  }
 
-		int currentCount;
+  /**
+   * Create a archive file and dump the input stream to this file. Calls
+   * createArchive, and then copies the is to the output stream.
+   *
+   * @param root         The root for relative addressing.
+   * @param relativePath The path relative to root where to create the archive.
+   * @param filename     The file to archive.
+   * @param max          The maximum number of archive files allowed.han
+   * @param is           The input stream to be dumped.
+   * @return The name of the archived file, or null.
+   * @throws IOException
+   */
+  public static String archive(File root, String relativePath,
+                               String filename, InputStream is, int max) throws IOException {
+    if ((max == 0) || (root == null)) {
+      // no archiving desired
+      return null;
+    }
 
-		int dirCount;
+    File archive = createArchive(root, relativePath, filename, max);
+    FileOutputStream os = new FileOutputStream(archive);
+    try {
+      StreamTools.copyStream(is, os);
+    } catch (Exception e) {
+      throw new IOException("archiving failed (" + e.getMessage() + ")");
+    } finally {
+      try {
+        if (os != null) {
+          os.close();
+        }
+      } catch (Exception ignore) {
+        // ignore failure
+      }
+    }
+    return archive.getAbsolutePath();
+  }
 
-		long lastDump = System.currentTimeMillis();
+  /**
+   * Just creates a archive file, nothing will be dumped inside this file.
+   *
+   * @param root         The root for relative addressing.
+   * @param relativePath The path relative to root where to create the archive.
+   * @param filename     The file to archive.
+   * @param max          The maximum number of archive files allowed.han
+   * @return The name of the archived file, or null.
+   * @throws IOException
+   */
+  public static File createArchive(File root, String relativePath,
+                                   String filename, int max) throws IOException {
+    if ((max == 0) || (root == null)) {
+      // no archiving desired
+      return null;
+    }
 
-		protected DumpDirectory(File dir) {
-			super();
-			setDir(dir);
-		}
+    String dirName = FileTools.resolvePath(root, relativePath)
+        .getAbsolutePath();
+    DumpDirectory d = DumpDirectory.get(dirName);
+    File archive = d.getDumpFile(filename, max);
+    return archive;
+  }
 
-		protected void checkDir() throws IOException {
-			// check and create directory
-			if (!getDir().exists()) {
-				if (!getDir().mkdirs()) {
-					throw new IOException(" can't create temporary directory "
-							+ getDir());
-				}
-			}
-		}
+  public static OutputStream createOutputStream(File root, String filename,
+                                                int max) throws IOException {
+    if ((max == 0) || (root == null)) {
+      // no archiving desired
+      return null;
+    }
+    DumpDirectory d = DumpDirectory.get(root);
+    File archive = d.getDumpFile(filename, max);
+    return new FileOutputStream(archive);
+  }
 
-		protected void checkFiles(int max) throws IOException {
-			// todo execute check in low priority daemon
-			//
-			// clean up archive directory, delete oldest files if more than
-			// count
-			// available
-			// files must be stored with dump archive to guarantee that preifx
-			// sorts
-			// correctly
-			// this implementation relies on the fact, that only the receiver
-			// object
-			// manipulates files in the directory
-			if ((max <= 0) || (currentCount <= max)) {
-				return;
-			}
+  /**
+   * A utility to manage archiving files in a directory.
+   */
+  static class DumpDirectory {
 
-			String[] fileNames = dir.list();
-			if (fileNames == null) {
-				throw new IOException("can not list directory "
-						+ dir.getAbsolutePath());
-			}
-			if (fileNames.length != (dirCount + currentCount)) {
-				prepare(fileNames);
-			}
-			Arrays.sort(fileNames);
+    File dir;
+    int currentCount;
+    int dirCount;
+    long lastDump = System.currentTimeMillis();
 
-			int delete = Math.min(fileNames.length, currentCount - max);
-			for (int i = 0; i < delete; i++) {
-				File deleteFile = new File(dir, fileNames[i]);
-				if (deleteFile.isFile()) {
-					if (!deleteFile.delete()) {
-						throw new IOException("can not delete file "
-								+ deleteFile.getAbsolutePath());
-					}
-					currentCount--;
-				}
-			}
-		}
+    protected DumpDirectory(File dir) {
+      super();
+      setDir(dir);
+    }
 
-		public java.io.File getDir() {
-			return dir;
-		}
+    public static DumpDirectory get(File file) {
+      return get(file.getAbsolutePath());
+    }
 
-		public synchronized File getDumpFile(String name, int max)
-				throws IOException {
-			File newFile = new File(getDir(), getUniquePrefix() + "." + name);
+    public static synchronized DumpDirectory get(String name) {
+      DumpDirectory dd = (DumpDirectory) dumpDirs.get(name);
+      if (dd == null) {
+        dd = new DumpDirectory(new File(name)); // just for locking;
+        dd.prepare();
+        dumpDirs.put(name, dd);
+      }
+      return dd;
+    }
 
-			// check directory every time, maybe deleted by some nerd...
-			checkDir();
-			if (!newFile.createNewFile()) {
-				throw new IOException("can not create file "
-						+ newFile.getAbsolutePath());
-			}
-			currentCount++;
-			try {
-				checkFiles(max);
-			} catch (IOException e) {
-				// ignore if we can not hold the correct level in dump directory
-			}
-			return newFile;
-		}
+    protected void checkDir() throws IOException {
+      // check and create directory
+      if (!getDir().exists()) {
+        if (!getDir().mkdirs()) {
+          throw new IOException(" can't create temporary directory "
+              + getDir());
+        }
+      }
+    }
 
-		public long getLastDump() {
-			return lastDump;
-		}
+    protected void checkFiles(int max) throws IOException {
+      // todo execute check in low priority daemon
+      //
+      // clean up archive directory, delete oldest files if more than
+      // count
+      // available
+      // files must be stored with dump archive to guarantee that preifx
+      // sorts
+      // correctly
+      // this implementation relies on the fact, that only the receiver
+      // object
+      // manipulates files in the directory
+      if ((max <= 0) || (currentCount <= max)) {
+        return;
+      }
 
-		protected long getUniqueMillis() {
-			// ensure unique counter values, millisecondsbased
-			long current = System.currentTimeMillis();
-			while (getLastDump() >= current) {
-				current++;
-			}
-			setLastDump(current);
-			return current;
-		}
+      String[] fileNames = dir.list();
+      if (fileNames == null) {
+        throw new IOException("can not list directory "
+            + dir.getAbsolutePath());
+      }
+      if (fileNames.length != (dirCount + currentCount)) {
+        prepare(fileNames);
+      }
+      Arrays.sort(fileNames);
 
-		protected String getUniquePrefix() {
-			return theFormat.format(getUniqueMillis());
-		}
+      int delete = Math.min(fileNames.length, currentCount - max);
+      for (int i = 0; i < delete; i++) {
+        File deleteFile = new File(dir, fileNames[i]);
+        if (deleteFile.isFile()) {
+          if (!deleteFile.delete()) {
+            throw new IOException("can not delete file "
+                + deleteFile.getAbsolutePath());
+          }
+          currentCount--;
+        }
+      }
+    }
 
-		protected void prepare() {
-			String[] fileNames = dir.list();
-			if (fileNames == null) {
-				// error, ignore
-				return;
-			}
-			prepare(fileNames);
-		}
+    public java.io.File getDir() {
+      return dir;
+    }
 
-		protected void prepare(String[] fileNames) {
-			currentCount = 0;
-			dirCount = 0;
-			if (fileNames != null) {
-				for (int i = 0; i < fileNames.length; i++) {
-					File f = new File(dir, fileNames[i]);
-					if (f.isFile()) {
-						currentCount++;
-					} else {
-						dirCount++;
-					}
-				}
-			}
-		}
+    private void setDir(java.io.File newDir) {
+      dir = newDir;
+    }
 
-		private void setDir(java.io.File newDir) {
-			dir = newDir;
-		}
+    public synchronized File getDumpFile(String name, int max)
+        throws IOException {
+      File newFile = new File(getDir(), getUniquePrefix() + "." + name);
 
-		private void setLastDump(long newLastDump) {
-			lastDump = newLastDump;
-		}
-	}
+      // check directory every time, maybe deleted by some nerd...
+      checkDir();
+      if (!newFile.createNewFile()) {
+        throw new IOException("can not create file "
+            + newFile.getAbsolutePath());
+      }
+      currentCount++;
+      try {
+        checkFiles(max);
+      } catch (IOException e) {
+        // ignore if we can not hold the correct level in dump directory
+      }
+      return newFile;
+    }
 
-	// 
-	private static Map dumpDirs = new HashMap();
+    public long getLastDump() {
+      return lastDump;
+    }
 
-	// the number format used for archiving
-	private static final NumberFormat theFormat;
+    private void setLastDump(long newLastDump) {
+      lastDump = newLastDump;
+    }
 
-	static {
-		theFormat = NumberFormat.getNumberInstance();
-		theFormat.setMaximumFractionDigits(0);
-		theFormat.setMinimumIntegerDigits(19);
-		theFormat.setGroupingUsed(false);
-	}
+    protected long getUniqueMillis() {
+      // ensure unique counter values, millisecondsbased
+      long current = System.currentTimeMillis();
+      while (getLastDump() >= current) {
+        current++;
+      }
+      setLastDump(current);
+      return current;
+    }
 
-	/**
-	 * Archive a files content.
-	 * 
-	 * <p>
-	 * The method creates a copy in the archive directory with a unique name
-	 * that is guaranteed to create a sortable representation so that newer
-	 * files have a "greater" filename. Creation of file names is thread safe.
-	 * If more than <code>max</code> files are in the archive directory, the
-	 * oldest files are deleted. max = 0 means never create archive, max = -1
-	 * means always create archive. If <code>deleteSource</code> is
-	 * <code>true</code>, the file to be archived is deleted after the archive
-	 * was created.
-	 * </p>
-	 * 
-	 * @param root
-	 *            The root for relative addressing.
-	 * @param relativePath
-	 *            The path relative to root where to create the archive.
-	 * @param file
-	 *            The file to archive.
-	 * @param max
-	 *            The maximum number of archive files allowed.han
-	 * @param sourceEncoding
-	 *            The encoding of the file to be archived.
-	 * @param destinationEncoding
-	 *            The encoding of the archived file.
-	 * @param deleteSource
-	 *            Flag if source should be deleted.
-	 * @param forceArchive
-	 *            Flag if we should archive even if file is already in the
-	 *            archive directory.
-	 * @return The name of the archived file, or null.
-	 * 
-	 * @throws IOException
-	 */
-	public static String archive(File root, String relativePath, File file,
-			int max, String sourceEncoding, String destinationEncoding,
-			boolean deleteSource, boolean forceArchive) throws IOException {
-		if ((max == 0) || (root == null)) {
-			// no archiving desired
-			return null;
-		}
+    protected String getUniquePrefix() {
+      return theFormat.format(getUniqueMillis());
+    }
 
-		String dirName = FileTools.resolvePath(root, relativePath)
-				.getAbsolutePath();
-		File archive;
-		if (!forceArchive
-				&& dirName.equals(file.getParentFile().getAbsolutePath())) {
-			// i'm already in the temp directory, no need to copy
-			archive = file;
-		} else {
-			DumpDirectory d = DumpDirectory.get(dirName);
-			archive = d.getDumpFile(file.getName(), max);
-			if (deleteSource) {
-				FileTools.renameFile(file, sourceEncoding, archive,
-						destinationEncoding);
-			} else {
-				FileTools.copyFile(file, sourceEncoding, archive,
-						destinationEncoding);
-			}
-		}
-		try {
-			archive.setLastModified(System.currentTimeMillis());
-		} catch (Exception ignore) {
-			// getLog().logWarning(getLogPrefix() + " could not set
-			// modification
-			// time for file " + renamedFile.getPath());
-		}
-		return archive.getAbsolutePath();
-	}
+    protected void prepare() {
+      String[] fileNames = dir.list();
+      if (fileNames == null) {
+        // error, ignore
+        return;
+      }
+      prepare(fileNames);
+    }
 
-	/**
-	 * Create a archive file and dump the input stream to this file. Calls
-	 * createArchive, and then copies the is to the output stream.
-	 * 
-	 * @param root
-	 *            The root for relative addressing.
-	 * @param relativePath
-	 *            The path relative to root where to create the archive.
-	 * @param filename
-	 *            The file to archive.
-	 * @param max
-	 *            The maximum number of archive files allowed.han
-	 * @param is
-	 *            The input stream to be dumped.
-	 * @return The name of the archived file, or null.
-	 * 
-	 * @throws IOException
-	 */
-	public static String archive(File root, String relativePath,
-			String filename, InputStream is, int max) throws IOException {
-		if ((max == 0) || (root == null)) {
-			// no archiving desired
-			return null;
-		}
-
-		File archive = createArchive(root, relativePath, filename, max);
-		FileOutputStream os = new FileOutputStream(archive);
-		try {
-			StreamTools.copyStream(is, os);
-		} catch (Exception e) {
-			throw new IOException("archiving failed (" + e.getMessage() + ")");
-		} finally {
-			try {
-				if (os != null) {
-					os.close();
-				}
-			} catch (Exception ignore) {
-				// ignore failure
-			}
-		}
-		return archive.getAbsolutePath();
-	}
-
-	/**
-	 * Just creates a archive file, nothing will be dumped inside this file.
-	 * 
-	 * @param root
-	 *            The root for relative addressing.
-	 * @param relativePath
-	 *            The path relative to root where to create the archive.
-	 * @param filename
-	 *            The file to archive.
-	 * @param max
-	 *            The maximum number of archive files allowed.han
-	 * 
-	 * @return The name of the archived file, or null.
-	 * 
-	 * @throws IOException
-	 */
-	public static File createArchive(File root, String relativePath,
-			String filename, int max) throws IOException {
-		if ((max == 0) || (root == null)) {
-			// no archiving desired
-			return null;
-		}
-
-		String dirName = FileTools.resolvePath(root, relativePath)
-				.getAbsolutePath();
-		DumpDirectory d = DumpDirectory.get(dirName);
-		File archive = d.getDumpFile(filename, max);
-		return archive;
-	}
-
-	public static OutputStream createOutputStream(File root, String filename,
-			int max) throws IOException {
-		if ((max == 0) || (root == null)) {
-			// no archiving desired
-			return null;
-		}
-		DumpDirectory d = DumpDirectory.get(root);
-		File archive = d.getDumpFile(filename, max);
-		return new FileOutputStream(archive);
-	}
+    protected void prepare(String[] fileNames) {
+      currentCount = 0;
+      dirCount = 0;
+      if (fileNames != null) {
+        for (int i = 0; i < fileNames.length; i++) {
+          File f = new File(dir, fileNames[i]);
+          if (f.isFile()) {
+            currentCount++;
+          } else {
+            dirCount++;
+          }
+        }
+      }
+    }
+  }
 
 }

@@ -36,10 +36,9 @@ package de.intarsys.tools.component;
  * itself are intentionally not modeled. The implementor should check and narrow
  * the type according to the requested features (e.g.
  * de.intarsys.tools.reflect.IClassLoaderSupport).
- * 
  */
 public interface IContextSupport {
 
-	public void setContext(Object context) throws ContextConfigurationException;
+  public void setContext(Object context) throws ContextConfigurationException;
 
 }

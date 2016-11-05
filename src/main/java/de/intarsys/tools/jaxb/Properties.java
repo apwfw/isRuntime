@@ -9,18 +9,18 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "properties")
 public class Properties {
 
-	@XmlElement(name = "property")
-	private Property[] properties;
+  @XmlElement(name = "property")
+  private Property[] properties;
 
-	public Properties() {
-	}
+  public Properties() {
+  }
 
-	public Property[] getProperties() {
-		return properties;
-	}
+  public Property[] getProperties() {
+    return properties;
+  }
 
-	public void setProperties(Property[] properties) {
-		this.properties = properties;
-	}
+  public void setProperties(Property[] properties) {
+    this.properties = properties;
+  }
 
 }

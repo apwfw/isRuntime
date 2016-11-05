@@ -5,22 +5,24 @@ package de.intarsys.tools.monitor;
  */
 public class Trace {
 
-	private static ThreadLocal<MultiTrace> trace = new ThreadLocal<MultiTrace>() {
-		@Override
-		protected MultiTrace initialValue() {
-			return new MultiTrace();
-		};
-	};
+  private static ThreadLocal<MultiTrace> trace = new ThreadLocal<MultiTrace>() {
+    @Override
+    protected MultiTrace initialValue() {
+      return new MultiTrace();
+    }
 
-	static public ITrace get() {
-		return trace.get();
-	}
+    ;
+  };
 
-	static public void registerTrace(ITrace pTrace) {
-		trace.get().registerTrace(pTrace);
-	}
+  static public ITrace get() {
+    return trace.get();
+  }
 
-	static public void unregisterTrace(ITrace pTrace) {
-		trace.get().unregisterTrace(pTrace);
-	}
+  static public void registerTrace(ITrace pTrace) {
+    trace.get().registerTrace(pTrace);
+  }
+
+  static public void unregisterTrace(ITrace pTrace) {
+    trace.get().unregisterTrace(pTrace);
+  }
 }

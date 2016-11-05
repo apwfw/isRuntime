@@ -29,11 +29,11 @@
  */
 package de.intarsys.tools.expression;
 
+import de.intarsys.tools.functor.IArgs;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import de.intarsys.tools.functor.IArgs;
 
 /**
  * An {@link IStringEvaluator} that supports a list of other resolvers that are
@@ -41,50 +41,48 @@ import de.intarsys.tools.functor.IArgs;
  */
 public class ScopedResolver implements IStringEvaluator {
 
-	private List<IStringEvaluator> resolvers = new ArrayList<IStringEvaluator>();
+  private List<IStringEvaluator> resolvers = new ArrayList<IStringEvaluator>();
 
-	/**
-	 * Add a new resolver at the end of the search sequence.
-	 * 
-	 * @param resolver
-	 * 
-	 */
-	public void addResolver(IStringEvaluator resolver) {
-		resolvers.add(resolver);
-	}
+  /**
+   * Add a new resolver at the end of the search sequence.
+   *
+   * @param resolver
+   */
+  public void addResolver(IStringEvaluator resolver) {
+    resolvers.add(resolver);
+  }
 
-	public Object evaluate(String expression, IArgs args)
-			throws EvaluationException {
-		for (Iterator it = resolvers.iterator(); it.hasNext();) {
-			IStringEvaluator resolver = (IStringEvaluator) it.next();
-			try {
-				return resolver.evaluate(expression, args);
-			} catch (Exception e) {
-				// try next
-			}
-		}
-		throw new EvaluationException("can't evaluate '" + expression + "'"); //$NON-NLS-1$ //$NON-NLS-2$
-	}
+  public Object evaluate(String expression, IArgs args)
+      throws EvaluationException {
+    for (Iterator it = resolvers.iterator(); it.hasNext(); ) {
+      IStringEvaluator resolver = (IStringEvaluator) it.next();
+      try {
+        return resolver.evaluate(expression, args);
+      } catch (Exception e) {
+        // try next
+      }
+    }
+    throw new EvaluationException("can't evaluate '" + expression + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+  }
 
-	public IStringEvaluator popResolver() {
-		if (resolvers.size() == 0) {
-			return null;
-		}
-		return resolvers.remove(0);
-	}
+  public IStringEvaluator popResolver() {
+    if (resolvers.size() == 0) {
+      return null;
+    }
+    return resolvers.remove(0);
+  }
 
-	/**
-	 * Add a new resolver at the beginning of the search sequence.
-	 * 
-	 * @param resolver
-	 * 
-	 */
-	public void pushResolver(IStringEvaluator resolver) {
-		resolvers.add(0, resolver);
-	}
+  /**
+   * Add a new resolver at the beginning of the search sequence.
+   *
+   * @param resolver
+   */
+  public void pushResolver(IStringEvaluator resolver) {
+    resolvers.add(0, resolver);
+  }
 
-	public void removeResolver(IStringEvaluator resolver) {
-		resolvers.remove(resolver);
-	}
+  public void removeResolver(IStringEvaluator resolver) {
+    resolvers.remove(resolver);
+  }
 
 }

@@ -29,76 +29,76 @@
  */
 package de.intarsys.tools.digest;
 
+import de.intarsys.tools.monitor.Trace;
+
 import java.security.MessageDigest;
 import java.util.logging.Level;
-
-import de.intarsys.tools.monitor.Trace;
 
 /**
  * A JCA based {@link IDigester} implementation.
  */
 public class Digester implements IDigester {
 
-	private MessageDigest messageDigest;
+  private MessageDigest messageDigest;
 
-	private String algorithmName;
+  private String algorithmName;
 
-	protected Digester(String algorithmName, MessageDigest messageDigest) {
-		this.messageDigest = messageDigest;
-		this.algorithmName = algorithmName;
-	}
+  protected Digester(String algorithmName, MessageDigest messageDigest) {
+    this.messageDigest = messageDigest;
+    this.algorithmName = algorithmName;
+  }
 
-	protected IDigest basicDigest() {
-		byte[] digest = getMessageDigest().digest();
-		return new Digest(getAlgorithmName(), digest);
-	}
+  protected IDigest basicDigest() {
+    byte[] digest = getMessageDigest().digest();
+    return new Digest(getAlgorithmName(), digest);
+  }
 
-	public IDigest digest() {
-		try {
-			Trace.get().sample(Level.FINE, "digest enter");
-			return basicDigest();
-		} finally {
-			Trace.get().sample(Level.FINE, "digest leave");
-		}
-	}
+  public IDigest digest() {
+    try {
+      Trace.get().sample(Level.FINE, "digest enter");
+      return basicDigest();
+    } finally {
+      Trace.get().sample(Level.FINE, "digest leave");
+    }
+  }
 
-	public IDigest digest(byte[] input) {
-		return digest(input, 0, input.length);
-	}
+  public IDigest digest(byte[] input) {
+    return digest(input, 0, input.length);
+  }
 
-	public IDigest digest(byte[] input, int offset, int length) {
-		try {
-			Trace.get().sample(Level.FINE, "digest enter");
-			update(input, offset, length);
-			return basicDigest();
-		} finally {
-			Trace.get().sample(Level.FINE, "digest leave");
-		}
-	}
+  public IDigest digest(byte[] input, int offset, int length) {
+    try {
+      Trace.get().sample(Level.FINE, "digest enter");
+      update(input, offset, length);
+      return basicDigest();
+    } finally {
+      Trace.get().sample(Level.FINE, "digest leave");
+    }
+  }
 
-	public String getAlgorithmName() {
-		return algorithmName;
-	}
+  public String getAlgorithmName() {
+    return algorithmName;
+  }
 
-	protected MessageDigest getMessageDigest() {
-		return messageDigest;
-	}
+  protected MessageDigest getMessageDigest() {
+    return messageDigest;
+  }
 
-	public void reset() {
-		getMessageDigest().reset();
-	}
+  public void reset() {
+    getMessageDigest().reset();
+  }
 
-	@Override
-	public String toString() {
-		return getAlgorithmName();
-	}
+  @Override
+  public String toString() {
+    return getAlgorithmName();
+  }
 
-	public void update(byte[] data) {
-		update(data, 0, data.length);
-	}
+  public void update(byte[] data) {
+    update(data, 0, data.length);
+  }
 
-	public void update(byte[] data, int offset, int length) {
-		getMessageDigest().update(data, offset, length);
-	}
+  public void update(byte[] data, int offset, int length) {
+    getMessageDigest().update(data, offset, length);
+  }
 
 }

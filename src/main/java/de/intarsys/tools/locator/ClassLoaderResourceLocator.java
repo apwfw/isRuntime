@@ -29,6 +29,9 @@
  */
 package de.intarsys.tools.locator;
 
+import de.intarsys.tools.file.FileTools;
+import de.intarsys.tools.randomaccess.IRandomAccess;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,310 +41,308 @@ import java.io.Reader;
 import java.io.Writer;
 import java.net.URL;
 
-import de.intarsys.tools.file.FileTools;
-import de.intarsys.tools.randomaccess.IRandomAccess;
-
 /**
  * An {@link ILocator} for java resources identified directly by a class loader.
- * 
  */
 public class ClassLoaderResourceLocator extends CommonLocator {
-	private final ClassLoader classLoader;
+  private final ClassLoader classLoader;
 
-	private final String name;
+  private final String name;
 
-	/** The encoding of the designated source */
-	private String encoding;
+  /**
+   * The encoding of the designated source
+   */
+  private String encoding;
 
-	private ILocator tempFileLocator;
+  private ILocator tempFileLocator;
 
-	public ClassLoaderResourceLocator(ClassLoader classLoader, String name) {
-		super();
-		this.classLoader = classLoader;
-		this.name = name;
-	}
+  public ClassLoaderResourceLocator(ClassLoader classLoader, String name) {
+    super();
+    this.classLoader = classLoader;
+    this.name = name;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof ClassLoaderResourceLocator)) {
-			return false;
-		}
-		return name.equals(((ClassLoaderResourceLocator) obj).name)
-				&& classLoader
-						.equals(((ClassLoaderResourceLocator) obj).classLoader);
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof ClassLoaderResourceLocator)) {
+      return false;
+    }
+    return name.equals(((ClassLoaderResourceLocator) obj).name)
+        && classLoader
+        .equals(((ClassLoaderResourceLocator) obj).classLoader);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#exists()
-	 */
-	public boolean exists() {
-		return getClassLoader().getResource(getName()) != null;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#exists()
+   */
+  public boolean exists() {
+    return getClassLoader().getResource(getName()) != null;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getChild(java.lang.String)
-	 */
-	public ILocator getChild(String childName) {
-		String child = getName() + "/" + childName;
-		ClassLoaderResourceLocator result = new ClassLoaderResourceLocator(
-				getClassLoader(), child);
-		return result;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getChild(java.lang.String)
+   */
+  public ILocator getChild(String childName) {
+    String child = getName() + "/" + childName;
+    ClassLoaderResourceLocator result = new ClassLoaderResourceLocator(
+        getClassLoader(), child);
+    return result;
+  }
 
-	/**
-	 * The {@link ClassLoader} used to access the resource.
-	 * 
-	 * @return The {@link ClassLoader} used to access the resource.
-	 */
-	public ClassLoader getClassLoader() {
-		return classLoader;
-	}
+  /**
+   * The {@link ClassLoader} used to access the resource.
+   *
+   * @return The {@link ClassLoader} used to access the resource.
+   */
+  public ClassLoader getClassLoader() {
+    return classLoader;
+  }
 
-	protected String getEncoding() {
-		return encoding;
-	}
+  protected String getEncoding() {
+    return encoding;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getFullName()
-	 */
-	public String getFullName() {
-		return getName();
-	}
+  protected void setEncoding(String encoding) {
+    this.encoding = encoding;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getInputStream()
-	 */
-	public InputStream getInputStream() throws IOException {
-		return getClassLoader().getResourceAsStream(getName());
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getFullName()
+   */
+  public String getFullName() {
+    return getName();
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getLocalName()
-	 */
-	public String getLocalName() {
-		if (getName() == null) {
-			return "unknown";
-		} else {
-			return FileTools.getBaseName(getName());
-		}
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getInputStream()
+   */
+  public InputStream getInputStream() throws IOException {
+    return getClassLoader().getResourceAsStream(getName());
+  }
 
-	/**
-	 * The resource name defined when constructing this.
-	 * 
-	 * @return The resource name defined when constructing this.
-	 */
-	public String getName() {
-		return name;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getLocalName()
+   */
+  public String getLocalName() {
+    if (getName() == null) {
+      return "unknown";
+    } else {
+      return FileTools.getBaseName(getName());
+    }
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getOutputStream()
-	 */
-	public OutputStream getOutputStream() throws IOException {
-		throw new IOException("locator is read only");
-	}
+  /**
+   * The resource name defined when constructing this.
+   *
+   * @return The resource name defined when constructing this.
+   */
+  public String getName() {
+    return name;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getParent()
-	 */
-	public ILocator getParent() {
-		int index = getName().lastIndexOf("/");
-		if (index > -1) {
-			String parentname = getName().substring(0, index);
-			return new ClassLoaderResourceLocator(getClassLoader(), parentname);
-		} else {
-			return null;
-		}
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getOutputStream()
+   */
+  public OutputStream getOutputStream() throws IOException {
+    throw new IOException("locator is read only");
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getRandomAccessData()
-	 */
-	synchronized public IRandomAccess getRandomAccess() throws IOException {
-		if (tempFileLocator == null) {
-			tempFileLocator = createTempFileLocator();
-		}
-		return tempFileLocator.getRandomAccess();
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getParent()
+   */
+  public ILocator getParent() {
+    int index = getName().lastIndexOf("/");
+    if (index > -1) {
+      String parentname = getName().substring(0, index);
+      return new ClassLoaderResourceLocator(getClassLoader(), parentname);
+    } else {
+      return null;
+    }
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getReader()
-	 */
-	public Reader getReader() throws IOException {
-		if (getEncoding() == null) {
-			return new InputStreamReader(getInputStream());
-		} else {
-			return new InputStreamReader(getInputStream(), getEncoding());
-		}
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getRandomAccessData()
+   */
+  synchronized public IRandomAccess getRandomAccess() throws IOException {
+    if (tempFileLocator == null) {
+      tempFileLocator = createTempFileLocator();
+    }
+    return tempFileLocator.getRandomAccess();
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getReader(java.lang.String)
-	 */
-	public Reader getReader(String newEncoding) throws IOException {
-		if ((newEncoding == null) || newEncoding.equals("")) {
-			return getReader();
-		} else {
-			return new InputStreamReader(getInputStream(), newEncoding);
-		}
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getReader()
+   */
+  public Reader getReader() throws IOException {
+    if (getEncoding() == null) {
+      return new InputStreamReader(getInputStream());
+    } else {
+      return new InputStreamReader(getInputStream(), getEncoding());
+    }
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getType()
-	 */
-	public String getType() {
-		if (getName() == null) {
-			return "<unknown>";
-		}
-		return FileTools.getExtension(new File(getName()));
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getReader(java.lang.String)
+   */
+  public Reader getReader(String newEncoding) throws IOException {
+    if ((newEncoding == null) || newEncoding.equals("")) {
+      return getReader();
+    } else {
+      return new InputStreamReader(getInputStream(), newEncoding);
+    }
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getTypedName()
-	 */
-	public String getTypedName() {
-		if (getName() == null) {
-			return "<unknown>";
-		}
-		return new File(getName()).getName();
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getType()
+   */
+  public String getType() {
+    if (getName() == null) {
+      return "<unknown>";
+    }
+    return FileTools.getExtension(new File(getName()));
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getWriter()
-	 */
-	public Writer getWriter() throws IOException {
-		throw new IOException("locator is read only");
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getTypedName()
+   */
+  public String getTypedName() {
+    if (getName() == null) {
+      return "<unknown>";
+    }
+    return new File(getName()).getName();
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#getWriter(java.lang.String)
-	 */
-	public Writer getWriter(String pEncoding) throws IOException {
-		throw new IOException("locator is read only");
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getWriter()
+   */
+  public Writer getWriter() throws IOException {
+    throw new IOException("locator is read only");
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		return name.hashCode();
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#getWriter(java.lang.String)
+   */
+  public Writer getWriter(String pEncoding) throws IOException {
+    throw new IOException("locator is read only");
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#isDirectory()
-	 */
-	public boolean isDirectory() {
-		return false;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.lang.Object#hashCode()
+   */
+  @Override
+  public int hashCode() {
+    return name.hashCode();
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.component.ISynchronizable#isOutOfSynch()
-	 */
-	public boolean isOutOfSynch() {
-		return false;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#isDirectory()
+   */
+  public boolean isDirectory() {
+    return false;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#isReadOnly()
-	 */
-	@Override
-	public boolean isReadOnly() {
-		return true;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.component.ISynchronizable#isOutOfSynch()
+   */
+  public boolean isOutOfSynch() {
+    return false;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.component.ISynchronizable#isSynchSynchronous()
-	 */
-	public boolean isSynchSynchronous() {
-		return false;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#isReadOnly()
+   */
+  @Override
+  public boolean isReadOnly() {
+    return true;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.intarsys.tools.locator.ILocator#listLocators(de.intarsys.tools.locator
-	 * .ILocatorNameFilter)
-	 */
-	public ILocator[] listLocators(final ILocatorNameFilter filter)
-			throws IOException {
-		return new ILocator[0];
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.component.ISynchronizable#isSynchSynchronous()
+   */
+  public boolean isSynchSynchronous() {
+    return false;
+  }
 
-	protected void setEncoding(String encoding) {
-		this.encoding = encoding;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see
+   * de.intarsys.tools.locator.ILocator#listLocators(de.intarsys.tools.locator
+   * .ILocatorNameFilter)
+   */
+  public ILocator[] listLocators(final ILocatorNameFilter filter)
+      throws IOException {
+    return new ILocator[0];
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.component.ISynchronizable#synch()
-	 */
-	public void synch() {
-		// do nothing
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.component.ISynchronizable#synch()
+   */
+  public void synch() {
+    // do nothing
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return getName();
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    return getName();
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.locator.ILocator#toURL()
-	 */
-	public URL toURL() {
-		return null;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.locator.ILocator#toURL()
+   */
+  public URL toURL() {
+    return null;
+  }
 }

@@ -34,6 +34,6 @@ package de.intarsys.tools.functor;
  */
 public interface IArgsConfigurable {
 
-	public void configure(IArgs args) throws ArgsConfigurationException;
+  public void configure(IArgs args) throws ArgsConfigurationException;
 
 }

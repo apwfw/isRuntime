@@ -30,6 +30,6 @@
 package de.intarsys.tools.oid;
 
 public interface IOIDGenerator {
-	public Object createOID();
+  public Object createOID();
 
 }

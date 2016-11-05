@@ -35,7 +35,7 @@ import java.util.NoSuchElementException;
 /**
  * Implement an Iterator over a virtual collection of numbers defined by an
  * interval.
- * 
+ * <p>
  * <p>
  * The iterator returns every number with (from &gt.= number) and (number &lt.=
  * to) starting with <code>from</code>. The current number is incremented by
@@ -43,66 +43,64 @@ import java.util.NoSuchElementException;
  * </p>
  */
 public class IntervalIterator implements Iterator {
-	//
-	private double current;
+  //
+  private double current;
 
-	private double from;
+  private double from;
 
-	private double step = 1;
+  private double step = 1;
 
-	private double to;
+  private double to;
 
-	/**
-	 * IntervalIterator constructor .
-	 * 
-	 * @param from
-	 *            The first number to be returned by the iterator.
-	 * @param to
-	 *            The number defining an upper limit to the numbers in the
-	 *            collection.
-	 */
-	public IntervalIterator(Number from, Number to) {
-		super();
-		this.from = from.doubleValue();
-		this.to = to.doubleValue();
-		current = this.from;
-	}
+  /**
+   * IntervalIterator constructor .
+   *
+   * @param from The first number to be returned by the iterator.
+   * @param to   The number defining an upper limit to the numbers in the
+   *             collection.
+   */
+  public IntervalIterator(Number from, Number to) {
+    super();
+    this.from = from.doubleValue();
+    this.to = to.doubleValue();
+    current = this.from;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.Iterator#hasNext()
-	 */
-	public boolean hasNext() {
-		if (current > to) {
-			return false;
-		} else {
-			return true;
-		}
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.util.Iterator#hasNext()
+   */
+  public boolean hasNext() {
+    if (current > to) {
+      return false;
+    } else {
+      return true;
+    }
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.Iterator#next()
-	 */
-	public java.lang.Object next() {
-		Number activeElement;
-		if (!hasNext()) {
-			throw new NoSuchElementException("no more elements");
-		}
-		activeElement = new Double(current);
-		current = current + step;
-		return activeElement;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.util.Iterator#next()
+   */
+  public java.lang.Object next() {
+    Number activeElement;
+    if (!hasNext()) {
+      throw new NoSuchElementException("no more elements");
+    }
+    activeElement = new Double(current);
+    current = current + step;
+    return activeElement;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.Iterator#remove()
-	 */
-	public void remove() {
-		throw new UnsupportedOperationException(
-				"IntervalIterator not modifiable");
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.util.Iterator#remove()
+   */
+  public void remove() {
+    throw new UnsupportedOperationException(
+        "IntervalIterator not modifiable");
+  }
 }

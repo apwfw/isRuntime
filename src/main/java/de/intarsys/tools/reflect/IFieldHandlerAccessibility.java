@@ -34,24 +34,23 @@ package de.intarsys.tools.reflect;
  */
 public interface IFieldHandlerAccessibility {
 
-	public static int NONE = 0;
+  public static int NONE = 0;
 
-	public static int READONLY = 1;
+  public static int READONLY = 1;
 
-	public static int READWRITE = 3;
+  public static int READWRITE = 3;
 
-	public static int WRITEONLY = 2;
+  public static int WRITEONLY = 2;
 
-	/**
-	 * Query the access state of the field represented by this within the
-	 * <code>receiver</code>.
-	 * 
-	 * @param receiver
-	 *            The object hosting the field.
-	 * @return The current access state (one of NONE, READONLY, READWRITE or
-	 *         WRITEONLY)
-	 * @throws FieldException
-	 */
-	public int getAccessMode(Object receiver) throws FieldAccessException;
+  /**
+   * Query the access state of the field represented by this within the
+   * <code>receiver</code>.
+   *
+   * @param receiver The object hosting the field.
+   * @return The current access state (one of NONE, READONLY, READWRITE or
+   * WRITEONLY)
+   * @throws FieldException
+   */
+  public int getAccessMode(Object receiver) throws FieldAccessException;
 
 }

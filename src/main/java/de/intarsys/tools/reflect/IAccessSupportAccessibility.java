@@ -34,22 +34,21 @@ package de.intarsys.tools.reflect;
  */
 public interface IAccessSupportAccessibility {
 
-	public static int NONE = 0;
+  public static int NONE = 0;
 
-	public static int READONLY = 1;
+  public static int READONLY = 1;
 
-	public static int READWRITE = 3;
+  public static int READWRITE = 3;
 
-	public static int WRITEONLY = 2;
+  public static int WRITEONLY = 2;
 
-	/**
-	 * Query the access state of the property <code>name</code> within this.
-	 * 
-	 * @param name
-	 *            The name of the field to get.
-	 * @return The current access state (one of NONE, READONLY, READWRITE or
-	 *         WRITEONLY)
-	 * @throws FieldException
-	 */
-	public int getAccessMode(String name) throws FieldAccessException;
+  /**
+   * Query the access state of the property <code>name</code> within this.
+   *
+   * @param name The name of the field to get.
+   * @return The current access state (one of NONE, READONLY, READWRITE or
+   * WRITEONLY)
+   * @throws FieldException
+   */
+  public int getAccessMode(String name) throws FieldAccessException;
 }

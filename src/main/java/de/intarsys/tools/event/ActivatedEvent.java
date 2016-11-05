@@ -31,19 +31,18 @@ package de.intarsys.tools.event;
 
 /**
  * An event indicating the activation of an application component.
- * 
  */
 public class ActivatedEvent extends Event {
 
-	public static final EventType ID = new EventType(ActivatedEvent.class
-			.getName());
+  public static final EventType ID = new EventType(ActivatedEvent.class
+      .getName());
 
-	public ActivatedEvent(Object source) {
-		super(source);
-	}
+  public ActivatedEvent(Object source) {
+    super(source);
+  }
 
-	@Override
-	public EventType getEventType() {
-		return ID;
-	}
+  @Override
+  public EventType getEventType() {
+    return ID;
+  }
 }

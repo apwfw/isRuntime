@@ -29,10 +29,6 @@
  */
 package de.intarsys.tools.digest;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.security.NoSuchAlgorithmException;
-
 import de.intarsys.tools.converter.ConversionException;
 import de.intarsys.tools.converter.ConverterRegistry;
 import de.intarsys.tools.encoding.Base64;
@@ -43,91 +39,94 @@ import de.intarsys.tools.locator.ILocatorSupport;
 import de.intarsys.tools.locator.LocatorTools;
 import de.intarsys.tools.string.StringTools;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.NoSuchAlgorithmException;
+
 /**
  * Tools for dealing with digests.
- * 
  */
 public class DigestTools {
 
-	public static IDigest createDigest(Object value) throws IOException {
-		if (value == null) {
-			return null;
-		}
-		if (value instanceof IDigest) {
-			return (IDigest) value;
-		}
-		if (value instanceof String) {
-			if (StringTools.isEmpty((String) value)) {
-				return null;
-			}
-			value = Base64.decode((String) value);
-		}
-		if (value instanceof ILocator) {
-			value = LocatorTools.getBytes((ILocator) value);
-		}
-		if (value instanceof ILocatorSupport) {
-			value = LocatorTools.getBytes(((ILocatorSupport) value)
-					.getLocator());
-		}
-		if (value instanceof byte[]) {
-			return DigestEnvironment.get().decode((byte[]) value);
-		}
-		if (value instanceof IArgs) {
-			IArgs tempArgs = (IArgs) value;
-			byte[] bytes = ArgTools.getByteArray(tempArgs, "der", null);
-			if (bytes == null) {
-				bytes = ArgTools.getByteArray(tempArgs, "raw", null);
-				String hashAlgorithm = ArgTools.getString(tempArgs,
-						"algorithm", "SHA256");
-				if (bytes != null) {
-					return DigestEnvironment.get().createDigest(hashAlgorithm,
-							bytes);
-				}
-			} else {
-				return DigestEnvironment.get().decode(bytes);
-			}
-		}
-		try {
-			return ConverterRegistry.get().convert(value, IDigest.class);
-		} catch (ConversionException e) {
-			throw new IOException("can't convert " + value + " to digest");
-		}
-	}
+  public static IDigest createDigest(Object value) throws IOException {
+    if (value == null) {
+      return null;
+    }
+    if (value instanceof IDigest) {
+      return (IDigest) value;
+    }
+    if (value instanceof String) {
+      if (StringTools.isEmpty((String) value)) {
+        return null;
+      }
+      value = Base64.decode((String) value);
+    }
+    if (value instanceof ILocator) {
+      value = LocatorTools.getBytes((ILocator) value);
+    }
+    if (value instanceof ILocatorSupport) {
+      value = LocatorTools.getBytes(((ILocatorSupport) value)
+          .getLocator());
+    }
+    if (value instanceof byte[]) {
+      return DigestEnvironment.get().decode((byte[]) value);
+    }
+    if (value instanceof IArgs) {
+      IArgs tempArgs = (IArgs) value;
+      byte[] bytes = ArgTools.getByteArray(tempArgs, "der", null);
+      if (bytes == null) {
+        bytes = ArgTools.getByteArray(tempArgs, "raw", null);
+        String hashAlgorithm = ArgTools.getString(tempArgs,
+            "algorithm", "SHA256");
+        if (bytes != null) {
+          return DigestEnvironment.get().createDigest(hashAlgorithm,
+              bytes);
+        }
+      } else {
+        return DigestEnvironment.get().decode(bytes);
+      }
+    }
+    try {
+      return ConverterRegistry.get().convert(value, IDigest.class);
+    } catch (ConversionException e) {
+      throw new IOException("can't convert " + value + " to digest");
+    }
+  }
 
-	public static IDigester createDigesterSHA1() {
-		try {
-			return DigestEnvironment.get().createDigester("SHA1");
-		} catch (NoSuchAlgorithmException e) {
-			throw new IllegalStateException("SHA1 digest not supported");
-		}
-	}
+  public static IDigester createDigesterSHA1() {
+    try {
+      return DigestEnvironment.get().createDigester("SHA1");
+    } catch (NoSuchAlgorithmException e) {
+      throw new IllegalStateException("SHA1 digest not supported");
+    }
+  }
 
-	public static IDigest digest(IDigester digester, InputStream is)
-			throws IOException {
-		return digest(digester, is, 1024);
-	}
+  public static IDigest digest(IDigester digester, InputStream is)
+      throws IOException {
+    return digest(digester, is, 1024);
+  }
 
-	public static IDigest digest(IDigester digester, InputStream is,
-			int bufferSize) throws IOException {
-		byte[] buffer = new byte[bufferSize];
-		int i = is.read(buffer);
-		while (i != -1) {
-			digester.update(buffer, 0, i);
-			i = is.read(buffer);
-		}
-		return digester.digest();
-	}
+  public static IDigest digest(IDigester digester, InputStream is,
+                               int bufferSize) throws IOException {
+    byte[] buffer = new byte[bufferSize];
+    int i = is.read(buffer);
+    while (i != -1) {
+      digester.update(buffer, 0, i);
+      i = is.read(buffer);
+    }
+    return digester.digest();
+  }
 
-	public static int suggestBufferSize(long totalSize) {
-		int bufferSize;
-		if (totalSize < (32 * 1024)) { // < 32kb
-			bufferSize = 1024; // 1kb
-		} else if (totalSize < (1 * 1024 * 1024)) { // < 1 MB
-			bufferSize = 32 * 1024; // 32kb
-		} else { // > 1 MB
-			bufferSize = 96 * 1024; // 96kb
-		}
-		return bufferSize;
-	}
+  public static int suggestBufferSize(long totalSize) {
+    int bufferSize;
+    if (totalSize < (32 * 1024)) { // < 32kb
+      bufferSize = 1024; // 1kb
+    } else if (totalSize < (1 * 1024 * 1024)) { // < 1 MB
+      bufferSize = 32 * 1024; // 32kb
+    } else { // > 1 MB
+      bufferSize = 96 * 1024; // 96kb
+    }
+    return bufferSize;
+  }
 
 }

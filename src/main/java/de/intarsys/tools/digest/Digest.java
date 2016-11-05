@@ -29,55 +29,54 @@
  */
 package de.intarsys.tools.digest;
 
-import java.util.Arrays;
-
 import de.intarsys.tools.hex.HexTools;
+
+import java.util.Arrays;
 
 /**
  * The default {@link IDigest} implementation.
- * 
  */
 public class Digest implements IDigest {
 
-	private String algorithmName;
+  private String algorithmName;
 
-	private byte[] digest;
+  private byte[] digest;
 
-	protected Digest(String name, byte[] digest) {
-		this.algorithmName = name;
-		this.digest = digest;
-	}
+  protected Digest(String name, byte[] digest) {
+    this.algorithmName = name;
+    this.digest = digest;
+  }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof Digest)) {
-			return false;
-		}
-		Digest otherDigest = (Digest) obj;
-		return otherDigest.algorithmName.equals(algorithmName)
-				&& Arrays.equals(otherDigest.digest, digest);
-	}
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof Digest)) {
+      return false;
+    }
+    Digest otherDigest = (Digest) obj;
+    return otherDigest.algorithmName.equals(algorithmName)
+        && Arrays.equals(otherDigest.digest, digest);
+  }
 
-	public String getAlgorithmName() {
-		return algorithmName;
-	}
+  public String getAlgorithmName() {
+    return algorithmName;
+  }
 
-	public byte[] getBytes() {
-		return digest;
-	}
+  public byte[] getBytes() {
+    return digest;
+  }
 
-	public int getSize() {
-		return digest.length * 8;
-	}
+  public int getSize() {
+    return digest.length * 8;
+  }
 
-	@Override
-	public int hashCode() {
-		return Arrays.hashCode(digest);
-	}
+  @Override
+  public int hashCode() {
+    return Arrays.hashCode(digest);
+  }
 
-	@Override
-	public String toString() {
-		return getAlgorithmName() + ":" //$NON-NLS-1$
-				+ HexTools.bytesToHexString(getBytes());
-	}
+  @Override
+  public String toString() {
+    return getAlgorithmName() + ":" //$NON-NLS-1$
+        + HexTools.bytesToHexString(getBytes());
+  }
 }

@@ -5,6 +5,6 @@ import java.util.logging.Handler;
 
 public interface IHandlerFactory {
 
-	public Handler createLogHandler() throws IOException;
+  public Handler createLogHandler() throws IOException;
 
 }

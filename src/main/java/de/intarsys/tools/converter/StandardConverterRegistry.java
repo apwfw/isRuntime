@@ -29,109 +29,109 @@
  */
 package de.intarsys.tools.converter;
 
+import de.intarsys.tools.provider.Providers;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import de.intarsys.tools.provider.Providers;
-
 /**
  * Standard {@link IConverterRegistry} implementation.
  */
 public class StandardConverterRegistry implements IConverterRegistry {
 
-	private static final Logger Log = PACKAGE.Log;
+  private static final Logger Log = PACKAGE.Log;
 
-	private final Map<Class, IConverter> converters = new HashMap<Class, IConverter>();
+  private final Map<Class, IConverter> converters = new HashMap<Class, IConverter>();
 
-	private boolean initialized = false;
+  private boolean initialized = false;
 
-	private boolean lookupProviders = true;
+  private boolean lookupProviders = true;
 
-	public Object convert(Object source, Class targetType)
-			throws ConversionException {
-		if (source == null) {
-			return null;
-		}
-		if (targetType == Object.class) {
-			// fast path
-			return source;
-		}
-		if (targetType.isInstance(source)) {
-			return source;
-		}
-		IConverter converter = lookupConverter(targetType);
-		if (converter == null) {
-			Object canonical = ConverterRegistry.get().convert(source,
-					Canonical.class);
-			if (canonical == source) {
-				// break recursion
-				throw new ConversionException("can't convert "
-						+ source.getClass().getName() + " to " + targetType);
-			}
-			try {
-				return ConverterRegistry.get().convert(canonical, targetType);
-			} catch (ConversionException e) {
-				throw new ConversionException("can't convert "
-						+ source.getClass().getName() + " to " + targetType, e);
-			}
-		}
-		return converter.convert(source);
-	}
+  public Object convert(Object source, Class targetType)
+      throws ConversionException {
+    if (source == null) {
+      return null;
+    }
+    if (targetType == Object.class) {
+      // fast path
+      return source;
+    }
+    if (targetType.isInstance(source)) {
+      return source;
+    }
+    IConverter converter = lookupConverter(targetType);
+    if (converter == null) {
+      Object canonical = ConverterRegistry.get().convert(source,
+          Canonical.class);
+      if (canonical == source) {
+        // break recursion
+        throw new ConversionException("can't convert "
+            + source.getClass().getName() + " to " + targetType);
+      }
+      try {
+        return ConverterRegistry.get().convert(canonical, targetType);
+      } catch (ConversionException e) {
+        throw new ConversionException("can't convert "
+            + source.getClass().getName() + " to " + targetType, e);
+      }
+    }
+    return converter.convert(source);
+  }
 
-	protected Iterator<IConverter> findProviders() {
-		return Providers.get().lookupProviders(IConverter.class);
-	}
+  protected Iterator<IConverter> findProviders() {
+    return Providers.get().lookupProviders(IConverter.class);
+  }
 
-	protected void init() {
-		if (!isLookupProviders() || initialized) {
-			return;
-		}
-		initialized = true;
-		Iterator<IConverter> ps = findProviders();
-		while (ps.hasNext()) {
-			try {
-				registerConverter(ps.next());
-			} catch (Throwable e) {
-				Log.log(Level.WARNING, "error creating converter", e);
-			}
-		}
-	}
+  protected void init() {
+    if (!isLookupProviders() || initialized) {
+      return;
+    }
+    initialized = true;
+    Iterator<IConverter> ps = findProviders();
+    while (ps.hasNext()) {
+      try {
+        registerConverter(ps.next());
+      } catch (Throwable e) {
+        Log.log(Level.WARNING, "error creating converter", e);
+      }
+    }
+  }
 
-	public boolean isLookupProviders() {
-		return lookupProviders;
-	}
+  public boolean isLookupProviders() {
+    return lookupProviders;
+  }
 
-	synchronized public IConverter lookupConverter(Class targetType) {
-		init();
-		return converters.get(targetType);
-	}
+  public void setLookupProviders(boolean lookupProviders) {
+    this.lookupProviders = lookupProviders;
+  }
 
-	synchronized public void registerConverter(IConverter converter) {
-		IConverter tempConverter = converters.get(converter.getTargetType());
-		if (tempConverter == null) {
-			tempConverter = new DoubleDispatchConverter(
-					converter.getTargetType());
-			((DoubleDispatchConverter) tempConverter)
-					.registerConverter(converter);
-			converters.put(tempConverter.getTargetType(), tempConverter);
-		} else {
-			((DoubleDispatchConverter) tempConverter)
-					.registerConverter(converter);
-		}
-	}
+  synchronized public IConverter lookupConverter(Class targetType) {
+    init();
+    return converters.get(targetType);
+  }
 
-	public void setLookupProviders(boolean lookupProviders) {
-		this.lookupProviders = lookupProviders;
-	}
+  synchronized public void registerConverter(IConverter converter) {
+    IConverter tempConverter = converters.get(converter.getTargetType());
+    if (tempConverter == null) {
+      tempConverter = new DoubleDispatchConverter(
+          converter.getTargetType());
+      ((DoubleDispatchConverter) tempConverter)
+          .registerConverter(converter);
+      converters.put(tempConverter.getTargetType(), tempConverter);
+    } else {
+      ((DoubleDispatchConverter) tempConverter)
+          .registerConverter(converter);
+    }
+  }
 
-	synchronized public void unregisterConverter(IConverter converter) {
-		IConverter tempConverter = converters.get(converter.getTargetType());
-		if (tempConverter != null) {
-			((DoubleDispatchConverter) tempConverter)
-					.unregisterConverter(converter);
-		}
-	}
+  synchronized public void unregisterConverter(IConverter converter) {
+    IConverter tempConverter = converters.get(converter.getTargetType());
+    if (tempConverter != null) {
+      ((DoubleDispatchConverter) tempConverter)
+          .unregisterConverter(converter);
+    }
+  }
 }

@@ -34,64 +34,62 @@ import java.lang.reflect.Method;
 
 /**
  * Access a field or method member of a class to take the sample.
- * 
  */
 public class MemberMonitorTrace extends MonitorTrace {
-	/**
-	 * Create instance
-	 * 
-	 * @param owner
-	 *            monitor owning the trace
-	 */
-	public MemberMonitorTrace(Monitor owner) {
-		super(owner);
-	}
+  /**
+   * Create instance
+   *
+   * @param owner monitor owning the trace
+   */
+  public MemberMonitorTrace(Monitor owner) {
+    super(owner);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.monitor.MonitorTrace#createSampleValue()
-	 */
-	@Override
-	protected long createSampleValue() {
-		Field field = getField();
-		if (field != null) {
-			return createSampleValueField(field);
-		} else {
-			return createSampleValueMethod(getMethod());
-		}
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.monitor.MonitorTrace#createSampleValue()
+   */
+  @Override
+  protected long createSampleValue() {
+    Field field = getField();
+    if (field != null) {
+      return createSampleValueField(field);
+    } else {
+      return createSampleValueMethod(getMethod());
+    }
+  }
 
-	protected long createSampleValueField(Field field) {
-		try {
-			Object result = field.get(null);
-			return ((Number) result).intValue();
-		} catch (Exception e) {
-			// ignore exceptions
-		}
-		return 0;
-	}
+  protected long createSampleValueField(Field field) {
+    try {
+      Object result = field.get(null);
+      return ((Number) result).intValue();
+    } catch (Exception e) {
+      // ignore exceptions
+    }
+    return 0;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.intarsys.tools.monitor.MonitorEvent#createSample()
-	 */
-	protected long createSampleValueMethod(Method method) {
-		try {
-			Object result = method.invoke(null, new Object[] {});
-			return ((Number) result).intValue();
-		} catch (Exception e) {
-			// ignore exceptions
-		}
-		return 0;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see de.intarsys.tools.monitor.MonitorEvent#createSample()
+   */
+  protected long createSampleValueMethod(Method method) {
+    try {
+      Object result = method.invoke(null, new Object[]{});
+      return ((Number) result).intValue();
+    } catch (Exception e) {
+      // ignore exceptions
+    }
+    return 0;
+  }
 
-	protected Field getField() {
-		return ((MemberMonitor) getOwner()).getField();
-	}
+  protected Field getField() {
+    return ((MemberMonitor) getOwner()).getField();
+  }
 
-	protected Method getMethod() {
-		return ((MemberMonitor) getOwner()).getMethod();
-	}
+  protected Method getMethod() {
+    return ((MemberMonitor) getOwner()).getMethod();
+  }
 }

@@ -39,16 +39,13 @@ package de.intarsys.tools.functor;
  * implementation itself.
  */
 public interface IFunctor<T> {
-	/**
-	 * Perform the encapsulated business logic in the context defined in "call".
-	 * 
-	 * @param call
-	 *            The call context
-	 * @return The behavior execution result.
-	 * 
-	 * @throws FunctorInvocationException
-	 *             An exception that raised while executing the business logic
-	 *             will be wrapped in a FunctorInvocationException.
-	 */
-	public T perform(IFunctorCall call) throws FunctorInvocationException;
+  /**
+   * Perform the encapsulated business logic in the context defined in "call".
+   *
+   * @param call The call context
+   * @return The behavior execution result.
+   * @throws FunctorInvocationException An exception that raised while executing the business logic
+   *                                    will be wrapped in a FunctorInvocationException.
+   */
+  public T perform(IFunctorCall call) throws FunctorInvocationException;
 }

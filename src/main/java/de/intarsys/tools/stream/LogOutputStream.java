@@ -38,7 +38,7 @@ import java.io.OutputStream;
  * <p>
  * The output stream is piped in the writing process, any characters written are
  * copied to an associated output stream object.
- * 
+ * <p>
  * <pre>
  * Client -&gt; LogOutputStream -&gt; OutputStream -&gt; Destination
  *            |
@@ -47,53 +47,51 @@ import java.io.OutputStream;
  * </pre>
  */
 public class LogOutputStream extends FilterOutputStream {
-	/**
-	 * 
-	 */
-	private OutputStream log;
+  /**
+   *
+   */
+  private OutputStream log;
 
-	/**
-	 * SplitStream - Konstruktorkommentar.
-	 * 
-	 * @param newout
-	 * 
-	 * @param newlog
-	 * 
-	 */
-	public LogOutputStream(OutputStream newout, OutputStream newlog) {
-		super(newout);
-		setLog(newlog);
-	}
+  /**
+   * SplitStream - Konstruktorkommentar.
+   *
+   * @param newout
+   * @param newlog
+   */
+  public LogOutputStream(OutputStream newout, OutputStream newlog) {
+    super(newout);
+    setLog(newlog);
+  }
 
-	@Override
-	public void close() throws IOException {
-		super.close();
-		if ((log != null)) {
-			log.close();
-		}
-	}
+  @Override
+  public void close() throws IOException {
+    super.close();
+    if ((log != null)) {
+      log.close();
+    }
+  }
 
-	@Override
-	public void flush() throws IOException {
-		super.flush();
-		if (log != null) {
-			log.flush();
-		}
-	}
+  @Override
+  public void flush() throws IOException {
+    super.flush();
+    if (log != null) {
+      log.flush();
+    }
+  }
 
-	public java.io.OutputStream getLog() {
-		return log;
-	}
+  public java.io.OutputStream getLog() {
+    return log;
+  }
 
-	public void setLog(java.io.OutputStream newLog) {
-		log = newLog;
-	}
+  public void setLog(java.io.OutputStream newLog) {
+    log = newLog;
+  }
 
-	@Override
-	public void write(int b) throws IOException {
-		super.write(b);
-		if (log != null) {
-			log.write(b);
-		}
-	}
+  @Override
+  public void write(int b) throws IOException {
+    super.write(b);
+    if (log != null) {
+      log.write(b);
+    }
+  }
 }

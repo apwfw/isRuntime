@@ -34,13 +34,13 @@ package de.intarsys.tools.result;
  */
 abstract public class CommonResult implements IResult {
 
-	private String contentType;
+  private String contentType;
 
-	public CommonResult(String contentType) {
-		this.contentType = contentType;
-	}
+  public CommonResult(String contentType) {
+    this.contentType = contentType;
+  }
 
-	public String getContentType() {
-		return contentType;
-	}
+  public String getContentType() {
+    return contentType;
+  }
 }

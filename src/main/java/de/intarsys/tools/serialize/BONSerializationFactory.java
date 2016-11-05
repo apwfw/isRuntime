@@ -6,26 +6,25 @@ package de.intarsys.tools.serialize;
  * "BON", basic object notation is a simple, self contained, readable
  * serialization format for primitive types, array and maps. The serialization
  * format is very similiar to "JSON".
- * 
  */
 public class BONSerializationFactory implements ISerializationFactory {
 
-	public static final String MIMETYPE = "application/vnd.intarsys.primitive";
+  public static final String MIMETYPE = "application/vnd.intarsys.primitive";
 
-	@Override
-	public IDeserializer createDeserializer(SerializationContext context) {
-		return new BONDeserializer(
-				((StreamSerializationContext) context).getInputStream());
-	}
+  @Override
+  public IDeserializer createDeserializer(SerializationContext context) {
+    return new BONDeserializer(
+        ((StreamSerializationContext) context).getInputStream());
+  }
 
-	@Override
-	public ISerializer createSerializer(SerializationContext context) {
-		return new BONSerializer(
-				((StreamSerializationContext) context).getOutputStream());
-	}
+  @Override
+  public ISerializer createSerializer(SerializationContext context) {
+    return new BONSerializer(
+        ((StreamSerializationContext) context).getOutputStream());
+  }
 
-	@Override
-	public Class getSerializationType() {
-		return Object.class;
-	}
+  @Override
+  public Class getSerializationType() {
+    return Object.class;
+  }
 }

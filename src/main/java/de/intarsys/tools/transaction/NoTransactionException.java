@@ -31,15 +31,14 @@ package de.intarsys.tools.transaction;
 
 /**
  * No transaction was found.
- * 
  */
 public class NoTransactionException extends TransactionException {
 
-	public NoTransactionException() {
-		super();
-	}
+  public NoTransactionException() {
+    super();
+  }
 
-	public NoTransactionException(String message) {
-		super(message);
-	}
+  public NoTransactionException(String message) {
+    super(message);
+  }
 }

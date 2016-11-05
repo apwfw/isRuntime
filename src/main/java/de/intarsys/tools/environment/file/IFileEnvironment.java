@@ -36,42 +36,41 @@ import java.io.File;
  */
 public interface IFileEnvironment {
 
-	/**
-	 * The platform base directory.
-	 * <p>
-	 * Normally this will be equal to the VM "user.dir" property.
-	 * 
-	 * @return The platform base directory.
-	 */
-	public File getBaseDir();
+  /**
+   * The platform base directory.
+   * <p>
+   * Normally this will be equal to the VM "user.dir" property.
+   *
+   * @return The platform base directory.
+   */
+  public File getBaseDir();
 
-	/**
-	 * Some user specific private directory.
-	 * <p>
-	 * Normally this will be equal to the VM "user.home" property or an
-	 * application defined subdirectory.
-	 * 
-	 * @return Some private directory.
-	 * 
-	 */
-	public File getProfileDir();
+  /**
+   * Some user specific private directory.
+   * <p>
+   * Normally this will be equal to the VM "user.home" property or an
+   * application defined subdirectory.
+   *
+   * @return Some private directory.
+   */
+  public File getProfileDir();
 
-	/**
-	 * The directory for temporary files.
-	 * <p>
-	 * Normally this will be equal to the VM "java.io.tmpdir" property.
-	 * 
-	 * @return The directory for temporary files.
-	 */
-	public File getTempDir();
+  /**
+   * The directory for temporary files.
+   * <p>
+   * Normally this will be equal to the VM "java.io.tmpdir" property.
+   *
+   * @return The directory for temporary files.
+   */
+  public File getTempDir();
 
-	/**
-	 * The working directory.
-	 * <p>
-	 * Normally this will be equal to the VM "user.dir" property.
-	 * 
-	 * @return The working directory.
-	 */
-	public File getWorkingDir();
+  /**
+   * The working directory.
+   * <p>
+   * Normally this will be equal to the VM "user.dir" property.
+   *
+   * @return The working directory.
+   */
+  public File getWorkingDir();
 
 }

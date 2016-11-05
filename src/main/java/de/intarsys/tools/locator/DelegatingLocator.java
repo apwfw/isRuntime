@@ -29,6 +29,10 @@
  */
 package de.intarsys.tools.locator;
 
+import de.intarsys.tools.adapter.AdapterTools;
+import de.intarsys.tools.adapter.IAdapterSupport;
+import de.intarsys.tools.randomaccess.IRandomAccess;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -36,181 +40,176 @@ import java.io.Reader;
 import java.io.Writer;
 import java.net.URL;
 
-import de.intarsys.tools.adapter.AdapterTools;
-import de.intarsys.tools.adapter.IAdapterSupport;
-import de.intarsys.tools.randomaccess.IRandomAccess;
-
 /**
  * An adapter for implementing a delegation model.
- * 
  */
 abstract public class DelegatingLocator implements ILocator, IAdapterSupport {
 
-	protected ILocator delegate;
+  protected ILocator delegate;
 
-	public DelegatingLocator(ILocator delegate) {
-		super();
-		this.delegate = delegate;
-	}
+  public DelegatingLocator(ILocator delegate) {
+    super();
+    this.delegate = delegate;
+  }
 
-	public void delete() throws IOException {
-		getDelegate().delete();
-	}
+  public void delete() throws IOException {
+    getDelegate().delete();
+  }
 
-	public boolean exists() {
-		try {
-			return getDelegate().exists();
-		} catch (IOException e) {
-			return false;
-		}
-	}
+  public boolean exists() {
+    try {
+      return getDelegate().exists();
+    } catch (IOException e) {
+      return false;
+    }
+  }
 
-	public <T> T getAdapter(Class<T> clazz) {
-		try {
-			return AdapterTools.getAdapter(getDelegate(), clazz);
-		} catch (IOException e) {
-			return null;
-		}
-	}
+  public <T> T getAdapter(Class<T> clazz) {
+    try {
+      return AdapterTools.getAdapter(getDelegate(), clazz);
+    } catch (IOException e) {
+      return null;
+    }
+  }
 
-	public ILocator getChild(String name) {
-		try {
-			return getDelegate().getChild(name);
-		} catch (IOException e) {
-			return null;
-		}
-	}
+  public ILocator getChild(String name) {
+    try {
+      return getDelegate().getChild(name);
+    } catch (IOException e) {
+      return null;
+    }
+  }
 
-	public ILocator getDelegate() throws IOException {
-		return delegate;
-	}
+  public ILocator getDelegate() throws IOException {
+    return delegate;
+  }
 
-	public String getFullName() {
-		try {
-			return getDelegate().getFullName();
-		} catch (IOException e) {
-			return "";
-		}
-	}
+  public String getFullName() {
+    try {
+      return getDelegate().getFullName();
+    } catch (IOException e) {
+      return "";
+    }
+  }
 
-	public InputStream getInputStream() throws IOException {
-		return getDelegate().getInputStream();
-	}
+  public InputStream getInputStream() throws IOException {
+    return getDelegate().getInputStream();
+  }
 
-	public long getLength() throws IOException {
-		return getDelegate().getLength();
-	}
+  public long getLength() throws IOException {
+    return getDelegate().getLength();
+  }
 
-	public String getLocalName() {
-		try {
-			return getDelegate().getLocalName();
-		} catch (IOException e) {
-			return "";
-		}
-	}
+  public String getLocalName() {
+    try {
+      return getDelegate().getLocalName();
+    } catch (IOException e) {
+      return "";
+    }
+  }
 
-	public OutputStream getOutputStream() throws IOException {
-		return getDelegate().getOutputStream();
-	}
+  public OutputStream getOutputStream() throws IOException {
+    return getDelegate().getOutputStream();
+  }
 
-	public ILocator getParent() {
-		try {
-			return getDelegate().getParent();
-		} catch (IOException e) {
-			return null;
-		}
-	}
+  public ILocator getParent() {
+    try {
+      return getDelegate().getParent();
+    } catch (IOException e) {
+      return null;
+    }
+  }
 
-	public IRandomAccess getRandomAccess() throws IOException {
-		return getDelegate().getRandomAccess();
-	}
+  public IRandomAccess getRandomAccess() throws IOException {
+    return getDelegate().getRandomAccess();
+  }
 
-	public Reader getReader() throws IOException {
-		return getDelegate().getReader();
-	}
+  public Reader getReader() throws IOException {
+    return getDelegate().getReader();
+  }
 
-	public Reader getReader(String encoding) throws IOException {
-		return getDelegate().getReader(encoding);
-	}
+  public Reader getReader(String encoding) throws IOException {
+    return getDelegate().getReader(encoding);
+  }
 
-	public String getType() {
-		try {
-			return getDelegate().getType();
-		} catch (IOException e) {
-			return "";
-		}
-	}
+  public String getType() {
+    try {
+      return getDelegate().getType();
+    } catch (IOException e) {
+      return "";
+    }
+  }
 
-	public String getTypedName() {
-		try {
-			return getDelegate().getTypedName();
-		} catch (IOException e) {
-			return "";
-		}
-	}
+  public String getTypedName() {
+    try {
+      return getDelegate().getTypedName();
+    } catch (IOException e) {
+      return "";
+    }
+  }
 
-	public Writer getWriter() throws IOException {
-		return getDelegate().getWriter();
-	}
+  public Writer getWriter() throws IOException {
+    return getDelegate().getWriter();
+  }
 
-	public Writer getWriter(String encoding) throws IOException {
-		return getDelegate().getWriter(encoding);
-	}
+  public Writer getWriter(String encoding) throws IOException {
+    return getDelegate().getWriter(encoding);
+  }
 
-	public boolean isDirectory() {
-		try {
-			return getDelegate().isDirectory();
-		} catch (IOException e) {
-			return false;
-		}
-	}
+  public boolean isDirectory() {
+    try {
+      return getDelegate().isDirectory();
+    } catch (IOException e) {
+      return false;
+    }
+  }
 
-	public boolean isOutOfSynch() {
-		try {
-			return getDelegate().isOutOfSynch();
-		} catch (IOException e) {
-			return false;
-		}
-	}
+  public boolean isOutOfSynch() {
+    try {
+      return getDelegate().isOutOfSynch();
+    } catch (IOException e) {
+      return false;
+    }
+  }
 
-	public boolean isReadOnly() {
-		try {
-			return getDelegate().isReadOnly();
-		} catch (IOException e) {
-			return true;
-		}
-	}
+  public boolean isReadOnly() {
+    try {
+      return getDelegate().isReadOnly();
+    } catch (IOException e) {
+      return true;
+    }
+  }
 
-	public ILocator[] listLocators(ILocatorNameFilter filter)
-			throws IOException {
-		return getDelegate().listLocators(filter);
-	}
+  public ILocator[] listLocators(ILocatorNameFilter filter)
+      throws IOException {
+    return getDelegate().listLocators(filter);
+  }
 
-	public void rename(String newName) throws IOException {
-		getDelegate().rename(newName);
-	}
+  public void rename(String newName) throws IOException {
+    getDelegate().rename(newName);
+  }
 
-	public void setReadOnly() {
-		try {
-			getDelegate().setReadOnly();
-		} catch (IOException e) {
-			//
-		}
-	}
+  public void setReadOnly() {
+    try {
+      getDelegate().setReadOnly();
+    } catch (IOException e) {
+      //
+    }
+  }
 
-	public void synch() {
-		try {
-			getDelegate().synch();
-		} catch (IOException e) {
-			//
-		}
-	}
+  public void synch() {
+    try {
+      getDelegate().synch();
+    } catch (IOException e) {
+      //
+    }
+  }
 
-	public URL toURL() {
-		try {
-			return getDelegate().toURL();
-		} catch (IOException e) {
-			return null;
-		}
-	}
+  public URL toURL() {
+    try {
+      return getDelegate().toURL();
+    } catch (IOException e) {
+      return null;
+    }
+  }
 }

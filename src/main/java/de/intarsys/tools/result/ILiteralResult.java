@@ -34,5 +34,5 @@ package de.intarsys.tools.result;
  */
 public interface ILiteralResult extends IResult {
 
-	public Object getValue();
+  public Object getValue();
 }

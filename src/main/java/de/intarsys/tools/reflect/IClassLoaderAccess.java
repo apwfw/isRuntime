@@ -35,12 +35,11 @@ package de.intarsys.tools.reflect;
  */
 public interface IClassLoaderAccess extends IClassLoaderSupport {
 
-	/**
-	 * Assign the class loader suitable for use in the context of the generic
-	 * receiver object.
-	 * 
-	 * @param classLoader
-	 *            The class loader to be used.
-	 */
-	public void setClassLoader(ClassLoader classLoader);
+  /**
+   * Assign the class loader suitable for use in the context of the generic
+   * receiver object.
+   *
+   * @param classLoader The class loader to be used.
+   */
+  public void setClassLoader(ClassLoader classLoader);
 }

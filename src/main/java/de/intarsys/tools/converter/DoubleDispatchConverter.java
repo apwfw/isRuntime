@@ -42,78 +42,78 @@ import java.util.Map;
  */
 public class DoubleDispatchConverter implements IConverter<Object, Object> {
 
-	final private Map<Class, IConverter> converters = new HashMap<Class, IConverter>();
+  final private Map<Class, IConverter> converters = new HashMap<Class, IConverter>();
 
-	final private Class targetType;
+  final private Class targetType;
 
-	public DoubleDispatchConverter(Class targetType) {
-		super();
-		this.targetType = targetType;
-	}
+  public DoubleDispatchConverter(Class targetType) {
+    super();
+    this.targetType = targetType;
+  }
 
-	public Object convert(Object source) throws ConversionException {
-		IConverter converter = lookupConverter(source);
-		if (converter == null) {
-			if (targetType == Canonical.class) {
-				// break recursion
-				throw new ConversionException("can't convert "
-						+ source.getClass().getName() + " to "
-						+ getTargetType());
-			}
-			Object canonical = ConverterRegistry.get().convert(source,
-					Canonical.class);
-			if (canonical == source) {
-				// break recursion
-				throw new ConversionException("can't convert "
-						+ source.getClass().getName() + " to "
-						+ getTargetType());
-			}
-			return ConverterRegistry.get().convert(canonical, getTargetType());
-		}
-		return converter.convert(source);
-	}
+  public Object convert(Object source) throws ConversionException {
+    IConverter converter = lookupConverter(source);
+    if (converter == null) {
+      if (targetType == Canonical.class) {
+        // break recursion
+        throw new ConversionException("can't convert "
+            + source.getClass().getName() + " to "
+            + getTargetType());
+      }
+      Object canonical = ConverterRegistry.get().convert(source,
+          Canonical.class);
+      if (canonical == source) {
+        // break recursion
+        throw new ConversionException("can't convert "
+            + source.getClass().getName() + " to "
+            + getTargetType());
+      }
+      return ConverterRegistry.get().convert(canonical, getTargetType());
+    }
+    return converter.convert(source);
+  }
 
-	public Class<?> getSourceType() {
-		return Object.class;
-	}
+  public Class<?> getSourceType() {
+    return Object.class;
+  }
 
-	public Class<?> getTargetType() {
-		return targetType;
-	}
+  public Class<?> getTargetType() {
+    return targetType;
+  }
 
-	private IConverter<?, ?> lookupConverter(Class<?> clazz) {
-		IConverter<?, ?> result = converters.get(clazz);
-		if (result != null) {
-			return result;
-		}
-		java.lang.Class<?>[] interfaces = clazz.getInterfaces();
-		for (int i = 0; i < interfaces.length; i++) {
-			result = lookupConverter(interfaces[i]);
-			if (result != null) {
-				return result;
-			}
-		}
-		java.lang.Class<?> superClass = clazz.getSuperclass();
-		if (superClass != null) {
-			result = lookupConverter(superClass);
-			if (result != null) {
-				return result;
-			}
-		}
-		return null;
-	}
+  private IConverter<?, ?> lookupConverter(Class<?> clazz) {
+    IConverter<?, ?> result = converters.get(clazz);
+    if (result != null) {
+      return result;
+    }
+    java.lang.Class<?>[] interfaces = clazz.getInterfaces();
+    for (int i = 0; i < interfaces.length; i++) {
+      result = lookupConverter(interfaces[i]);
+      if (result != null) {
+        return result;
+      }
+    }
+    java.lang.Class<?> superClass = clazz.getSuperclass();
+    if (superClass != null) {
+      result = lookupConverter(superClass);
+      if (result != null) {
+        return result;
+      }
+    }
+    return null;
+  }
 
-	protected IConverter<?, ?> lookupConverter(Object source) {
-		Class<?> clazz = (source == null) ? Undefined.class : source.getClass();
-		IConverter<?, ?> converter = lookupConverter(clazz);
-		return converter;
-	}
+  protected IConverter<?, ?> lookupConverter(Object source) {
+    Class<?> clazz = (source == null) ? Undefined.class : source.getClass();
+    IConverter<?, ?> converter = lookupConverter(clazz);
+    return converter;
+  }
 
-	public void registerConverter(IConverter converter) {
-		converters.put(converter.getSourceType(), converter);
-	}
+  public void registerConverter(IConverter converter) {
+    converters.put(converter.getSourceType(), converter);
+  }
 
-	public void unregisterConverter(IConverter converter) {
-		converters.remove(converter.getSourceType());
-	}
+  public void unregisterConverter(IConverter converter) {
+    converters.remove(converter.getSourceType());
+  }
 }

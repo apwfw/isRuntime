@@ -32,42 +32,38 @@ package de.intarsys.tools.pool;
 /**
  * A factory for the lifecycle management of objects in a generic pool
  * implementation.
- * 
  */
 public interface IPoolObjectFactory {
 
-	/**
-	 * Create the new object.
-	 * 
-	 * @return The new object
-	 * @throws Exception
-	 */
-	public Object createObject() throws Exception;
+  /**
+   * Create the new object.
+   *
+   * @return The new object
+   * @throws Exception
+   */
+  public Object createObject() throws Exception;
 
-	/**
-	 * Destroy the object.
-	 * 
-	 * @param obj
-	 *            The object to be destroyed.
-	 * @throws Exception
-	 */
-	public void destroyObject(Object obj) throws Exception;
+  /**
+   * Destroy the object.
+   *
+   * @param obj The object to be destroyed.
+   * @throws Exception
+   */
+  public void destroyObject(Object obj) throws Exception;
 
-	/**
-	 * Activate the object before checkout from pool.
-	 * 
-	 * @param obj
-	 *            The object to be activated.
-	 * @throws Exception
-	 */
-	public void activateObject(Object obj) throws Exception;
+  /**
+   * Activate the object before checkout from pool.
+   *
+   * @param obj The object to be activated.
+   * @throws Exception
+   */
+  public void activateObject(Object obj) throws Exception;
 
-	/**
-	 * Deactivate object before checkin to pool.
-	 * 
-	 * @param obj
-	 *            The object to be deeactivated.
-	 * @throws Exception
-	 */
-	public void deactivateObject(Object obj) throws Exception;
+  /**
+   * Deactivate object before checkin to pool.
+   *
+   * @param obj The object to be deeactivated.
+   * @throws Exception
+   */
+  public void deactivateObject(Object obj) throws Exception;
 }

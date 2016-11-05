@@ -31,8 +31,8 @@ package de.intarsys.tools.concurrent;
 
 public interface ITaskListenerSupport {
 
-	public void addTaskListener(ITaskListener listener);
+  public void addTaskListener(ITaskListener listener);
 
-	public void removeTaskListener(ITaskListener listener);
+  public void removeTaskListener(ITaskListener listener);
 
 }

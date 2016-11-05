@@ -31,17 +31,16 @@ package de.intarsys.aaa.resource;
 
 /**
  * A VM singleton for the {@link IResourceRegistry}
- * 
  */
 public class ResourceRegistry {
 
-	private static IResourceRegistry ACTIVE = new StandardResourceRegistry();
+  private static IResourceRegistry ACTIVE = new StandardResourceRegistry();
 
-	static public IResourceRegistry get() {
-		return ACTIVE;
-	}
+  static public IResourceRegistry get() {
+    return ACTIVE;
+  }
 
-	static public void set(IResourceRegistry active) {
-		ACTIVE = active;
-	}
+  static public void set(IResourceRegistry active) {
+    ACTIVE = active;
+  }
 }

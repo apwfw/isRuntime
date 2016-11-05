@@ -31,20 +31,19 @@ package de.intarsys.tools.transaction;
 
 /**
  * A simple {@link ITransactionManager} that uses thread local transactions.
- * 
  */
 public class ThreadLocalTransactionManager extends CommonTransactionManager {
 
-	private ThreadLocal<Transaction> active = new ThreadLocal<Transaction>();
+  private ThreadLocal<Transaction> active = new ThreadLocal<Transaction>();
 
-	@Override
-	protected Transaction lookupTransaction() {
-		return active.get();
-	}
+  @Override
+  protected Transaction lookupTransaction() {
+    return active.get();
+  }
 
-	@Override
-	protected void registerTransaction(Transaction tx) {
-		active.set(tx);
-	}
+  @Override
+  protected void registerTransaction(Transaction tx) {
+    active.set(tx);
+  }
 
 }

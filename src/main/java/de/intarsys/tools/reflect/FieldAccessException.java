@@ -31,47 +31,47 @@ package de.intarsys.tools.reflect;
 
 public class FieldAccessException extends FieldException {
 
-	private String name;
+  private String name;
 
-	public FieldAccessException(String name) {
-		super();
-		this.name = name;
-	}
+  public FieldAccessException(String name) {
+    super();
+    this.name = name;
+  }
 
-	public FieldAccessException(String name, String message) {
-		super(message);
-		this.name = name;
-	}
+  public FieldAccessException(String name, String message) {
+    super(message);
+    this.name = name;
+  }
 
-	public FieldAccessException(String name, String message, Throwable cause) {
-		super(message, cause);
-		this.name = name;
-	}
+  public FieldAccessException(String name, String message, Throwable cause) {
+    super(message, cause);
+    this.name = name;
+  }
 
-	public FieldAccessException(String name, Throwable cause) {
-		super(cause);
-		this.name = name;
-	}
+  public FieldAccessException(String name, Throwable cause) {
+    super(cause);
+    this.name = name;
+  }
 
-	@Override
-	public String getMessage() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("field '");
-		sb.append(getName());
-		sb.append("' access exception");
-		if (getCause() != null) {
-			sb.append(" (");
-			sb.append(getCause());
-			sb.append(")");
-		}
-		return sb.toString();
-	}
+  @Override
+  public String getMessage() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("field '");
+    sb.append(getName());
+    sb.append("' access exception");
+    if (getCause() != null) {
+      sb.append(" (");
+      sb.append(getCause());
+      sb.append(")");
+    }
+    return sb.toString();
+  }
 
-	@Override
-	public String getName() {
-		if (name == null) {
-			return "<unknown>";
-		}
-		return name;
-	}
+  @Override
+  public String getName() {
+    if (name == null) {
+      return "<unknown>";
+    }
+    return name;
+  }
 }

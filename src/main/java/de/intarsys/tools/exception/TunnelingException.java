@@ -34,11 +34,11 @@ package de.intarsys.tools.exception;
  * exceptions only.
  */
 public class TunnelingException extends RuntimeException {
-	public TunnelingException(String message, Throwable cause) {
-		super(message, cause);
-	}
+  public TunnelingException(String message, Throwable cause) {
+    super(message, cause);
+  }
 
-	public TunnelingException(Throwable cause) {
-		super(cause.getMessage(), cause);
-	}
+  public TunnelingException(Throwable cause) {
+    super(cause.getMessage(), cause);
+  }
 }

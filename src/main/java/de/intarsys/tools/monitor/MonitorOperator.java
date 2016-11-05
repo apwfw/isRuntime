@@ -36,73 +36,73 @@ import java.util.Iterator;
  */
 public class MonitorOperator {
 
-	public MonitorOperator() {
-		super();
-	}
+  public MonitorOperator() {
+    super();
+  }
 
-	protected void doEvent(ITrace event) {
-		doEventStart(event);
-		doEventBody(event);
-		doEventEnd(event);
-	}
+  protected void doEvent(ITrace event) {
+    doEventStart(event);
+    doEventBody(event);
+    doEventEnd(event);
+  }
 
-	protected void doEventBody(ITrace event) {
-		// do nothing by default
-	}
+  protected void doEventBody(ITrace event) {
+    // do nothing by default
+  }
 
-	protected void doEventEnd(ITrace event) {
-		// do nothing by default
-	}
+  protected void doEventEnd(ITrace event) {
+    // do nothing by default
+  }
 
-	protected void doEventStart(ITrace event) {
-		// do nothing by default
-	}
+  protected void doEventStart(ITrace event) {
+    // do nothing by default
+  }
 
-	protected void doMonitor(IMonitor monitor) {
-		doMonitorStart(monitor);
-		doMonitorBody(monitor);
-		doMonitorEnd(monitor);
-	}
+  protected void doMonitor(IMonitor monitor) {
+    doMonitorStart(monitor);
+    doMonitorBody(monitor);
+    doMonitorEnd(monitor);
+  }
 
-	protected void doMonitorBody(IMonitor monitor) {
-		Iterator i = monitor.getTraces().iterator();
+  protected void doMonitorBody(IMonitor monitor) {
+    Iterator i = monitor.getTraces().iterator();
 
-		if (i == null) {
-			return;
-		}
+    if (i == null) {
+      return;
+    }
 
-		for (; i.hasNext();) {
-			ITrace event = (ITrace) i.next();
-			doEvent(event);
-		}
-	}
+    for (; i.hasNext(); ) {
+      ITrace event = (ITrace) i.next();
+      doEvent(event);
+    }
+  }
 
-	protected void doMonitorEnd(IMonitor monitor) {
-		//
-	}
+  protected void doMonitorEnd(IMonitor monitor) {
+    //
+  }
 
-	protected void doMonitorFactoryBody(IMonitorRegistry registry) {
-		for (Iterator i = registry.getMonitors().iterator(); i.hasNext();) {
-			IMonitor monitor = (IMonitor) i.next();
-			doMonitor(monitor);
-		}
-	}
+  protected void doMonitorFactoryBody(IMonitorRegistry registry) {
+    for (Iterator i = registry.getMonitors().iterator(); i.hasNext(); ) {
+      IMonitor monitor = (IMonitor) i.next();
+      doMonitor(monitor);
+    }
+  }
 
-	protected void doMonitorFactoryEnd(IMonitorRegistry registry) {
-		// do nothing by default
-	}
+  protected void doMonitorFactoryEnd(IMonitorRegistry registry) {
+    // do nothing by default
+  }
 
-	protected void doMonitorFactoryStart(IMonitorRegistry registry) {
-		// do nothing by default
-	}
+  protected void doMonitorFactoryStart(IMonitorRegistry registry) {
+    // do nothing by default
+  }
 
-	protected void doMonitorStart(IMonitor monitor) {
-		// do nothing by default
-	}
+  protected void doMonitorStart(IMonitor monitor) {
+    // do nothing by default
+  }
 
-	public void process(IMonitorRegistry registry) {
-		doMonitorFactoryStart(registry);
-		doMonitorFactoryBody(registry);
-		doMonitorFactoryEnd(registry);
-	}
+  public void process(IMonitorRegistry registry) {
+    doMonitorFactoryStart(registry);
+    doMonitorFactoryBody(registry);
+    doMonitorFactoryEnd(registry);
+  }
 }

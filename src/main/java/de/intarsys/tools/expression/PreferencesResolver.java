@@ -34,32 +34,31 @@ import de.intarsys.tools.preferences.IPreferences;
 
 /**
  * An {@link IStringEvaluator} accessing preferences values.
- * 
  */
 public class PreferencesResolver implements IStringEvaluator {
 
-	private IPreferences preferences;
+  private IPreferences preferences;
 
-	public PreferencesResolver(IPreferences preferences) {
-		super();
-		this.preferences = preferences;
-	}
+  public PreferencesResolver(IPreferences preferences) {
+    super();
+    this.preferences = preferences;
+  }
 
-	public Object evaluate(String expression, IArgs pArgs)
-			throws EvaluationException {
-		IPreferences current = preferences;
-		String[] names = expression.split("\\.", 0); //$NON-NLS-1$
-		for (int i = 0; i < names.length; i++) {
-			String name = names[i];
-			if (i == names.length - 1) {
-				return current.get(name);
-			} else {
-				current = current.node(name);
-			}
-			if (current == null) {
-				return null;
-			}
-		}
-		return null;
-	}
+  public Object evaluate(String expression, IArgs pArgs)
+      throws EvaluationException {
+    IPreferences current = preferences;
+    String[] names = expression.split("\\.", 0); //$NON-NLS-1$
+    for (int i = 0; i < names.length; i++) {
+      String name = names[i];
+      if (i == names.length - 1) {
+        return current.get(name);
+      } else {
+        current = current.node(name);
+      }
+      if (current == null) {
+        return null;
+      }
+    }
+    return null;
+  }
 }

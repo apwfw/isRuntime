@@ -29,34 +29,34 @@
  */
 package de.intarsys.tools.monitor;
 
+import de.intarsys.tools.bean.BeanContainer;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import de.intarsys.tools.bean.BeanContainer;
 
 /**
  * The standard implementation for {@link IMonitorRegistry}.
  */
 public class StandardMonitorRegistry implements IMonitorRegistry {
 
-	private Map<String, IMonitor> monitors = new HashMap<String, IMonitor>();
+  private Map<String, IMonitor> monitors = new HashMap<String, IMonitor>();
 
-	public synchronized List getMonitors() {
-		List list = new ArrayList(monitors.values());
-		return list;
-	}
+  public synchronized List getMonitors() {
+    List list = new ArrayList(monitors.values());
+    return list;
+  }
 
-	public synchronized IMonitor lookupMonitor(String id) {
-		IMonitor monitor = monitors.get(id);
-		if (monitor == null) {
-			monitor = BeanContainer.get().lookupBean(id, IMonitor.class);
-		}
-		return monitor;
-	}
+  public synchronized IMonitor lookupMonitor(String id) {
+    IMonitor monitor = monitors.get(id);
+    if (monitor == null) {
+      monitor = BeanContainer.get().lookupBean(id, IMonitor.class);
+    }
+    return monitor;
+  }
 
-	public synchronized void registerMonitor(IMonitor monitor) {
-		monitors.put(monitor.getName(), monitor);
-	}
+  public synchronized void registerMonitor(IMonitor monitor) {
+    monitors.put(monitor.getName(), monitor);
+  }
 }

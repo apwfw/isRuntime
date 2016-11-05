@@ -29,41 +29,40 @@
  */
 package de.intarsys.aaa.permission;
 
+import de.intarsys.aaa.resource.IResource;
+import de.intarsys.aaa.resource.IResourceAccessHandler;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.intarsys.aaa.resource.IResource;
-import de.intarsys.aaa.resource.IResourceAccessHandler;
-
 /**
  * An {@link IResourceAccessHandler} that acts on a simple permission model.
  * <p>
- * 
  */
 public class PermissionResourceAccessHandler implements IResourceAccessHandler,
-		Serializable {
+    Serializable {
 
-	final private List<IPermission> permissions = new ArrayList<IPermission>();
+  final private List<IPermission> permissions = new ArrayList<IPermission>();
 
-	public void addPermission(IPermission permission) {
-		permissions.add(permission);
-	}
+  public void addPermission(IPermission permission) {
+    permissions.add(permission);
+  }
 
-	public List<IPermission> getPermissions() {
-		return new ArrayList<IPermission>(permissions);
-	}
+  public List<IPermission> getPermissions() {
+    return new ArrayList<IPermission>(permissions);
+  }
 
-	public boolean isAccessGranted(IResource resource) {
-		for (IPermission permission : permissions) {
-			if (permission.isAccessGranted(resource)) {
-				return true;
-			}
-		}
-		return false;
-	}
+  public boolean isAccessGranted(IResource resource) {
+    for (IPermission permission : permissions) {
+      if (permission.isAccessGranted(resource)) {
+        return true;
+      }
+    }
+    return false;
+  }
 
-	public void removePermission(IPermission permission) {
-		permissions.remove(permission);
-	}
+  public void removePermission(IPermission permission) {
+    permissions.remove(permission);
+  }
 }

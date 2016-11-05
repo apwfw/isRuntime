@@ -34,28 +34,27 @@ import java.io.OutputStream;
 
 /**
  * A stream object wrapping console output.
- * 
  */
 public class ConsoleStream extends OutputStream {
-	/**
-	 * SplitStream - Konstruktorkommentar.
-	 */
-	public ConsoleStream() {
-		super();
-	}
+  /**
+   * SplitStream - Konstruktorkommentar.
+   */
+  public ConsoleStream() {
+    super();
+  }
 
-	@Override
-	public void close() throws IOException {
-		// you dont really want to close the console
-	}
+  @Override
+  public void close() throws IOException {
+    // you dont really want to close the console
+  }
 
-	@Override
-	public void flush() throws IOException {
-		System.out.flush();
-	}
+  @Override
+  public void flush() throws IOException {
+    System.out.flush();
+  }
 
-	@Override
-	public void write(int b) throws IOException {
-		System.out.write(b);
-	}
+  @Override
+  public void write(int b) throws IOException {
+    System.out.write(b);
+  }
 }
