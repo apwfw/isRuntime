@@ -46,6 +46,12 @@
     </developer>
   </developers>
 
+  <distributionManagement>
+    <repository>
+      <id>clojars</id>
+    </repository>
+  </distributionManagement>
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
