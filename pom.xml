@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>de.intarsys.opensource</groupId>
   <artifactId>isrt</artifactId>
-  <version>4.10</version>
-  <packaging>jar</packaging>
+  <version>4.10.1-SNAPSHOT</version>
 
   <name>isrt</name>
   <description>The basic runtime tools and interfaces for intarsys components.</description>
-  <url>http://opensource.intarsys.de/home/en/index.php?n=JPod.HomePage</url>
+  <url>https://github.com/apwfw/isRuntime</url>
 
   <organization>
     <name>intarsys consulting GmbH</name>
@@ -25,16 +27,39 @@
     </license>
   </licenses>
 
+  <scm>
+    <url>https://github.com/apwfw/isRuntime</url>
+    <connection>scm:git:git://github.com/apwfw/isRuntime.git</connection>
+    <developerConnection>scm:git:git@github.com:apwfw/isRuntime.git</developerConnection>
+  </scm>
+
   <developers>
     <developer>
-      <id>intarsys</id>
-      <name>intarsys support</name>
+      <email>vitalii.naoumov@gmail.com</email>
+      <name>Vitalii Naoumov</name>
+      <url>https://github.com/apwfw</url>
+      <id>apwfw</id>
+    </developer>
+
+    <developer>
       <email>support@intarsys.de</email>
+      <name>intarsys support</name>
+      <id>intarsys</id>
     </developer>
   </developers>
 
-  <scm>
-    <connection>not available</connection>
-    <url>http://sourceforge.net/projects/jpodlib/files/dependencies/5.5/isrt.4.10.20120626.zip/download</url>
-  </scm>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>2.5.3</version>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>
